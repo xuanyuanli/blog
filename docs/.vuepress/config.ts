@@ -157,18 +157,13 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
           iconClass: 'icon-github',
           title: 'GitHub',
           link: 'https://github.com/xuanyuanli',
-        },
-        {
-          iconClass: 'icon-erji',
-          title: '听音乐',
-          link: 'https://music.163.com/#/playlist?id=755597173',
-        },
+        }
       ],
     },
 
     // 页脚信息
     footer: {
-      createYear: 2019, // 博客创建年份
+      createYear: 2022, // 博客创建年份
       copyrightInfo:
         'xuanyuanli | <a href="https://github.com/xuanyuanli/blob/master/LICENSE" target="_blank">MIT License</a>', // 博客版权信息，支持a标签或换行标签</br>
     },
