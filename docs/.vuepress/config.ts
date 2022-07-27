@@ -20,7 +20,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
       description: '轩辕李的技术博客,自我成长，变得更强',
     }
   },
-  // base: '/', // 默认'/'。如果你想将你的网站部署到如 https://foo.github.io/bar/，那么 base 应该被设置成 "/bar/",（否则页面将失去样式等文件）
+  base: '/blog/', // 默认'/'。如果你想将你的网站部署到如 https://foo.github.io/bar/，那么 base 应该被设置成 "/bar/",（否则页面将失去样式等文件）
 
   // 主题配置
   themeConfig: {
@@ -122,7 +122,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
     // 文章默认的作者信息，(可在md文件中单独配置此信息) string | {name: string, link?: string}
     author: {
-      name: 'xugaoyi', // 必需
+      name: '轩辕李', // 必需
       link: 'https://github.com/xuanyuanli', // 可选的
     },
 
@@ -140,7 +140,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         {
           iconClass: 'icon-youjian',
           title: '发邮件',
-          link: 'mailto:894072666@qq.com',
+          link: 'mailto:xuanyuanli2022@gmail.com',
         },
         {
           iconClass: 'icon-github',
