@@ -34,6 +34,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                     // 说明：以下所有link的值只是在相应md文件头部定义的永久链接（不是什么特殊编码）。另外，注意结尾是有斜杠的
                     {text: 'Java', link: '/server/java/'},
                     {text: 'Spring', link: '/server/spring/'},
+                    {text: '工具', link: '/server/util/'},
                     {text: '分布式', link: '/server/distribution/'},
                     {text: '心得', link: '/server/think/'},
                 ],
