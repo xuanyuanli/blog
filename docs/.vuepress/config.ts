@@ -128,7 +128,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
     // 博主信息 (显示在首页侧边栏)
     blogger: {
-      avatar: 'https://cdn.staticaly.com/gh/xuanyuanli/Img@master/picx/9131717.4nqtakic6hk0.webp',
+      avatar: '/img/logo.png',
       name: '轩辕李',
       slogan: '勇猛精进，星辰大海',
     },
@@ -300,7 +300,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
   ],
 
   markdown: {
-    lineNumbers: true,
+    lineNumbers: false,
     extractHeaders: ['h2', 'h3', 'h4', 'h5', 'h6'], // 提取标题到侧边栏的级别，默认['h2', 'h3']
   },
 
