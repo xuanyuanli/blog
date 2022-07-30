@@ -62,6 +62,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 text: '收藏',
                 link: '/pages/beb6c0bd8a66cea6/',
             },
+            {text: '英语角', link: '/english-corner/'},
             {
                 text: '索引',
                 link: '/archives/',
