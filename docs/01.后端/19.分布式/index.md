@@ -1,7 +1,7 @@
 ---
-pageComponent: 
+pageComponent:
   name: Catalogue
-  data: 
+  data:
     path: 01.后端/19.分布式
     description: 分布式
 title: 分布式
@@ -11,7 +11,7 @@ sidebar: false
 article: false
 comment: false
 editLink: false
-author: 
+author:
   name: 轩辕李
   link: https://github.com/xuanyuanli
 ---

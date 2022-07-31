@@ -43,18 +43,15 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 text: '前端',
                 link: '/web/',
                 items: [
-                    {text: 'HTML', link: '/pages/8309a5b876fc95e3/'},
-                    {text: 'CSS', link: '/pages/0a83b083bdf257cb/'},
+                    {text: 'HTML&CSS', link: '/web/htmlcss/'},
+                    {text: 'JavaScript', link: '/web/js/'},
                 ],
             },
             {
                 text: '运维',
                 link: '/operation/',
                 items: [
-                    {text: '技术文档', link: '/pages/9a7ee40fc232253e/'},
-                    {text: 'GitHub技巧', link: '/pages/4c778760be26d8b3/'},
-                    {text: 'Nodejs', link: '/pages/117708e0af7f0bd9/'},
-                    {text: '博客搭建', link: '/pages/41f87d890d0a02af/'},
+                    {text: 'Linux & C', link: '/operation/linuxc/'},
                 ],
             },
             {text: '关于', link: '/about/'},
@@ -79,7 +76,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         searchMaxSuggestions: 10, // 搜索结果显示最大数
         lastUpdated: '上次更新', // 开启更新时间，并配置前缀文字   string | boolean (取值为git提交时间)
         docsDir: 'docs', // 编辑的文件夹
-        // docsBranch: 'master', // 编辑的文件所在分支，默认master。 注意：如果你的分支是main则修改为main
+        docsBranch: 'main', // 编辑的文件所在分支，默认master。 注意：如果你的分支是main则修改为main
         editLinks: true, // 启用编辑
         editLinkText: '编辑',
 
@@ -140,7 +137,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 {
                     iconClass: 'icon-youjian',
                     title: '发邮件',
-                    link: 'mailto:xuanyuanli2022@gmail.com',
+                    link: 'mailto:xuanyuanli999@gmail.com',
                 },
                 {
                     iconClass: 'icon-github',
