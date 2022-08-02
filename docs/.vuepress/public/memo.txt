@@ -1,0 +1,12 @@
+选题：
+    分布式事务
+    CSS总览。 每个属性的应用
+
+Eureka，保证了最终一致性。https://juejin.cn/post/6844904033195409422
+RocketMq最终一致性：https://developer.51cto.com/article/648202.html
+分布式事务：https://seata.io/zh-cn/docs/dev/mode/at-mode.html，xa和at都是强一致性，tcc和saga是最终一致性
+gossip
+raft。非拜占庭错误的情况，一般包括 Paxos、Raft 及其变种；要能容忍拜占庭错误的情况，一般包括 PBFT 系列、PoW 系列算法
+Dynamo：https://coolshell.cn/articles/10910.html
+mongodb的事务支持：https://blog.51cto.com/u_15127651/2901729
+
