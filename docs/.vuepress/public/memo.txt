@@ -10,3 +10,8 @@ raft。非拜占庭错误的情况，一般包括 Paxos、Raft 及其变种；�
 Dynamo：https://coolshell.cn/articles/10910.html
 mongodb的事务支持：https://blog.51cto.com/u_15127651/2901729
 
+
+
+未完工作：
+    找主干之主语、谓语、宾语（太基础可省略）；状语从句、定语从句、名词性从句、同位语
+
