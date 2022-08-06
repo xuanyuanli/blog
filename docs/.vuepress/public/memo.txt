@@ -1,6 +1,6 @@
 选题：
     分布式事务
-    Java基础-I/O
+    Java基础-I/O、线程、集合
     Redis、Redission
     Html全景图
     CSS总览。 每个属性的应用
@@ -19,8 +19,4 @@ mongodb的事务支持：https://blog.51cto.com/u_15127651/2901729
     找主干之主语、谓语、宾语（太基础可省略）；状语从句、定语从句、名词性从句、同位语
 
 
-Java文件操作
-Java网络编程
-https://time.geekbang.org/column/article/8369
-https://github.com/itwanger/toBeBetterJavaer
-RandomAccessFile
+
