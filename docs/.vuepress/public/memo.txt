@@ -20,4 +20,3 @@ mongodb的事务支持：https://blog.51cto.com/u_15127651/2901729
 
 
 
-canonical、alternate、prev、next、author、help、license、search、icon、stylesheet、pingback、modulepreload、dns-prefetch、preconnect、prefetch、preload、prerender
