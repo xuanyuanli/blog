@@ -1,6 +1,6 @@
 选题：
     分布式事务
-    Java基础-I/O、线程、集合
+    Java基础-I/O
     Redis、Redission
     Html全景图
     CSS总览。 每个属性的应用
@@ -19,7 +19,8 @@ mongodb的事务支持：https://blog.51cto.com/u_15127651/2901729
     找主干之主语、谓语、宾语（太基础可省略）；状语从句、定语从句、名词性从句、同位语
 
 
-浏览器对行的排版，一般是先行内布局，再确定行的位置，根据行位置计算出行内盒和文字的排版位置。
-对块的排版，它总是单独占据一行，计算出交叉轴方向的高度即可
-
-
+Java文件操作
+Java网络编程
+https://time.geekbang.org/column/article/8369
+https://github.com/itwanger/toBeBetterJavaer
+RandomAccessFile
