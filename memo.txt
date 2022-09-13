@@ -1,0 +1,25 @@
+选题：
+    分布式事务
+    Java基础-I/O、线程、集合
+    Redis、Redission
+    Html全景图
+    CSS总览。 每个属性的应用
+
+Eureka，保证了最终一致性。https://juejin.cn/post/6844904033195409422
+RocketMq最终一致性：https://developer.51cto.com/article/648202.html
+分布式事务：https://seata.io/zh-cn/docs/dev/mode/at-mode.html，xa和at都是强一致性，tcc和saga是最终一致性
+gossip
+raft。非拜占庭错误的情况，一般包括 Paxos、Raft 及其变种；要能容忍拜占庭错误的情况，一般包括 PBFT 系列、PoW 系列算法
+Dynamo：https://coolshell.cn/articles/10910.html
+mongodb的事务支持：https://blog.51cto.com/u_15127651/2901729
+
+
+
+未完工作：
+    找主干之主语、谓语、宾语（太基础可省略）；状语从句、定语从句、名词性从句、同位语
+
+
+浏览器对行的排版，一般是先行内布局，再确定行的位置，根据行位置计算出行内盒和文字的排版位置。
+对块的排版，它总是单独占据一行，计算出交叉轴方向的高度即可
+
+
