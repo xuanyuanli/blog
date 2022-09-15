@@ -23,3 +23,4 @@ mongodb的事务支持：https://blog.51cto.com/u_15127651/2901729
 对块的排版，它总是单独占据一行，计算出交叉轴方向的高度即可
 
 
+Dalvik VM、Sun Hotspot
