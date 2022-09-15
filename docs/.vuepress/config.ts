@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import baiduCode from './config/baiduCode' // 百度统计hm码
 import htmlModules from './config/htmlModules' // 自定义插入的html块
 
+
 export default defineConfig4CustomTheme<VdoingThemeConfig>({
     theme: 'vdoing', // 使用npm主题包
     // theme: resolve(__dirname, '../../vdoing'), // 使用本地主题包
@@ -20,7 +21,8 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
             description: '轩辕李的技术博客,自我成长，变得更强',
         }
     },
-    base: '/blog/', // 默认'/'。如果你想将你的网站部署到如 https://foo.github.io/bar/，那么 base 应该被设置成 "/bar/",（否则页面将失去样式等文件）
+    // @ts-ignore
+    base: '/', // 默认'/'。如果你想将你的网站部署到如 https://foo.github.io/bar/，那么 base 应该被设置成 "/bar/",（否则页面将失去样式等文件）
 
     // 主题配置
     themeConfig: {
@@ -149,9 +151,9 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
         // 页脚信息
         footer: {
-            createYear: 2022, // 博客创建年份
+            createYear: 2018, // 博客创建年份
             copyrightInfo:
-                'xuanyuanli | <a href="https://github.com/xuanyuanli/blob/master/LICENSE" target="_blank">MIT License</a>', // 博客版权信息，支持a标签或换行标签</br>
+                '<a href="http://beian.miit.gov.cn/" target="_blank">京ICP备2021021832号-2</a> | <a href="https://github.com/xuanyuanli/blob/master/LICENSE" target="_blank">MIT License</a>', // 博客版权信息，支持a标签或换行标签</br>
         },
 
         // 扩展自动生成frontmatter。（当md文件的frontmatter不存在相应的字段时将自动添加。不会覆盖已有的数据。）
