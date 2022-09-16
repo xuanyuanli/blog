@@ -5,14 +5,17 @@
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
     "deploy": "bash deploy.sh",
-    "editFm": "node utils/editFrontmatter.js",
-    "baiduPush": "node utils/baiduPush.js https://xuanyuanli.cn && bash baiduPush.sh",
+    "editFm": "node utils/editFrontmatter.mjs",
+    "baiduPush": "node utils/baiduPush.mjs https://www.xuanyuanli.cn && bash baiduPush.sh",
     "publish": "cd ./vdoing && npm publish && cd .. && yarn updateTheme",
     "updateTheme": "yarn remove vuepress-theme-vdoing && rm -rf node_modules && yarn && yarn add vuepress-theme-vdoing -D"
   },
   "license": "MIT",
   "devDependencies": {
+    "chalk": "^5.0.1",
     "dayjs": "^1.9.7",
+    "ftp": "^0.3.10",
+    "gray-matter": "^4.0.3",
     "inquirer": "^7.1.0",
     "json2yaml": "^1.1.0",
     "vuepress": "1.9.5",
@@ -25,8 +28,6 @@
     "vuepress-plugin-thirdparty-search": "^1.0.2",
     "vuepress-plugin-zooming": "^1.1.7",
     "vuepress-theme-vdoing": "^1.12.5",
-    "yamljs": "^0.3.0",
-    "chalk": "^5.0.1",
-    "ftp": "^0.3.10"
+    "yamljs": "^0.3.0"
   }
 }

@@ -31,4 +31,5 @@ jobs:
           yarn
           yarn build
           node ./utils/ftpSync.mjs "${{secrets.FTP_HOST}}" "${{secrets.FTP_USER}}" "${{secrets.FTP_PWD}}"
+          yarn baiduPush
 

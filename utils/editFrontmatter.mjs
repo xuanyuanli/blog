@@ -1,15 +1,19 @@
 /**
  * 批量添加和修改front matter ，需要配置 ./config.yml 文件。
  */
-const fs = require('fs'); // 文件模块
-const path = require('path'); // 路径模块
-const matter = require('gray-matter'); // front matter解析器 https://github.com/jonschlinkert/gray-matter
-const jsonToYaml = require('json2yaml')
-const yamlToJs = require('yamljs')
-const inquirer = require('inquirer') // 命令行操作
-const chalk = require('chalk') // 命令行打印美化
-const readFileList = require('./modules/readFileList');
-const { type, repairDate} = require('./modules/fn');
+import fs from "fs";
+ // 文件模块
+import path from "path";
+ // 路径模块
+import matter from "gray-matter";
+ // front matter解析器 https://github.com/jonschlinkert/gray-matter
+import jsonToYaml from "json2yaml";
+import yamlToJs from "yamljs";
+import inquirer from "inquirer";
+import chalk from "chalk";
+import readFileList from "./modules/readFileList.mjs";
+import {repairDate, type} from "./modules/fn.mjs";
+
 const log = console.log
 
 const configPath = path.join(__dirname, 'config.yml') // 配置文件的路径
@@ -35,7 +39,7 @@ async function main() {
   if(!edit) { // 退出操作
     return
   }
-  
+
   const config = yamlToJs.load(configPath) // 解析配置文件的数据转为js对象
 
   if (type(config.path) !== 'array') {
@@ -55,7 +59,7 @@ async function main() {
     let dataStr = fs.readFileSync(file.filePath, 'utf8');// 读取每个md文件的内容
     const fileMatterObj = matter(dataStr) // 解析md文件的front Matter。 fileMatterObj => {content:'剔除frontmatter后的文件内容字符串', data:{<frontmatter对象>}, ...}
     let matterData = fileMatterObj.data; // 得到md文件的front Matter
-    
+
     let mark = false
     // 删除操作
     if (config.delete) {
@@ -68,7 +72,7 @@ async function main() {
             mark = true
           }
         })
-        
+
       }
     }
 
@@ -77,7 +81,7 @@ async function main() {
       Object.assign(matterData, config.data) // 将配置数据合并到front Matter对象
       mark = true
     }
-    
+
     // 有操作时才继续
     if (mark) {
       if(matterData.date && type(matterData.date) === 'date') {
