@@ -58,10 +58,9 @@ function main() {
             const filesPath = {files: []};
             getDirAllFilePath(localDirPath, filesPath);
             remoteMkDir(filesPath, '');
-            console.log('准备上传...');
             setTimeout(() => {
                 Promise.all(mkDirPromiseArr).then(() => {
-                    console.log('开始上传...');
+                    console.log('远程目录创建完成，开始执行文件上传...');
                     const tasks = uploadFile();
                     runPromiseArray(tasks).then(() => {
                         client.end();
@@ -87,44 +86,44 @@ function main() {
         })
     }
 
-    //创建远程确实的文件夹
+    //创建远程文件夹
     async function remoteMkDir(obj, _path) {
         for (const key in obj) {
-            if (key === 'files') {
-                for (let i = 0, len = obj[key].length; i < len; i++) {
-                    const promise = new Promise(async resolve => {
-                        let p = '';
-                        if (_path) {
-                            p = _path + '/';
-                        }
-                        const filePathName = p + obj[key][i];
-                        uploadFiles.push({path: filePathName, fileName: obj[key][i]});
-                        const ph = remotePath + filePathName.substring(0, filePathName.lastIndexOf('/') + 1);
-                        let {err: ea, dir} = await cwd(ph);//此处应对err做处理
-                        if (ea) {
-                            client.mkdir(ph, true, (err) => {
-                                if (err) {
-                                    console.log('mkdir' + ph + 'err', err);
-                                    resolve(null);
-                                    return;
-                                }
-                                console.log('mkdir ' + ph + '  success');
-                                resolve(null);
-                            });
-                        } else {
-                            resolve(null);
-                        }
-                    });
-
-                    mkDirPromiseArr.push(promise);
-                }
-            } else {
+            if (key !== 'files') {
                 let p = '';
                 if (_path) {
                     p = _path + '/';
                 }
                 await remoteMkDir(obj[key], p + key);
             }
+        }
+        let files = obj['files'];
+        for (let i = 0, len = files.length; i < len; i++) {
+            const promise = new Promise(async resolve => {
+                let p = '';
+                if (_path) {
+                    p = _path + '/';
+                }
+                const filePathName = p + files[i];
+                uploadFiles.push({path: filePathName, fileName: files[i]});
+                const ph = remotePath + filePathName.substring(0, filePathName.lastIndexOf('/') + 1);
+                let {err: ea, dir} = await cwd(ph);//此处应对err做处理
+                if (ea) {
+                    client.mkdir(ph, true, (err) => {
+                        if (err) {
+                            console.log('mkdir' + ph + 'err', err);
+                            resolve(null);
+                            return;
+                        }
+                        console.log('mkdir ' + ph + '  success');
+                        resolve(null);
+                    });
+                } else {
+                    resolve(null);
+                }
+            });
+
+            mkDirPromiseArr.push(promise);
         }
     }
 
@@ -140,7 +139,7 @@ function main() {
         })
     }
 
-//上传文件
+    //上传文件
     function uploadFile() {
         const tasks = [];
         const resourcesPath = localDirPath;
