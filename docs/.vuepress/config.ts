@@ -180,14 +180,17 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         ],
         //['meta', { name: 'baidu-site-verification', content: '7F55weZDDc' }], // 百度统计的站长验证（你可以去掉）
         ['meta', {name: 'theme-color', content: '#11a8cd'}], // 移动浏览器主题颜色
-        // [
-        //   'script',
-        //   {
-        //     'data-ad-client': 'ca-pub-7828333725993554',
-        //     async: 'async',
-        //     src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-        //   },
-        // ], // 网站关联Google AdSense 与 html格式广告支持（你可以去掉）
+        [
+          'script',
+          {},
+            `var _hmt = _hmt || [];
+            (function() {
+              var hm = document.createElement("script");
+              hm.src = "https://hm.baidu.com/hm.js?31b818a73b8dd8d2f51d66b25da84ead";
+              var s = document.getElementsByTagName("script")[0]; 
+              s.parentNode.insertBefore(hm, s);
+            })();`
+        ],
     ],
 
 
@@ -196,12 +199,12 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
         //'vuepress-plugin-baidu-autopush', // 百度自动推送
 
-        [
-          'vuepress-plugin-baidu-tongji', // 百度统计
-          {
-            hm: '31b818a73b8dd8d2f51d66b25da84ead',
-          },
-        ],
+        // [
+        //   'vuepress-plugin-baidu-tongji', // 百度统计
+        //   {
+        //     hm: '31b818a73b8dd8d2f51d66b25da84ead',
+        //   },
+        // ],
 
         // 全文搜索。 ⚠️注意：此插件会在打开网站时多加载部分js文件用于搜索，导致初次访问网站变慢。如在意初次访问速度的话可以不使用此插件！（推荐：vuepress-plugin-thirdparty-search）
         // 'fulltext-search',
