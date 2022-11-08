@@ -17,8 +17,7 @@ https://github.com/itwanger/toBeBetterJavaer
 
 
 Java：
-    ThreadLocal
-    无锁：CAS、Atomic系列
+    JDK并发容器
     Future & CompletableFuture
     StampedLock
     LongAdder & LongAccumulator
