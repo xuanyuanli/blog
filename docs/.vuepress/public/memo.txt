@@ -17,9 +17,8 @@ https://github.com/itwanger/toBeBetterJavaer
 
 
 Java：
-    Future & CompletableFuture
+    Future & CompletableFuture & CompletionService
     Akka
-    CompletionService
     响应式编程
     字节码生成技术介绍
 
