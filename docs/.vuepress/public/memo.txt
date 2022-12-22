@@ -17,10 +17,10 @@ https://github.com/itwanger/toBeBetterJavaer
 
 
 Java：
-    Future & CompletableFuture & CompletionService
     Akka
     响应式编程
     字节码生成技术介绍
+    Spring 生命周期和相关节点的注入
 
 CSS：
     table
