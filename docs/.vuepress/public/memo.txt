@@ -17,13 +17,12 @@ https://github.com/itwanger/toBeBetterJavaer
 
 
 Java：
-    Akka
-    响应式编程
-    字节码生成技术介绍
-    Spring 生命周期和相关节点的注入
+    并发之响应式编程。Flux.subscribe
+    JVM系列--内存模型、回收算法、GC日志、字节码介绍
+    Spring系列：容器&Bean生命周期，属性注入
 
 CSS：
-    table
     flex
 
-Grafana、loki
+Linux：
+    Grafana、loki
