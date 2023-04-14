@@ -17,7 +17,6 @@ https://github.com/itwanger/toBeBetterJavaer
 
 
 Java：
-    Java 编译器动态能力：lombok、manifold、GraalVm
     JVM系列--内存模型、回收算法、GC日志、字节码介绍
     Spring系列：容器&Bean生命周期，手写Spring Starter
 
