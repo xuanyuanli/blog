@@ -34,29 +34,6 @@ https://github.com/itwanger/toBeBetterJavaer
 
 总之，架构师是软件开发中的核心角色，其工作涉及技术选型、架构设计、系统优化、代码审查、团队管理、技术支持和项目管理等方面，以确保软件系统的可靠性、可扩展性、可维护性和高性能。
 
-代码质量之规范篇：
-    在Java中，null确实可能导致许多问题，例如NullPointerException。为了减少与null相关的问题，你可以遵循以下规范：
-
-    避免返回null：
-    尽量不要在方法中返回null。相反，可以返回空集合、空数组或特殊的空对象（如Optional.empty()）。这有助于消除代码中的null检查。
-
-    使用Optional类：
-    Java 8引入了Optional类，它可以帮助你更安全地处理可能为空的值。当你的方法可能返回空值时，使用Optional类型而不是返回null。这样，调用者可以更清楚地了解方法的行为，并且可以使用Optional的方法（如ifPresent、orElse等）来处理空值。
-
-    明确标注@Nullable和@NotNull：
-    在方法、参数和字段上使用@Nullable和@NotNull注解，以明确表示值是否可以为null。这有助于提高代码的可读性，同时可以让一些IDE和静态代码分析工具检测潜在的null问题。
-
-    尽量避免null参数：
-    尽量避免在方法中接受null参数。在方法签名中使用@NotNull注解，并在方法体中检查参数的有效性。如果参数为null，可以抛出IllegalArgumentException或其他合适的异常。
-
-    使用空对象模式（Null Object Pattern）：
-    在某些情况下，可以使用空对象模式来避免null。空对象模式是一种设计模式，它为一个类定义一个特殊的空实例，这个实例不执行任何操作，但避免了null引用。这样，你可以使用空对象而不是null，从而消除NullPointerException的风险。
-
-    在访问对象之前检查null：
-    在访问对象的属性或方法之前，确保对象不是null。可以使用条件语句（如if）来检查对象是否为null，并在访问对象之前处理null情况。避免在表达式中链式访问多个属性，因为这可能导致NullPointerException。
-
-    使用工具和IDE进行静态代码分析：
-    利用现代IDE（如IntelliJ IDEA、Eclipse等）和静态代码分析工具（如FindBugs、PMD等）来检测潜在的null问题。这些工具可以帮助你在编码过程中发现并修复null相关的问题。
 
     阿里巴巴、得物、谷歌代码规范
     Effective Java
