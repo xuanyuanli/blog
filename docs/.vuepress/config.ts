@@ -1,12 +1,10 @@
 /**
  * 提示：如您想使用JS版本的配置文件可参考：https://github.com/xugaoyi/vuepress-theme-vdoing/tree/a2f03e993dd2f2a3afdc57cf72adfc6f1b6b0c32/docs/.vuepress
  */
-import {resolve} from 'path'
 import {defineConfig4CustomTheme, UserPlugins} from 'vuepress/config'
 import {VdoingThemeConfig} from 'vuepress-theme-vdoing/types'
 // @ts-ignore
 import dayjs from 'dayjs'
-import baiduCode from './config/baiduCode' // 百度统计hm码
 import htmlModules from './config/htmlModules' // 自定义插入的html块
 
 
@@ -37,8 +35,6 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                     {text: 'Java', link: '/server/java/'},
                     {text: 'Spring', link: '/server/spring/'},
                     {text: '工具', link: '/server/util/'},
-                    {text: '分布式', link: '/server/distribution/'},
-                    {text: '心得', link: '/server/think/'},
                 ],
             },
             {
@@ -50,18 +46,15 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 ],
             },
             {
-                text: '运维',
-                link: '/operation/',
+                text: '架构',
+                link: '/framework/',
                 items: [
-                    {text: 'Linux & C', link: '/operation/linuxc/'},
+                    {text: '分布式', link: '/framework/distribution/'},
+                    {text: '代码质量管理', link: '/framework/code-quality/'},
+                    {text: '心得', link: '/framework/think/'},
                 ],
             },
             {text: '关于', link: '/about/'},
-            {
-                text: '收藏',
-                link: '/pages/beb6c0bd8a66cea6/',
-            },
-            {text: '英语角', link: '/english-corner/'},
             {
                 text: '索引',
                 link: '/archives/',
