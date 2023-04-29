@@ -36,7 +36,7 @@ https://github.com/itwanger/toBeBetterJavaer
 
 
 
-正则、maven、mysql、nginx、rabbitmq
+maven、mysql、nginx、rabbitmq
 
 代码质量之规范（Java、Mysql、安全、Redis、RESTful、Swagger、单元测试、架构）、工具、审查
 

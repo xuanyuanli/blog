@@ -51,6 +51,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 items: [
                     {text: '分布式', link: '/framework/distribution/'},
                     {text: '代码质量管理', link: '/framework/code-quality/'},
+                    {text: '中间件', link: '/framework/middlewire/'},
                     {text: '心得', link: '/framework/think/'},
                 ],
             },
