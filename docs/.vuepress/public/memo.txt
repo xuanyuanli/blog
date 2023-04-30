@@ -35,8 +35,7 @@ https://github.com/itwanger/toBeBetterJavaer
 总之，架构师是软件开发中的核心角色，其工作涉及技术选型、架构设计、系统优化、代码审查、团队管理、技术支持和项目管理等方面，以确保软件系统的可靠性、可扩展性、可维护性和高性能。
 
 
-
-mysql、nginx、rabbitmq
+、nginx、rabbitmq
 
 代码质量之规范（Java、Mysql、安全、Redis、RESTful、Swagger、单元测试、架构）、工具、审查
 
@@ -52,9 +51,11 @@ mysql、nginx、rabbitmq
 法规与合规性：确保所选技术符合相关法规和行业标准，避免因违规而引发的法律风险。
 技术的可持续发展：关注所选技术的未来发展趋势，以便预判技术的生命周期和持续性。选择具有长期发展潜力的技术，有助于确保项目的持续稳定运行
 
-中间件：Redis（基础命令、Spring Boot、Lettuce客户端）、Rabbitmq、Elasticsearch（Easy-es）、Kafka、RocketMq
-Mysql、MongoDB
-安全：
+
+
+Rabbitmq、Elasticsearch（Easy-es）、Kafka、RocketMq
+MongoDB、nginx、计算机网络（http协议）、Freemarker
+
 
 Java：
     Spring系列：容器&Bean生命周期，手写Spring Starter
