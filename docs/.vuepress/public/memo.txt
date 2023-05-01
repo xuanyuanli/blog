@@ -53,8 +53,8 @@ https://github.com/itwanger/toBeBetterJavaer
 
 
 
-Rabbitmq、Kafka、RocketMq
-MongoDB、nginx、计算机网络（http协议）、Freemarker
+Kafka、RocketMq
+MongoDB、nginx、计算机网络（http协议）
 
 
 Java：
