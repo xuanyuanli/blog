@@ -1,1 +1,14 @@
-请帮我完成这篇文章。要求：面向Java开发者、简单易懂一些、对于语法和进阶部分最好有代码示例
+抽象工厂模式（Abstract Factory Pattern）是一种创建型设计模式，它允许客户端通过接口或抽象类来创建一组相关或相互依赖的对象，而不需要指定它们的具体类。
+
+下面是一个抽象工厂模式的 UML 图：
+
+![Abstract Factory Pattern UML Diagram](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Abstract_factory_UML.svg/600px-Abstract_factory_UML.svg.png)
+
+在上面的 UML 图中，`AbstractFactory` 是抽象工厂类，它定义了一组创建产品的方法。`ConcreteFactory1` 和 `ConcreteFactory2` 是具体工厂类，它们实现了 `AbstractFactory` 定义的创建产品的方法。
+
+`AbstractProductA` 和 `AbstractProductB` 是抽象产品类，它们定义了产品的接口。`ProductA1`、`ProductA2`、`ProductB1` 和 `ProductB2` 是具体产品类，它们实现了 `AbstractProductA` 和 `AbstractProductB` 定义的产品接口。
+
+客户端通过抽象工厂类 `AbstractFactory` 来创建一组产品，而不需要指定它们的具体类。具体工厂类 `ConcreteFactory1` 和 `ConcreteFactory2` 实现了抽象工厂类 `AbstractFactory`，用于创建一组相关的产品。
+
+抽象工厂模式将客户端代码与产品的具体实现分离开来，从而实现了代码的解耦和复用。客户端只需要关注抽象工厂和抽象产品类，而具体工厂和具体产品的实现可以由工厂类自行选择和创建。
+
