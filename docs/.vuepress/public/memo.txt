@@ -56,8 +56,6 @@ Java性能分析
     IntellIJ Profiler
     JFR
 
-深入理解JIT编译器
-
 
 Kafka、RocketMq
 MongoDB、nginx、计算机网络（http协议）
