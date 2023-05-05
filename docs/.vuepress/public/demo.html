@@ -1,5 +1,109 @@
+《JVMTI介绍》大纲：
+
+## 一、JVMTI简介
+1.1 JVMTI的定义
+1.2 JVMTI的作用
+1.3 JVMTI与其他JVM工具接口的关系（如JDI, JMX）
+
+## 二、JVMTI功能
+2.1 线程管理
+2.2 堆内存分析
+2.3 类加载器跟踪
+2.4 字节码插装
+2.5 事件通知
+2.6 性能监控
+2.7 异常跟踪
+2.8 垃圾回收管理
+
+## 三、JVMTI编程接口
+3.1 JNI与JVMTI
+3.2 编写JVMTI代理（Agent）
+3.3 JVMTI事件回调
+3.4 数据结构与函数签名
+3.5 错误处理
+
+## 四、使用JVMTI实现自定义工具
+4.1 分析工具示例
+4.2 调试工具示例
+4.3 监控工具示例
+
+## 五、现有的基于JVMTI的工具
+5.1 YourKit
+5.2 JProfiler
+5.3 VisualVM
+
+## 六、JVMTI的局限性
+6.1 性能开销
+6.2 跨JVM实现兼容性问题
+6.3 平台依赖性
+
+## 七、结论
+7.1 JVMTI在Java虚拟机工具开发中的关键作用
+7.2 理解JVMTI接口原理与应用场景的重要性
+7.3 JVMTI未来的发展趋势和挑战
 
 
+---
+
+
+《从Hotspot到GraalVM》大纲（修订版）：
+
+## 一、HotSpot JVM简介
+1.1 HotSpot JVM的历史
+1.2 HotSpot JVM的特点
+1.3 HotSpot JVM与其他JVM实现的比较
+
+## 二、GraalVM简介
+2.1 GraalVM的历史
+2.2 GraalVM的特点
+2.3 GraalVM与其他JVM实现的比较
+
+## 三、Graal编译器
+3.1 Graal编译器的特点
+3.2 Graal编译器与HotSpot JVM的C1和C2编译器的比较
+3.3 使用Graal编译器优化Java应用性能
+
+## 四、Substrate VM
+4.1 Substrate VM简介
+4.2 Substrate VM的特点和优势
+4.3 Substrate VM与HotSpot JVM的比较
+
+## 五、提前编译AOT
+5.1 AOT编译的概念与优势
+5.2 AOT编译与JIT编译的权衡
+5.3 AOT编译的局限性
+
+## 六、原生映像（Native Image）
+6.1 原生映像的概念与优势
+6.2 使用GraalVM生成原生映像的步骤
+6.3 原生映像的局限性（Java agents，JMX，JVMTI等）
+
+## 七、跨语言互操作性
+7.1 Truffle框架
+7.2 GraalVM支持的其他语言
+7.3 跨语言互操作性示例
+
+## 八、Spring Native与Cloud Native框架
+8.1 Spring Native简介
+8.2 Cloud Native框架（Quarkus、Micronaut、Helidon）
+8.3 Cloud Native框架与GraalVM的关系
+
+## 九、GraalVM在实践中的应用
+9.1 GraalVM在Web服务中的应用
+9.2 GraalVM在数据科学和机器学习中的应用
+9.3 GraalVM在企业级应用中的应用
+
+## 十、GraalVM的发展趋势和挑战
+10.1 GraalVM的生态系统
+10.2 GraalVM的性能优化
+10.3 GraalVM的未来发展方向
+
+## 十一、结论
+11.1 从HotSpot到GraalVM的演进
+11.2 GraalVM的优势与挑战
+11.3 GraalVM在Java生态系统中的影响和未来展望
+
+大纲不够全面，请把以下内容添加到大纲上：Graal、Substrate VM、提前编译AOT（JIT缺点-启动慢、预热慢；AOT缺点-峰值性能、构建时长、Native Image中Java agents，JMX，JVMTI等受限、动态特性的支持（反射、动态代理、动态类加载、字节码Instrument））、Spring Native、Cloud Native框架（Quarkus、Micronaut、Helidon）
 
 Java 编译器在编译 Java 代码成为 Java 字节码时，会进行一些编译时优化，以改善生成的字节码的性能和质量。这些优化技术包括但不限于以下几种：
 1. 抽象语法树（AST）优化：Java 编译器会对 Java 代码进行语法分析，并将其转换成抽象语法树（AST）。然后，Java 编译器会对 AST 进行优化，例如将相邻的语句合并为一个语句、移除死代码等。

@@ -51,14 +51,66 @@ https://github.com/itwanger/toBeBetterJavaer
 法规与合规性：确保所选技术符合相关法规和行业标准，避免因违规而引发的法律风险。
 技术的可持续发展：关注所选技术的未来发展趋势，以便预判技术的生命周期和持续性。选择具有长期发展潜力的技术，有助于确保项目的持续稳定运行
 
+Java EE（Java Platform, Enterprise Edition）是一个用于构建企业级应用的开发平台。Java EE提供了一组用于构建可扩展、安全、可维护的企业级应用程序的API和服务。Java EE包括多个组件和技术，如下：
+
+1. **Servlet**：Servlet用于处理客户端请求并生成动态响应。Servlet是Java Web应用程序的基础技术。
+
+2. **JavaServer Pages (JSP)**：JSP是一种用于生成动态Web页面的技术。它允许开发人员将HTML代码与Java代码相结合，从而创建动态内容。
+
+3. **JavaServer Faces (JSF)**：JSF是一个Java Web应用程序框架，它提供了一组用于构建服务器端用户界面组件的API。
+
+4. **Java Persistence API (JPA)**：JPA是一个用于对象关系映射（ORM）的API，它使得Java开发人员可以将Java对象与关系数据库表之间的映射变得简单。
+
+5. **Java Message Service (JMS)**：JMS是一个用于构建异步、基于消息的应用程序的API。它提供了一种在分布式应用程序中进行通信的标准方法。
+
+6. **Java API for RESTful Web Services (JAX-RS)**：JAX-RS是一个用于构建RESTful Web服务的API。它提供了一种简单的方法来创建基于HTTP的Web服务。
+
+7. **Java API for XML Web Services (JAX-WS)**：JAX-WS是一个用于构建基于SOAP的Web服务的API。它支持创建、发布和调用Web服务。
+
+8. **Enterprise JavaBeans (EJB)**：EJB是一种服务器端组件模型，用于构建可扩展、事务性、多用户的Java应用程序。EJB提供了一组API和服务，以简化企业级应用程序的开发。
+
+9. **Contexts and Dependency Injection (CDI)**：CDI是一种用于依赖注入和上下文管理的API。它使得Java EE组件之间的协作变得更加简单，提高了代码的模块化程度。
+
+10. **Bean Validation**：Bean Validation是一种用于对JavaBean进行约束和验证的API。它允许开发人员使用注解来定义约束条件，然后自动验证JavaBean对象是否满足这些条件。
+
+11. **Java Transaction API (JTA)**：JTA提供了一种在分布式环境中进行事务处理的API。它支持分布式事务处理、资源管理和协调。
+
+12. **Java Mail API**：Java Mail API用于构建发送和接收电子邮件的应用程序。它提供了一种处理电子邮件协议（如SMTP、POP3和IMAP）的标准方法。
+
+1. **Java Authentication and Authorization Service (JAAS)**：JAAS提供了一种用于身份验证和授权的标准方法。它支持多种身份验证和授权机制，使得Java EE应用程序可以更加安全。
+
+2. **Java API for WebSocket (JSR 356)**：这个API允许在Java应用程序中轻松地构建WebSocket客户端和服务器端通信，WebSocket协议用于实现全双工通信。
+
+3. **Java API for JSON Processing (JSR 353)**：这个API允许Java开发人员在Java应用程序中处理JSON数据格式。它提供了一个简单的方法来解析、生成、转换和查询JSON数据。
+
+4. **Java API for JSON Binding (JSR 367)**：这个API提供了一个框架，可以将Java对象与JSON数据进行双向绑定。这使得Java开发人员能够轻松地将Java对象与JSON数据进行序列化和反序列化。
+
+5. **Java Connector Architecture (JCA)**：JCA是一个用于连接Java EE应用程序与企业信息系统（如ERP和CRM系统）的API。它提供了一个标准化的方法来实现资源适配器，从而简化了企业应用集成。
+
+6. **Batch Applications for the Java Platform (JSR 352)**：这个API提供了一个用于构建批处理应用程序的框架。它支持创建、执行、管理和监控批处理作业。
+
+7. **Java EE Concurrency Utilities (JSR 236)**：这个API提供了一组用于并发编程的实用工具。它支持多线程、任务执行和管理、异步处理等功能。
+
+8. **Java EE Security API (JSR 375)**：这个API提供了一套用于Java EE应用程序安全的工具。它支持身份存储、认证机制、角色映射等功能。
+
+9. **JavaServer Pages Standard Tag Library (JSTL)**：JSTL是一组JSP标签库，它们提供了一组用于处理常见Web应用程序任务的功能，如条件处理、循环、XML处理等。
+
+https://cloud.tencent.com/developer/article/1847110
+2017年Java EE转交给了Eclipse基金，改名为Jakarta EE。没有增加什么内容
+
+
+Jakarta EE只是一个标准，他也有很多竞争对手，比如Spring。
+需要了解Servlet、老项目维护之JSP（EL、JSTL）--替代者是Spring MVC+Thymeleft
+
+面向对象、设计模式、DDD
+
+Spring、Spring Boot、Spring Cloud、Dubbo
+
+JMX、JDI与JDWP
 
 
 Kafka、RocketMq
 MongoDB、nginx、计算机网络（http协议）
-设计模式
-
-Java：
-    Spring系列：容器&Bean生命周期，手写Spring Starter
 
 CSS：
     flex
