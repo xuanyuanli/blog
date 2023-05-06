@@ -1,46 +1,54 @@
-《JVMTI介绍》大纲：
+《Java管理与监控-JMX》大纲：
 
-## 一、JVMTI简介
-1.1 JVMTI的定义
-1.2 JVMTI的作用
-1.3 JVMTI与其他JVM工具接口的关系（如JDI, JMX）
+## 一、引言
+### 1. JMX简介
+### 2. JMX的重要性
+### 3. JMX与Java生态系统的关系
 
-## 二、JVMTI功能
-2.1 线程管理
-2.2 堆内存分析
-2.3 类加载器跟踪
-2.4 字节码插装
-2.5 事件通知
-2.6 性能监控
-2.7 异常跟踪
-2.8 垃圾回收管理
+## 二、JMX基础
+### 1. MBean简介
+#### 1.1. Standard MBean
+#### 1.2. Dynamic MBean
+#### 1.3. Open MBean
+#### 1.4. Model MBean
+### 2. JMX架构
+#### 2.1. MBean Server
+#### 2.2. JMX Agent
+#### 2.3. JMX Connector
+#### 2.4. JMX Protocol Adapters
 
-## 三、JVMTI编程接口
-3.1 JNI与JVMTI
-3.2 编写JVMTI代理（Agent）
-3.3 JVMTI事件回调
-3.4 数据结构与函数签名
-3.5 错误处理
+## 三、JMX实战
+### 1. 创建MBean
+#### 1.1. 定义MBean接口
+#### 1.2. 实现MBean类
+### 2. 注册MBean
+#### 2.1. 在MBean Server中注册MBean
+### 3. MBean操作与属性
+#### 3.1. 属性
+#### 3.2. 操作
+#### 3.3. 通知
 
-## 四、使用JVMTI实现自定义工具
-4.1 分析工具示例
-4.2 调试工具示例
-4.3 监控工具示例
+## 四、集成与监控
+### 1. JConsole介绍
+#### 1.1. 使用JConsole连接到MBean Server
+#### 1.2. JConsole的功能与使用
+### 2. VisualVM介绍
+#### 2.1. VisualVM的安装与配置
+#### 2.2. 使用VisualVM监控Java应用程序
+### 3. 第三方JMX工具
+#### 3.1. Java Mission Control (JMC)
+#### 3.2. Jolokia
+#### 3.3. Hawtio
 
-## 五、现有的基于JVMTI的工具
-5.1 YourKit
-5.2 JProfiler
-5.3 VisualVM
+## 五、JMX最佳实践
+### 1. MBean设计原则
+### 2. 安全性考虑
+### 3. 性能优化
 
-## 六、JVMTI的局限性
-6.1 性能开销
-6.2 跨JVM实现兼容性问题
-6.3 平台依赖性
+## 六、结论
+### 1. JMX在企业级应用中的应用场景
+### 2. JMX的未来发展
 
-## 七、结论
-7.1 JVMTI在Java虚拟机工具开发中的关键作用
-7.2 理解JVMTI接口原理与应用场景的重要性
-7.3 JVMTI未来的发展趋势和挑战
 
 
 ---
