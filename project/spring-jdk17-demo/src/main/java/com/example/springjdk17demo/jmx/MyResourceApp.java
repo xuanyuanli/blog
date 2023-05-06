@@ -22,7 +22,5 @@ public class MyResourceApp {
         // 保持应用程序运行，以便客户端可以连接
         System.out.println("MyResource MBean registered. Press Enter to exit...");
         System.in.read();
-
-        ManagementFactory.getPlatformMXBean()
     }
 }
