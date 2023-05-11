@@ -1,5 +1,7 @@
 package com.example.springjdk17demo.random;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGenerator.JumpableGenerator;
@@ -101,6 +103,55 @@ public class RandomTest {
         // 输出前五个随机整数
         for (int i = 0; i < 5; i++) {
             System.out.println(random.nextInt());
+        }
+    }
+
+    @Test
+    void profiler() {
+        RandomGenerator generator = RandomGenerator.of("L64X128MixRandom");
+        long start = System.nanoTime();
+        for (int i = 0; i < 1000000; i++) {
+            generator.nextLong();
+        }
+        long end = System.nanoTime();
+        // 输出生成1000000个随机数所花费的时间
+        System.out.println("Time taken: " + (end - start) / 1000000.0 + " ms");
+    }
+
+    @Test
+    void equidistributionRandom() {
+        Random random = new Random();
+        Map<Integer, Integer> frequencyMap = new HashMap<>();
+        int totalNumbers = 100000;
+
+        for (int i = 0; i < totalNumbers; i++) {
+            int randomNumber = random.nextInt(10);
+            frequencyMap.put(randomNumber, frequencyMap.getOrDefault(randomNumber, 0) + 1);
+        }
+
+        // 输出每个数的出现频率
+        for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+            double percentage = 100.0 * entry.getValue() / totalNumbers;
+            System.out.printf("Number %d: %.2f%%\n", entry.getKey(), percentage);
+        }
+    }
+
+    @Test
+    void equidistributionL128X1024MixRandom() {
+        RandomGeneratorFactory<RandomGenerator> factory = RandomGeneratorFactory.of("L128X1024MixRandom");
+        RandomGenerator random = factory.create();
+        Map<Integer, Integer> frequencyMap = new HashMap<>();
+        int totalNumbers = 100000;
+
+        for (int i = 0; i < totalNumbers; i++) {
+            int randomNumber = random.nextInt(10);
+            frequencyMap.put(randomNumber, frequencyMap.getOrDefault(randomNumber, 0) + 1);
+        }
+
+        // 输出每个数的出现频率
+        for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+            double percentage = 100.0 * entry.getValue() / totalNumbers;
+            System.out.printf("Number %d: %.2f%%\n", entry.getKey(), percentage);
         }
     }
 }
