@@ -106,7 +106,7 @@ Jakarta EE只是一个标准，他也有很多竞争对手，比如Spring。
 
 Spring、Spring Boot、Spring Cloud、Dubbo
 
-JDBC、Swing、JNI、分布式事务、xml
+JDBC、Servlet、Swing、JNI、分布式事务、xml
 
 Kafka、RocketMq
 MongoDB、nginx、计算机网络（http协议）
