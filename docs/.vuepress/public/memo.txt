@@ -52,7 +52,7 @@ https://github.com/itwanger/toBeBetterJavaer
 
 Spring、Spring Boot、Spring Cloud、Dubbo
 
-Swing、JNI、分布式事务、json
+Swing、分布式事务、json
 
 Kafka、MangoDB
 
@@ -63,3 +63,6 @@ CSS：
 
 Linux：
     Grafana、loki
+
+
+接入meilisearch：https://wiki.eryajf.net/pages/dfc792/#%E6%8E%A5%E5%85%A5%E4%BA%91%E4%BA%A7%E5%93%81
