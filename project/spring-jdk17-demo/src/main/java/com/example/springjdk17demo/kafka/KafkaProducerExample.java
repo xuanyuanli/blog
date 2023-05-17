@@ -4,6 +4,11 @@ import java.util.Properties;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.errors.AuthorizationException;
+import org.apache.kafka.common.errors.OutOfOrderSequenceException;
+import org.apache.kafka.common.errors.ProducerFencedException;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 /**
  * 卡夫卡生产商例子
@@ -14,7 +19,35 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 public class KafkaProducerExample {
 
     public static void main(String[] args) {
-        sync();
+        // 创建Kafka生产者
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("transactional.id", "my-transactional-id");
+        Producer<String, String> producer = new KafkaProducer<>(props, new StringSerializer(), new StringSerializer());
+
+// 初始化事务
+        producer.initTransactions();
+
+        try {
+            // 开启事务
+            producer.beginTransaction();
+
+            // 发送消息
+            producer.send(new ProducerRecord<>("my-topic", "key", "value"));
+
+            // 执行其他操作（如数据库更新等）
+
+            // 提交事务
+            producer.commitTransaction();
+        } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {
+            // 处理异常情况
+            producer.close();
+        } catch (KafkaException e) {
+            // 中止事务
+            producer.abortTransaction();
+            producer.close();
+        }
+
     }
 
     private static void sync() {

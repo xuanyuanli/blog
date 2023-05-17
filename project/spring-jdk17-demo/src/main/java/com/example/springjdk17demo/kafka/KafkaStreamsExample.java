@@ -1,6 +1,8 @@
 package com.example.springjdk17demo.kafka;
 
+import java.util.Arrays;
 import java.util.Properties;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.*;
 
@@ -16,11 +18,17 @@ public class KafkaStreamsExample {
 
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, String> input = builder.stream("input-topic");
-        KStream<String, String> transformed = input.mapValues(value -> value.toUpperCase());
-        transformed.to("output-topic");
+
+        KTable<String, Long> wordCountTable = input
+                .flatMapValues(textLine -> Arrays.asList(textLine.toLowerCase().split("\\W+")))
+                .groupBy((key, word) -> word)
+                .count(Named.as("WordCountStore"));
+
+        wordCountTable.toStream().to("output-topic",Produced.with(Serdes.String(), Serdes.Long()));
 
         try (KafkaStreams streams = new KafkaStreams(builder.build(), props)) {
             streams.start();
         }
     }
+
 }
