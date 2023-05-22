@@ -54,8 +54,6 @@ Spring、Spring Boot、Spring Cloud、Dubbo
 
 Swing、分布式事务、json
 
-Kafka、MangoDB
-
 nginx、计算机网络（http协议）
 
 CSS：
