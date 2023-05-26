@@ -175,8 +175,8 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         //['meta', { name: 'baidu-site-verification', content: '7F55weZDDc' }], // 百度统计的站长验证（你可以去掉）
         ['meta', {name: 'theme-color', content: '#11a8cd'}], // 移动浏览器主题颜色
         [
-          'script',
-          {},
+            'script',
+            {},
             `var _hmt = _hmt || [];
             (function() {
               var hm = document.createElement("script");
@@ -201,7 +201,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         // ],
 
         // 全文搜索。 ⚠️注意：此插件会在打开网站时多加载部分js文件用于搜索，导致初次访问网站变慢。如在意初次访问速度的话可以不使用此插件！（推荐：vuepress-plugin-thirdparty-search）
-        'fulltext-search',
+        // 'fulltext-search',
 
         // 可以添加第三方搜索链接的搜索框（继承原官方搜索框的配置参数）
         [
@@ -209,13 +209,13 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
             {
                 thirdparty: [
                     {
-                        title: '在Google中搜索',
-                        frontUrl: 'https://www.google.com/search?q=', // 搜索链接的前面部分
+                        title: '在Google中搜索本站的',
+                        frontUrl: 'https://www.google.com/search?q=site%3Axuanyuanli.cn%20', // 搜索链接的前面部分
                         behindUrl: '', // 搜索链接的后面部分，可选，默认 ''
                     },
                     {
-                        title: '在Bing中搜索',
-                        frontUrl: 'https://cn.bing.com/search?q=',
+                        title: '在Bing中搜索本站的',
+                        frontUrl: 'https://cn.bing.com/search?q=site%3Axuanyuanli.cn%20',
                     },
                     {
                         title: '通过百度搜索本站的',
@@ -234,11 +234,23 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 showInMobile: false, // whether to display on the mobile side, default: false.
             },
         ],
-
         [
-            'demo-container', // demo演示模块
-            {},
+            'demo-block', // demo演示模块 https://github.com/xiguaxigua/vuepress-plugin-demo-block
+            {
+                settings: {
+                    // jsLib: ['http://xxx'], // 在线示例(jsfiddle, codepen)中的js依赖
+                    // cssLib: ['http://xxx'], // 在线示例中的css依赖
+                    // vue: 'https://fastly.jsdelivr.net/npm/vue/dist/vue.min.js', // 在线示例中的vue依赖
+                    jsfiddle: false, // 是否显示 jsfiddle 链接
+                    codepen: true, // 是否显示 codepen 链接
+                    horizontal: false, // 是否展示为横向样式
+                },
+            },
         ],
+        // [
+        //     'demo-container', // demo演示模块
+        //     {},
+        // ],
         [
             'vuepress-plugin-zooming', // 放大图片
             {
@@ -290,5 +302,10 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     extraWatchFiles: [
         '.vuepress/config.ts',
         '.vuepress/config/htmlModules.ts',
-    ]
+    ],
+    build: {
+        babel: {
+            compact: true,
+        },
+    },
 })
