@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import htmlModules from './config/htmlModules' // 自定义插入的html块
 
 
+// @ts-ignore
 export default defineConfig4CustomTheme<VdoingThemeConfig>({
     theme: 'vdoing', // 使用npm主题包
     // theme: resolve(__dirname, '../../vdoing'), // 使用本地主题包
@@ -169,10 +170,10 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
             'meta',
             {
                 name: 'keywords',
-                content: '个人技术博客,前端,后端,运维,技术文档,学习,面试,JavaScript,js,java,vue,python,css3,css,html5,Node,markdown,Kubernetes,Docker',
+                content: '个人技术博客,前端,后端,运维,技术文档,JavaScript,js,java',
             },
         ],
-        //['meta', { name: 'baidu-site-verification', content: '7F55weZDDc' }], // 百度统计的站长验证（你可以去掉）
+        ['meta', {name: 'baidu-site-verification', content: '7F55weZDDc'}],
         ['meta', {name: 'theme-color', content: '#11a8cd'}], // 移动浏览器主题颜色
         [
             'script',
@@ -291,11 +292,27 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 },
             },
         ],
+        [
+            "sitemap",
+            {
+                // 配置选项
+                "hostname": "https://www.xuanyuanli.cn"
+            },
+        ],
+        [
+            'autometa',
+            {
+                canonical_base: 'https://www.xuanyuanli.cn',
+            }
+        ],
+        require('./vuepress-plugin-jsonld')
     ],
 
     markdown: {
         lineNumbers: false,
         extractHeaders: ['h2', 'h3', 'h4', 'h5', 'h6'], // 提取标题到侧边栏的级别，默认['h2', 'h3']
+        // @ts-ignore
+        externalLinks: {target: '_blank', rel: 'noopener noreferrer nofollow'}
     },
 
     // 监听文件变化并重新构建
@@ -303,9 +320,4 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         '.vuepress/config.ts',
         '.vuepress/config/htmlModules.ts',
     ],
-    build: {
-        babel: {
-            compact: true,
-        },
-    },
 })
