@@ -68,7 +68,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
             },
         ],
         sidebarDepth: 2, // 侧边栏显示深度，默认1，最大2（显示到h3标题）
-        logo: '/img/logo.png', // 导航栏logo
+        logo: '/img/logo-35.png', // 导航栏logo
         repo: 'xuanyuanli/blog', // 导航栏右侧生成Github链接
         searchMaxSuggestions: 10, // 搜索结果显示最大数
         lastUpdated: '上次更新', // 开启更新时间，并配置前缀文字   string | boolean (取值为git提交时间)
@@ -122,7 +122,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
         // 博主信息 (显示在首页侧边栏)
         blogger: {
-            avatar: 'https://cdn.staticaly.com/gh/xuanyuanli/Img@master/picx/image.5k3g1yhljok0.jpg',
+            avatar: 'https://cdn.staticaly.com/gh/xuanyuanli/Img@master/picx/245.1f3bo5pwn4u8.jpg',
             name: '轩辕李',
             slogan: '勇猛精进，星辰大海',
         },
