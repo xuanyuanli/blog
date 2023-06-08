@@ -113,7 +113,6 @@
 									</env>
 									<bindings>
 										<binding>${basedir}/bindings/ca-certificates:/platform/bindings/ca-certificates</binding>
-										<binding>${basedir}/layers:/layers</binding>
 									</bindings>
 								</image>
 							</configuration>
