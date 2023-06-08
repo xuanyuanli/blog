@@ -110,9 +110,10 @@
 									<env>
 										<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
 										<BP_JVM_VERSION>17</BP_JVM_VERSION>
+										<SERVICE_BINDING_ROOT>/platform/bindings</SERVICE_BINDING_ROOT>
 									</env>
 									<bindings>
-										<binding>${basedir}/bindings/ca-certificates:/platform/bindings/ca-certificates</binding>
+										<binding>${basedir}/bindings:/platform/bindings</binding>
 									</bindings>
 								</image>
 							</configuration>
