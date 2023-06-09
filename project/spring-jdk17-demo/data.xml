@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bookstore xmlns="http://www.example.com/bookstore"
+        xmlns:author="http://www.example.com/author"
+        xmlns:publisher="http://www.example.com/publisher">
+    <book category="fiction">
+        <title>Harry Potter and the Philosopher's Stone</title>
+        <author:author>
+            <author:name>J.K. Rowling</author:name>
+            <author:birthplace>England</author:birthplace>
+        </author:author>
+        <publisher:publisher>
+            <publisher:name>Bloomsbury</publisher:name>
+            <publisher:location>London</publisher:location>
+        </publisher:publisher>
+        <price currency="USD">15.99</price>
+    </book>
+    <book category="non-fiction">
+        <title>The Lean Startup</title>
+        <author:author>
+            <author:name>Eric Ries</author:name>
+            <author:birthplace>United States</author:birthplace>
+        </author:author>
+        <publisher:publisher>
+            <publisher:name>Random House</publisher:name>
+            <publisher:location>New York</publisher:location>
+        </publisher:publisher>
+        <price currency="USD">19.99</price>
+    </book>
+</bookstore>
