@@ -66,5 +66,3 @@ Linux：
 接入meilisearch：https://wiki.eryajf.net/pages/dfc792/#%E6%8E%A5%E5%85%A5%E4%BA%91%E4%BA%A7%E5%93%81
 将博客分享到微信 https://blog.xxwhite.com/2023/01050.%E5%B0%86%E5%8D%9A%E5%AE%A2%E5%88%86%E4%BA%AB%E5%88%B0%E5%BE%AE%E4%BF%A1.html#%E9%85%8D%E7%BD%AE%E5%89%8D%E7%AB%AF
 
-
-mysql：字符集、虚拟列、工具
