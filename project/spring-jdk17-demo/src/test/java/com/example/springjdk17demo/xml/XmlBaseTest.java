@@ -234,7 +234,7 @@ public class XmlBaseTest {
 
             // 断言合并后的XML字符串是否符合预期
             String expectedMergedXmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><books><book id=\"1\"><title>Java Programming</title></book><book id=\"2\"><title>Python Programming</title></book></books>";
-            assert mergedXmlString.equals(expectedMergedXmlString);
+            Assertions.assertEquals(mergedXmlString, expectedMergedXmlString);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -262,8 +262,8 @@ public class XmlBaseTest {
                     Element bookElement = (Element) bookNode;
                     String bookId = bookElement.getAttribute("id");
                     String title = bookElement.getElementsByTagName("title").item(0).getTextContent();
-                    System.out.println("Book ID: " + bookId);
-                    System.out.println("Title: " + title);
+                    Assertions.assertEquals(bookId, i == 0 ? "1" : "2");
+                    Assertions.assertEquals(title, i == 0 ? "Java Programming" : "Python Programming");
                 }
             }
         } catch (Exception e) {
