@@ -122,7 +122,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
 
         // 博主信息 (显示在首页侧边栏)
         blogger: {
-            avatar: 'https://cdn.staticaly.com/gh/xuanyuanli/Img@master/picx/245.1f3bo5pwn4u8.jpg',
+            avatar: 'https://cdn.staticaly.com/gh/xuanyuanli/Img@master/picx/logo-460.1cne90qt8wu8.jpg',
             name: '轩辕李',
             slogan: '勇猛精进，星辰大海',
         },
