@@ -6,4 +6,4 @@ if [ ! -d /var/www/blog ];then
   mkdir -p /var/www/blog
 fi
 #cp -rfu /workspace/blog/docs/.vuepress/dist/* /var/www/blog
-rsync -av --delete --ignore-existing /workspace/blog/docs/.vuepress/dist/ /var/www/blog/
+rsync -av --delete /workspace/blog/docs/.vuepress/dist/ /var/www/blog/

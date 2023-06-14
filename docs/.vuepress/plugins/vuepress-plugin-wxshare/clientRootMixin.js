@@ -60,7 +60,7 @@ export default {
                 }
             }).then(res => {
                 wx.config({
-                    debug: false, // 开启调试模式,
+                    debug: OPTIONS.debug || false, // 开启调试模式,
                     appId: res.appId, // 必填，企业号的唯一标识，此处填写企业号corpid
                     timestamp: res.timestamp, // 必填，生成签名的时间戳
                     nonceStr: res.nonceStr, // 必填，生成签名的随机串
@@ -82,7 +82,7 @@ export default {
                     });
                 });
                 wx.error((res) => {
-                    console.error(page.url, '. wx error: ', res)
+                    console.error('发送错误，url：',page.url, '，error: ', res)
                 })
             })
         }
