@@ -82,7 +82,7 @@ export default {
                     });
                 });
                 wx.error((res) => {
-                    console.error('发送错误，url：',page.url, '，error: ', res)
+                    console.error('微信JSSDK初始化发生错误，page：',page, '，error: ', res)
                 })
             })
         }

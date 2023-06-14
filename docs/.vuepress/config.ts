@@ -300,7 +300,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
             {
                 serverUrl: 'https://www.xuanyuanli.cn/wechat/jsSdkConfig',
                 host: 'https://www.xuanyuanli.cn',
-                debug: true
+                debug: false
             }
         ]
     ],
