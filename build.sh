@@ -5,4 +5,5 @@ docker run --rm -v /workspace/blog:/app -w /app node:16 sh -c 'npm install --reg
 if [ ! -d /var/www/blog ];then
   mkdir -p /var/www/blog
 fi
-cp -rfu /workspace/blog/docs/.vuepress/dist/* /var/www/blog
+#cp -rfu /workspace/blog/docs/.vuepress/dist/* /var/www/blog
+rsync -av --delete --ignore-existing /workspace/blog/docs/.vuepress/dist/ /var/www/blog/

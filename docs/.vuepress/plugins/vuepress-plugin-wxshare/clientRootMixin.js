@@ -15,9 +15,21 @@ export default {
         if (this.inIos()) {
             window.localStorage.setItem('iosEntryUrl', this.url())
         }
-        this.wxshare();
+        this.loadWeixinScript()
     },
     methods: {
+        loadWeixinScript() {
+            if (!this.inWx()) {
+                return
+            }
+            const script = document.createElement('script');
+            script.src = 'https://res.wx.qq.com/open/js/jweixin-1.6.0.js';
+            script.onload = () => {
+                // 在脚本加载完成后执行操作
+                this.wxshare();
+            };
+            document.head.appendChild(script);
+        },
         inWx() {
             return /micromessenger/i.test(navigator.userAgent.toLowerCase())
         },
