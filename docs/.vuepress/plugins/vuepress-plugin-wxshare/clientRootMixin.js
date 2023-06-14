@@ -1,7 +1,3 @@
-// noinspection JSUnresolvedFunction
-
-import wx from 'weixin-js-sdk'
-
 export default {
     watch: {
         '$page.path': {
