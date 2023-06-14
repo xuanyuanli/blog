@@ -10,9 +10,9 @@ export default {
                 "@context": "https://schema.org",
                 "@type": "Article",
                 "headline": "${this.$page.title || this.$title}",
-                "url": "${"https://www.xuanyuanli.cn" + this.$page.path}",
+                "url": "${this.$frontmatter.host + this.$page.path}",
                 "image": [
-                    "https://cdn.staticaly.com/gh/xuanyuanli/Img@master/picx/image.5k3g1yhljok0.jpg"
+                    "${this.$themeConfig.blogger.avatar}"
                 ],
                 "datePublished": "${
                     (this.$page.frontmatter.date && new Date(this.$page.frontmatter.date).toISOString()) ||
@@ -22,8 +22,8 @@ export default {
                 "dateModified": "${(this.$page.lastUpdated && new Date(this.$page.lastUpdated).toISOString()) || new Date().toISOString()}",
                 "author": [{
                     "@type": "Person",
-                    "name": "轩辕李",
-                    "url": "https://www.xuanyuanli.cn"
+                    "name": "${this.$site.title}",
+                    "url": "${this.$frontmatter.host}"
                 }]
             }
           <\/script>`;

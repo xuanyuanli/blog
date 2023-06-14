@@ -1,0 +1,15 @@
+{
+  "name": "vuepress-plugin-wxshare",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vuepress/shared-utils": "^1.9.9",
+    "weixin-js-sdk": "^1.6.0"
+  }
+}
