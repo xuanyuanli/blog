@@ -1,6 +1,5 @@
 package com.example.springjdk17demo;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +18,7 @@ public class HelloController {
      */
     @GetMapping
     @ResponseBody
-    public String hello(HttpServletResponse response) {
+    public String hello() {
         return "hello";
     }
 }
