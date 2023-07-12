@@ -68,16 +68,18 @@ Linux：
 https://github.com/u2sb/vuepress-plugin-wxshare/blob/master/README.md
 
 
-java 21发布之后，对虚拟现场详解：
-https://juejin.cn/post/6986299925755592735
-https://juejin.cn/post/6964238184494563342
+java 21发布之后，对虚拟线程进行详解：
+    https://juejin.cn/post/6986299925755592735
+    https://juejin.cn/post/6964238184494563342
+
+Java对象池技术
+
+写好Java Doc
+
+Git简明教程
+
+设计模式：
+    面向对象编程的基本原则
+    设计模式
 
 
-升级Spring Boot 3
-    Configuration导入的变动，从META-INF/spring.factories变成了META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
-    dubbo的升级
-    Jasypt的变化，自己注入jasyptStringEncryptor，且属性与原先一致，org.jasypt.salt.NoOpIVGenerator改为org.jasypt.iv.NoIvGenerator
-    RestHighLevelClient 需要自己构建
-    javax包名变动为jakarta，三方工具修改。涉及annotation、mail、websocket、servlet、validation、jstl等
-    sentinel的升级
-    zookeeper的升级
