@@ -68,7 +68,9 @@ Linux：
 https://github.com/u2sb/vuepress-plugin-wxshare/blob/master/README.md
 
 
-Spring 事务、定制实例化之FactoryBean、常用注解、MVC
+Java 并发：协程、结构化并发编程
+
+Spring JDBC、MVC、注解
 
 java 21发布之后，对虚拟线程进行详解：
     https://juejin.cn/post/6986299925755592735
