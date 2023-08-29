@@ -47,6 +47,9 @@ https://github.com/itwanger/toBeBetterJavaer
 法规与合规性：确保所选技术符合相关法规和行业标准，避免因违规而引发的法律风险。
 技术的可持续发展：关注所选技术的未来发展趋势，以便预判技术的生命周期和持续性。选择具有长期发展潜力的技术，有助于确保项目的持续稳定运行
 
+Effective Java
+
+Java单元测试之JUnit、Mockito、Cucumber
 
 面向对象、设计模式、DDD
 
