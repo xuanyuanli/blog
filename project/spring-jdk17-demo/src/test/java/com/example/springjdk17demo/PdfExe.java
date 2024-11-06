@@ -11,7 +11,7 @@ public class PdfExe {
     @SneakyThrows
     public static void main(String[] args) {
         // 使用pdfbox库完成批量解密pdf
-        String folderPath = "C:\\Users\\li150\\Downloads\\2024\\24年1月-9月";
+        String folderPath = "C:\\Users\\li150\\Downloads\\2023";
         String destDir = "C:\\Users\\li150\\Desktop\\岱岱\\";
         String password = "3690";
         String password2 = "36903690";
