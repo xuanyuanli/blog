@@ -14,13 +14,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up SSH connection
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - uses: actions/checkout@v4
 
-      - name: Execute Command
-        run: |
-          ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "cd /workspace/blog && git pull && sh /workspace/blog/build.sh"
+      - name: Execute remote command
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd /workspace/blog
+            git pull
+            sh /workspace/blog/build.sh
 
 
