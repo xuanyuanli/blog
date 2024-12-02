@@ -1,12 +1,11 @@
 
 
 未来计划：
-- Java 书籍&档案
-    - Effective Java
-    - Web技术内幕
-    - 面向对象拾遗
 - 架构师
-    - Spring
+    - Spring 企业应用开发实战：JDBC与JPA、任务调度、MVC、单元测试
+    支持native image：升级到Java 21、Spring Boot 3.4
+    - 计算机网络：TCP
+    - 设计模式
 - Java单元测试之JUnit、Mockito、Cucumber
 
 
