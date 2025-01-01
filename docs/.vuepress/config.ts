@@ -35,6 +35,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                     // 说明：以下所有link的值只是在相应md文件头部定义的永久链接（不是什么特殊编码）。另外，注意结尾是有斜杠的
                     {text: 'Java', link: '/server/java/'},
                     {text: 'Spring', link: '/server/spring/'},
+                    {text: '其他语言', link: '/server/otherLanguage/'},
                     {text: '工具', link: '/server/util/'},
                 ],
             },
@@ -51,7 +52,12 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 link: '/framework/',
                 items: [
                     {text: '分布式', link: '/framework/distribution/'},
-                    {text: '代码质量管理', link: '/framework/code-quality/'},
+                    {text: '代码质量管理', link: '/framework/codeQuality/'},
+                    {text: '基础', link: '/framework/base/'},
+                    {text: '操作系统', link: '/framework/os/'},
+                    {text: '计算机网络', link: '/framework/network/'},
+                    {text: '编程范式', link: '/framework/programmingParadigm/'},
+                    {text: '安全', link: '/framework/security/'},
                     {text: '中间件', link: '/framework/middlewire/'},
                     {text: '心得', link: '/framework/think/'},
                 ],
