@@ -1,6 +1,24 @@
+TODO:
+- 向量数据库Milvus应用
+    与关系型数据库区别
+
+    索引类型
+        https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing?__hstc=175614333.ac9689c7b810951aa582220be8f0ea7d.1731200562726.1736840218596.1736906873562.32&__hssc=175614333.5.1736906873562&__hsfp=3208242174&_gl=1*10jhnkb*_gcl_au*NzI3NTY5MjY1LjE3Mjk5OTQwMDU.*_ga*Njc2NjM0Mjg0LjE3Mjk5OTQwMDU.*_ga_KKMVYG8YF2*MTczNjkwNjg3Ni40OS4xLjE3MzY5MDk4MzIuMC4wLjA.
+        尽管压缩了原始数据，但IVF_SQ8并未发现查询准确性的显著降低。在各种nprobe设置中，IVF_SQ8的召回率最多比IVF_FLAT低1%。
+
+    全文检索
+
+    字段扩展性、schema修改、实体更新
 
 
-Mockito的使用
+Spring中的测试
+    DeepSeek：Spring中作单元测试。@SpringBootTest、@WebMvcTest、@DataJpaTest
+
+    MockMvc：适合单元测试，模拟 HTTP 请求，不启动完整的 Spring 上下文。
+    TestRestTemplate：Spring 提供的用于集成测试的工具，但语法不如 RestAssured 简洁。
+    Postman/Newman：用于手动测试或自动化测试，但不适合与 CI/CD 集成。
+    对于简单的单元测试，开发人员可能更倾向于使用 MockMvc，但对于复杂的集成测试或端到端测试，RestAssured 是更受欢迎的选择。
+
 
 未来计划：
 - 架构师
