@@ -10,6 +10,7 @@ TODO:
 
     字段扩展性、schema修改、实体更新
 
+07.Spring中的工具类.md
 
 Spring中的测试
     DeepSeek：Spring中作单元测试。@SpringBootTest、@WebMvcTest、@DataJpaTest
@@ -19,6 +20,9 @@ Spring中的测试
     Postman/Newman：用于手动测试或自动化测试，但不适合与 CI/CD 集成。
     对于简单的单元测试，开发人员可能更倾向于使用 MockMvc，但对于复杂的集成测试或端到端测试，RestAssured 是更受欢迎的选择。
 
+Mybatis
+
+Mockito
 
 未来计划：
 - 架构师
