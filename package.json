@@ -1,6 +1,6 @@
 {
-  "name": "theme-vdoing-blog",
-  "version": "1.0.0",
+  "name": "blog",
+  "version": "2.0.0",
   "scripts": {
     "dev": "vuepress dev docs",
     "build": "vuepress build docs",
@@ -10,7 +10,10 @@
     "publish": "cd ./vdoing && npm publish && cd .. && yarn updateTheme",
     "updateTheme": "yarn remove vuepress-theme-vdoing && rm -rf node_modules && yarn && yarn add vuepress-theme-vdoing -D"
   },
-  "license": "MIT",
+  "engines": {
+    "node": "18.x",
+    "npm": ">=10.0.0"
+  },
   "devDependencies": {
     "chalk": "^5.0.1",
     "dayjs": "^1.9.7",
