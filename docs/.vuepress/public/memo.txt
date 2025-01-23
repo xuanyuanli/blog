@@ -10,7 +10,43 @@ TODO:
 
     字段扩展性、schema修改、实体更新
 
+Spring 容器文章补充：Lifecycle 接口
+
 按照官方目录来写：https://docs.spring.io/spring-framework/reference/index.html
+    Spring中的资源访问：Resource接口  https://docs.spring.io/spring-framework/reference/core/resources.html
+    Validation, Data Binding, and Type Conversion
+    Spring Expression Language (SpEL)
+    aop文章再优化一下  https://docs.spring.io/spring-framework/reference/core/aop.html
+Spring中的注解：
+    core/web/boot/cloud/JSR/JSpecify
+    @Autowired
+    @Resource
+    @Component
+    @Service
+    @Repository
+    @Primark
+    @Fallback
+    @Value
+    @Configuration
+    @PropertySource
+    @ComponentScan
+    @Conditional*
+    @Bean
+    @AliasFor
+    @Scope
+        @PropertyScope
+    @Lazy
+    @Qualifier
+    @PostConstruct
+    @PreDestroy
+    @Genre
+    @Offline
+    @Profile
+    @Enable*
+    @Import
+    @ImportResource
+    JSR-330 jakarta.inject-api
+    JSpecify https://jspecify.dev/docs/start-here/
 
 07.Spring中的工具类.md
 
