@@ -13,8 +13,6 @@ TODO:
 Spring 容器文章补充：Lifecycle 接口
 
 按照官方目录来写：https://docs.spring.io/spring-framework/reference/index.html
-    Spring中的资源访问：Resource接口  https://docs.spring.io/spring-framework/reference/core/resources.html
-    Validation, Data Binding, and Type Conversion
     Spring Expression Language (SpEL)
     aop文章再优化一下  https://docs.spring.io/spring-framework/reference/core/aop.html
 Spring中的注解：
@@ -45,6 +43,8 @@ Spring中的注解：
     @Enable*
     @Import
     @ImportResource
+    @Validated
+    @Constraint
     JSR-330 jakarta.inject-api
     JSpecify https://jspecify.dev/docs/start-here/
 
