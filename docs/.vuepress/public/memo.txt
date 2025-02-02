@@ -10,11 +10,16 @@ TODO:
 
     字段扩展性、schema修改、实体更新
 
-Spring 容器文章补充：Lifecycle 接口
+Mockito
+Thymeleaf
+
 
 按照官方目录来写：https://docs.spring.io/spring-framework/reference/index.html
-    Spring Expression Language (SpEL)
-    aop文章再优化一下  https://docs.spring.io/spring-framework/reference/core/aop.html
+    Spring容器的依赖注入与配置
+        https://docs.spring.io/spring-framework/reference/core/beans/dependencies.html
+        https://docs.spring.io/spring-framework/reference/core/beans/annotation-config.html
+
+
 Spring中的注解：
     core/web/boot/cloud/JSR/JSpecify
     @Autowired
@@ -48,8 +53,6 @@ Spring中的注解：
     JSR-330 jakarta.inject-api
     JSpecify https://jspecify.dev/docs/start-here/
 
-07.Spring中的工具类.md
-
 Spring中的测试
     DeepSeek：Spring中作单元测试。@SpringBootTest、@WebMvcTest、@DataJpaTest
 
@@ -60,9 +63,10 @@ Spring中的测试
 
 Mybatis
 
-Mockito
+
 
 Spring Framework & Spring Boot 历代版本新特性
+
 
 未来计划：
 - 架构师
