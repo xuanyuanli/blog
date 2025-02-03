@@ -1,17 +1,74 @@
+<li class="nav-item is-active" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="dependencies.html">Dependencies</a>
+    <ul class="nav-list">
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="dependencies/factory-collaborators.html">Dependency Injection</a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="dependencies/factory-properties-detailed.html">Dependencies and Configuration in Detail</a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="dependencies/factory-dependson.html">Using <code>depends-on</code></a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="dependencies/factory-lazy-init.html">Lazy-initialized Beans</a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="dependencies/factory-autowire.html">Autowiring Collaborators</a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="dependencies/factory-method-injection.html">Method Injection</a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item is-current-page is-active" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="annotation-config.html">Annotation-based Container Configuration</a>
+    <ul class="nav-list">
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="annotation-config/autowired.html">Using <code>@Autowired</code></a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="annotation-config/autowired-primary.html">Fine-tuning Annotation-based Autowiring with <code>@Primary</code> or <code>@Fallback</code></a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="annotation-config/autowired-qualifiers.html">Fine-tuning Annotation-based Autowiring with Qualifiers</a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="annotation-config/generics-as-qualifiers.html">Using Generics as Autowiring Qualifiers</a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="annotation-config/custom-autowire-configurer.html">Using <code>CustomAutowireConfigurer</code></a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="annotation-config/resource.html">Injection with <code>@Resource</code></a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="annotation-config/value-annotations.html">Using <code>@Value</code></a>
+        </li>
+        <li class="nav-item" data-depth="4">
+            <a class="nav-link" href="annotation-config/postconstruct-and-predestroy-annotations.html">Using <code>@PostConstruct</code> and
+                <code>@PreDestroy</code></a>
+        </li>
+    </ul>
+</li>
+<li>Customizing the Nature of a Bean</li>
+<li>Using JSR 330 Standard Annotations</li>
+<li class="nav-item is-active" data-depth="3">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="java.html">Java-based Container Configuration</a>
 
-
-Java 编译器在编译 Java 代码成为 Java 字节码时，会进行一些编译时优化，以改善生成的字节码的性能和质量。这些优化技术包括但不限于以下几种：
-1. 抽象语法树（AST）优化：Java 编译器会对 Java 代码进行语法分析，并将其转换成抽象语法树（AST）。然后，Java 编译器会对 AST 进行优化，例如将相邻的语句合并为一个语句、移除死代码等。
-2. 数据流分析：Java 编译器会对 Java 代码进行数据流分析，以了解变量在程序中的使用情况。然后，Java 编译器会使用这些信息来进行优化，例如将常量表达式计算出结果并替换成常量，或者使用具有更好性能的方法调用方式。
-3. 局部变量表优化：Java 编译器会尽可能地使用局部变量来存储值，以避免在堆上分配内存，从而提高程序的性能。
-4. 类型检查优化：Java 编译器会对 Java 代码进行类型检查，并优化代码以消除类型转换，从而提高程序的性能。
-这些优化技术主要目的是提高 Java 字节码的执行效率，同时尽可能地减少字节码文件的大小。虽然这些编译时优化技术的效果可能没有 JIT（Just-In-Time）编译器的优化效果那么显著，但它们可以为 JIT 编译器提供更好的优化提示，从而进一步提高程序的性能。
-
-
-JDK 和 JRE 是两个不同的 Java 运行环境。它们的区别如下：
-JDK（Java Development Kit）是 Java 开发工具包，包含了 Java 编译器、JRE 和其他开发工具（如调试器、JavaDoc 文档生成器等）。JDK 包含了开发 Java 应用程序所需的所有工具和类库，是开发者开发和构建 Java 应用程序的首选工具。
-JRE（Java Runtime Environment）是 Java 运行环境，用于运行已经编译的 Java 程序。它包括了 JVM（Java 虚拟机）、Java 类库和其他支持文件。JRE 没有包含 Java 编译器等开发工具，只能用于运行 Java 程序。
-简单来说，JDK 是一个完整的开发包，它包含了开发者所需要的所有工具和类库，可以用来编写、编译和运行 Java 程序。而 JRE 则是一个运行时环境，只包含了运行 Java 程序所需的运行环境，不能用于编译 Java 程序。
-需要注意的是，JDK 包含了 JRE，因此如果需要开发 Java 应用程序，需要安装 JDK。如果只需要运行 Java 应用程序，则只需要安装 JRE 即可。
+    <ul class="nav-list">
+        <li class="nav-item" data-depth="4"><a class="nav-link" href="java/basic-concepts.html">Basic Concepts: <code>@Bean</code> and
+            <code>@Configuration</code></a></li>
+        <li class="nav-item" data-depth="4"><a class="nav-link" href="java/instantiating-container.html">Instantiating the Spring Container by Using <code>AnnotationConfigApplicationContext</code></a>
+        </li>
+        <li class="nav-item" data-depth="4"><a class="nav-link" href="java/bean-annotation.html">Using the <code>@Bean</code> Annotation</a></li>
+        <li class="nav-item" data-depth="4"><a class="nav-link" href="java/configuration-annotation.html">Using the <code>@Configuration</code> annotation</a>
+        </li>
+        <li class="nav-item" data-depth="4"><a class="nav-link" href="java/composing-configuration-classes.html">Composing Java-based Configurations</a></li>
+    </ul>
+</li>
 
 
