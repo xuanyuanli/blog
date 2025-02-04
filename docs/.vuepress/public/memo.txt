@@ -10,12 +10,8 @@ TODO:
 
     字段扩展性、schema修改、实体更新
 
-Mockito
 
 按照官方目录来写：https://docs.spring.io/spring-framework/reference/index.html
-    Spring容器的依赖管理与基于注解的配置
-        https://docs.spring.io/spring-framework/reference/core/beans/dependencies.html
-        https://docs.spring.io/spring-framework/reference/core/beans/annotation-config.html
 
 
 Spring中的注解：
@@ -60,8 +56,6 @@ Spring中的测试
     对于简单的单元测试，开发人员可能更倾向于使用 MockMvc，但对于复杂的集成测试或端到端测试，RestAssured 是更受欢迎的选择。
 
 Mybatis
-
-
 
 Spring Framework & Spring Boot 历代版本新特性
 
