@@ -11,8 +11,6 @@ TODO:
     字段扩展性、schema修改、实体更新
 
 Mockito
-Thymeleaf
-git 提交规范：https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines
 
 按照官方目录来写：https://docs.spring.io/spring-framework/reference/index.html
     Spring容器的依赖管理与基于注解的配置
