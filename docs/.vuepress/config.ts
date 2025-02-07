@@ -188,7 +188,14 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
     plugins: <UserPlugins>[
 
         //'vuepress-plugin-baidu-autopush', // 百度自动推送
-
+        [
+            'vuepress-plugin-mermaidjs',
+            {},
+        ],
+        [
+            'vuepress-plugin-flowchart',
+            {},
+        ],
         [
             'vuepress-plugin-baidu-tongji', // 百度统计
             {
