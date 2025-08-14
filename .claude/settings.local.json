@@ -18,7 +18,8 @@
       "mcp__playwright__browser_close",
       "Bash(mkdir:*)",
       "Bash(node:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(claude:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
