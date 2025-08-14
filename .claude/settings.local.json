@@ -5,12 +5,20 @@
   },
   "permissions": {
     "allow": [
-      "Bash(find:*)",
+      "Bash(powershell:*)",
       "Bash(npm:*)",
-      "Bash(test:*)",
+      "Bash(npx:*)",
       "WebFetch(domain:uniapp.dcloud.net.cn)",
       "WebFetch(domain:mp.weixin.qq.com)",
-      "WebFetch(domain:docs.anthropic.com)"
+      "WebFetch(domain:docs.anthropic.com)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_close",
+      "Bash(mkdir:*)",
+      "Bash(node:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

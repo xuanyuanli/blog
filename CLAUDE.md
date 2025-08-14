@@ -33,11 +33,9 @@
 - **Spring Boot 示例**: Java 17, Spring Boot 3.4.2
 - **构建工具**: 博客使用 npm，Spring 项目使用 Maven
 
-### 部署流程
-博客通过 `deploy.sh` 脚本部署到 GitHub Pages：
-1. 构建静态站点到 `docs/.vuepress/dist`
-2. 推送到 `gh-pages` 分支
-3. 清理构建目录
 
 ### 内容管理
 文章按类别组织，使用数字前缀进行排序。每个 markdown 文件包含用于分类和导航的 frontmatter 元数据。vdoing 主题会根据目录结构自动生成侧边栏和导航。
+
+## 开发规则
+- 主要语言为中文
