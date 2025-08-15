@@ -6,4 +6,6 @@
 
 用法：/improve <文件路径>
 
-后续处理：完成文章优化之后，按照 @.claude\commands\proofread.md 中的规则对文章进行校对。
+后续处理：
+- 完成文章优化之后，按照 @.claude\commands\proofread.md 中的规则对文章进行校对。
+- 校对文章后，按照 @.claude\commands\catalogue-arrange.md 中的规则对文章目录进行准确编号。
