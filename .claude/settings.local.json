@@ -1,7 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "env": {
-    "HTTP_PROXY": "http://127.0.0.1:10808"
+    "HTTP_PROXY": "http://127.0.0.1:10808",
+    "BASH_DEFAULT_TIMEOUT_MS": "1800000",
+    "BASH_MAX_TIMEOUT_MS": "1800000"
   },
   "permissions": {
     "allow": [
@@ -19,7 +21,9 @@
       "Bash(mkdir:*)",
       "Bash(node:*)",
       "Bash(rm:*)",
-      "Bash(claude:*)"
+      "Bash(claude:*)",
+      "Bash(dir:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
