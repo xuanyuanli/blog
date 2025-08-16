@@ -2,6 +2,15 @@
 
 上面5个文章已经改造完毕，帮我更新 @博客文章列表.md
 
+你来串行调用`claude '/improve $path'`，path 是 @博客文章列表.md 中未改造的文章。先调用前20个文章吧
+
+命令：`claude '/improve $path'`，path 是 @博客文章列表.md 中未改造的文章。先调用命令改造前10个文章，要求使用10个独立的 Bash 调用来实现并行执行
+
+
+命令：`claude '/improve $path'`，path 是 @博客文章列表.md 中未改造的文章。给我一个cmd命令，可以并行执行 未改造的文章 top 10
+
+
+ccusage daily -O --since $(date -d '1 days ago' +%Y%m%d)
 
 
 你现在的博客分类很偏传统 Java & 后端栈（Spring、Java核心、企业应用、JVM、并发等），在 AI 时代依然有价值，但如果想保持流量和竞争力，需要做 **两方面调整**：
