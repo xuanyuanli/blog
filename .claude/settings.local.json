@@ -23,7 +23,10 @@
       "Bash(rm:*)",
       "Bash(claude:*)",
       "Bash(dir:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "WebFetch(domain:docs.oracle.com)",
+      "WebFetch(domain:openjdk.org)",
+      "WebSearch"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
