@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  # Development application
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: claude-code-provider-manager-dev
+    ports:
+      - "1420:1420"
+      - "9229:9229"  # Debug port
+    environment:
+      - NODE_ENV=development
+      - DEBUG=app:*
+      - APP_CONFIG_PATH=/app/config
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./config:/app/config
+      - ./logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - claude-dev-network
+    command: npm run dev
+
+  # Development database
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: claude-postgres-dev
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=claude_manager_dev
+      - POSTGRES_USER=claude_user
+      - POSTGRES_PASSWORD=claude_password_dev
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - claude-dev-network
+
+  # Development Redis
+  redis-dev:
+    image: redis:7-alpine
+    container_name: claude-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    restart: unless-stopped
+    networks:
+      - claude-dev-network
+    command: redis-server --appendonly yes
+
+  # Test runner
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: claude-test-runner
+    environment:
+      - NODE_ENV=test
+      - CI=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - claude-dev-network
+    command: npm test
+    profiles:
+      - test
+
+  # Development tools
+  dev-tools:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: claude-dev-tools
+    ports:
+      - "3001:3001"  # Additional dev server
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - claude-dev-network
+    command: npm run storybook
+    profiles:
+      - tools
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  redis_dev_data:
+    driver: local
+
+networks:
+  claude-dev-network:
+    driver: bridge

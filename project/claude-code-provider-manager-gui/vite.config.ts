@@ -1,11 +1,42 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import electron from 'vite-plugin-electron';
+import renderer from 'vite-plugin-electron-renderer';
 
 const host = process.env.TAURI_DEBUG ? 'localhost' : 'localhost';
 
 export default defineConfig(async () => ({
-  plugins: [react()],
+  plugins: [
+    react(),
+    electron([
+      {
+        // 主进程入口文件
+        entry: 'src/main.ts',
+        onstart(options) {
+          options.startup();
+        },
+        vite: {
+          build: {
+            outDir: 'dist',
+          },
+        },
+      },
+      {
+        // 预加载脚本
+        entry: 'src/preload.ts',
+        onstart(options) {
+          options.reload();
+        },
+        vite: {
+          build: {
+            outDir: 'dist',
+          },
+        },
+      },
+    ]),
+    renderer(),
+  ],
   
   // 解决路径映射
   resolve: {
@@ -16,6 +47,8 @@ export default defineConfig(async () => ({
       '@/services': path.resolve(__dirname, './src/services'),
       '@/types': path.resolve(__dirname, './src/types'),
       '@/utils': path.resolve(__dirname, './src/utils'),
+      '@/main': path.resolve(__dirname, './src/main'),
+      '@/contexts': path.resolve(__dirname, './src/contexts'),
     },
   },
 
@@ -28,8 +61,9 @@ export default defineConfig(async () => ({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          tauri: ['@tauri-apps/api'],
+          electron: ['electron'],
           icons: ['lucide-react'],
+          forms: ['react-hook-form', 'zod'],
         },
       },
     },
@@ -43,7 +77,7 @@ export default defineConfig(async () => ({
       port: 1421,
     },
     watch: {
-      ignored: ["**/src-tauri/**"],
+      ignored: ["**/src-tauri/**", "**/dist/**"],
     },
   },
 
@@ -51,6 +85,7 @@ export default defineConfig(async () => ({
   define: {
     __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+    __ELECTRON__: JSON.stringify(true),
   },
 
   // 清理控制台输出
