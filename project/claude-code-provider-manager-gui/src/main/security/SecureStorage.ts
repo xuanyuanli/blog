@@ -1,4 +1,4 @@
-import { Keytar } from 'keytar';
+import * as keytar from 'keytar';
 import { app } from 'electron';
 import * as crypto from 'crypto';
 
@@ -21,7 +21,7 @@ export class SystemKeychainStorage implements SecureStorage {
 
   async storePassword(service: string, account: string, password: string): Promise<void> {
     try {
-      await Keytar.setPassword(this.serviceName, `${service}:${account}`, password);
+      await keytar.setPassword(this.serviceName, `${service}:${account}`, password);
     } catch (error) {
       console.error('Failed to store password:', error);
       throw new Error('Failed to store sensitive data securely');
@@ -30,7 +30,7 @@ export class SystemKeychainStorage implements SecureStorage {
 
   async getPassword(service: string, account: string): Promise<string | null> {
     try {
-      return await Keytar.getPassword(this.serviceName, `${service}:${account}`);
+      return await keytar.getPassword(this.serviceName, `${service}:${account}`);
     } catch (error) {
       console.error('Failed to retrieve password:', error);
       throw new Error('Failed to retrieve sensitive data');
@@ -39,7 +39,7 @@ export class SystemKeychainStorage implements SecureStorage {
 
   async deletePassword(service: string, account: string): Promise<boolean> {
     try {
-      return await Keytar.deletePassword(this.serviceName, `${service}:${account}`);
+      return await keytar.deletePassword(this.serviceName, `${service}:${account}`);
     } catch (error) {
       console.error('Failed to delete password:', error);
       return false;

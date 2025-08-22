@@ -126,10 +126,114 @@ const mockKeytar = {
 // Mock electron-is-dev
 const mockIsDev = jest.fn(() => false);
 
+// Mock Tauri APIs
+const mockTauri = {
+  invoke: jest.fn(),
+  convertFileSrc: jest.fn(),
+  transformCallback: jest.fn(),
+};
+
+// Mock Tauri window
+const mockTauriWindow = {
+  appWindow: {
+    show: jest.fn(),
+    hide: jest.fn(),
+    close: jest.fn(),
+    minimize: jest.fn(),
+    maximize: jest.fn(),
+    unmaximize: jest.fn(),
+    toggleMaximize: jest.fn(),
+    setResizable: jest.fn(),
+    setTitle: jest.fn(),
+    setSize: jest.fn(),
+    setPosition: jest.fn(),
+    setFocus: jest.fn(),
+    center: jest.fn(),
+    requestUserAttention: jest.fn(),
+    setSkipTaskbar: jest.fn(),
+    onCloseRequested: jest.fn(),
+    onResized: jest.fn(),
+    onMoved: jest.fn(),
+    onFocusChanged: jest.fn(),
+    onScaleChanged: jest.fn(),
+    onMenuClicked: jest.fn(),
+  },
+  WebviewWindow: jest.fn(),
+  getCurrentWindow: jest.fn(() => mockTauriWindow.appWindow),
+  getAll: jest.fn(() => [mockTauriWindow.appWindow]),
+};
+
+// Mock Tauri filesystem
+const mockTauriFs = {
+  readTextFile: jest.fn(),
+  writeTextFile: jest.fn(),
+  readBinaryFile: jest.fn(),
+  writeBinaryFile: jest.fn(),
+  removeFile: jest.fn(),
+  createDir: jest.fn(),
+  removeDir: jest.fn(),
+  readDir: jest.fn(),
+  copyFile: jest.fn(),
+  exists: jest.fn(),
+  BaseDirectory: {
+    Audio: 1,
+    Cache: 2,
+    Config: 3,
+    Data: 4,
+    LocalData: 5,
+    Desktop: 6,
+    Document: 7,
+    Download: 8,
+    Executable: 9,
+    Font: 10,
+    Home: 11,
+    Picture: 12,
+    Public: 13,
+    Runtime: 14,
+    Template: 15,
+    Video: 16,
+    Resource: 17,
+    App: 18,
+    Log: 19,
+    Temp: 20,
+  },
+};
+
+// Mock Tauri OS
+const mockTauriOs = {
+  platform: jest.fn(() => 'win32'),
+  version: jest.fn(() => '10.0.19041'),
+  type: jest.fn(() => 'Windows_NT'),
+  arch: jest.fn(() => 'x86_64'),
+  tempdir: jest.fn(() => 'C:\\Temp'),
+};
+
+// Mock Tauri dialog
+const mockTauriDialog = {
+  open: jest.fn(),
+  save: jest.fn(),
+  message: jest.fn(),
+  ask: jest.fn(),
+  confirm: jest.fn(),
+};
+
+// Mock Tauri notification
+const mockTauriNotification = {
+  sendNotification: jest.fn(),
+  isPermissionGranted: jest.fn(() => Promise.resolve(true)),
+  requestPermission: jest.fn(() => Promise.resolve('granted')),
+};
+
 // Set up mocks
 jest.mock('electron', () => mockElectron);
 jest.mock('keytar', () => mockKeytar);
 jest.mock('electron-is-dev', () => mockIsDev);
+jest.mock('@tauri-apps/api/tauri', () => mockTauri);
+jest.mock('@tauri-apps/api/window', () => mockTauriWindow);
+jest.mock('@tauri-apps/api/fs', () => mockTauriFs);
+jest.mock('@tauri-apps/api/os', () => mockTauriOs);
+jest.mock('@tauri-apps/api/dialog', () => mockTauriDialog);
+jest.mock('@tauri-apps/api/notification', () => mockTauriNotification);
 
 // Mock localStorage
 const localStorageMock = {
@@ -196,6 +300,59 @@ global.beforeEach(() => {
     isMinimized: jest.fn(() => false),
     isMaximized: jest.fn(() => false),
   }));
+
+  // Setup Tauri mock implementations
+  mockTauri.invoke.mockImplementation((command: string, args?: any) => {
+    // Mock different Tauri commands
+    switch (command) {
+      case 'validate_auth_token_format':
+        const token = args?.token;
+        if (!token || token.length < 8) {
+          return Promise.reject(new Error('Invalid token format'));
+        }
+        if (token.includes('<script>') || token.includes('javascript:')) {
+          return Promise.reject(new Error('Invalid token format'));
+        }
+        return Promise.resolve();
+        
+      case 'add_provider':
+        const request = args?.request;
+        if (request?.name?.includes('<script>') || request?.baseUrl?.includes('javascript:')) {
+          return Promise.reject(new Error('Invalid input detected'));
+        }
+        return Promise.resolve({
+          id: 'mock-provider-id',
+          ...request,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+        
+      case 'get_providers':
+        return Promise.resolve([]);
+        
+      case 'update_provider':
+        return Promise.resolve({ id: args?.id, ...args?.request });
+        
+      case 'delete_provider':
+        return Promise.resolve();
+        
+      case 'validate_provider':
+        return Promise.resolve({
+          isValid: true,
+          connectionStatus: 'success',
+          authStatus: 'success',
+        });
+        
+      default:
+        return Promise.resolve();
+    }
+  });
+
+  // Setup window mock for browser environment
+  Object.defineProperty(window, '__TAURI_IPC__', {
+    value: mockTauri.invoke,
+    writable: true,
+  });
 });
 
 // Global test utilities
@@ -343,3 +500,9 @@ afterAll(() => {
 (global as any).mockElectron = mockElectron;
 (global as any).mockKeytar = mockKeytar;
 (global as any).mockIsDev = mockIsDev;
+(global as any).mockTauri = mockTauri;
+(global as any).mockTauriWindow = mockTauriWindow;
+(global as any).mockTauriFs = mockTauriFs;
+(global as any).mockTauriOs = mockTauriOs;
+(global as any).mockTauriDialog = mockTauriDialog;
+(global as any).mockTauriNotification = mockTauriNotification;

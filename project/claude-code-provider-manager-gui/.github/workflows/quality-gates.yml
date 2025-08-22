@@ -1,0 +1,242 @@
+name: Quality Gates
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_run:
+    workflows: ["Comprehensive Tests"]
+    types:
+      - completed
+
+jobs:
+  coverage-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests with coverage
+      run: npm run test:coverage
+      
+    - name: Coverage check
+      run: |
+        # Extract coverage percentages
+        COVERAGE=$(cat coverage/coverage-summary.json | jq '.total.lines.pct')
+        echo "Current coverage: $COVERAGE%"
+        
+        # Check if coverage meets threshold
+        if (( $(echo "$COVERAGE < 85" | bc -l) )); then
+          echo "❌ Coverage below threshold (85%): $COVERAGE%"
+          exit 1
+        else
+          echo "✅ Coverage meets threshold: $COVERAGE%"
+        fi
+        
+    - name: Comment PR with coverage
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const coverage = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
+          
+          const comment = `## 📊 Coverage Report
+          
+          | Metric | Percentage | Status |
+          |--------|------------|--------|
+          | Lines | ${coverage.total.lines.pct}% | ${coverage.total.lines.pct >= 85 ? '✅' : '❌'} |
+          | Functions | ${coverage.total.functions.pct}% | ${coverage.total.functions.pct >= 90 ? '✅' : '❌'} |
+          | Branches | ${coverage.total.branches.pct}% | ${coverage.total.branches.pct >= 85 ? '✅' : '❌'} |
+          | Statements | ${coverage.total.statements.pct}% | ${coverage.total.statements.pct >= 85 ? '✅' : '❌'} |
+          
+          **Threshold**: Lines ≥85%, Functions ≥90%, Branches ≥85%, Statements ≥85%
+          `;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+          
+  performance-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run performance benchmarks
+      run: npm run performance:benchmark
+      
+    - name: Performance regression check
+      run: |
+        # Compare with baseline (simplified version)
+        node scripts/performance-gates.js
+        
+    - name: Comment PR with performance results
+      if: always()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          
+          try {
+            const results = JSON.parse(fs.readFileSync('performance-results.json', 'utf8'));
+            
+            const comment = `## ⚡ Performance Report
+            
+            | Metric | Current | Baseline | Status |
+            |--------|---------|----------|--------|
+            | Startup Time | ${results.startup.current}ms | ${results.startup.baseline}ms | ${results.startup.status} |
+            | Memory Usage | ${results.memory.current}MB | ${results.memory.baseline}MB | ${results.memory.status} |
+            | Bundle Size | ${results.bundle.current}KB | ${results.bundle.baseline}KB | ${results.bundle.status} |
+            
+            ${results.summary.passed ? '✅ All performance checks passed' : '❌ Performance regression detected'}
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          } catch (error) {
+            console.log('Performance results not found, skipping comment');
+          }
+          
+  security-gate:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Security audit
+      run: |
+        # Check for high/critical vulnerabilities
+        npm audit --audit-level=high --json > audit-results.json || true
+        
+        # Parse results
+        CRITICAL=$(cat audit-results.json | jq '.metadata.vulnerabilities.critical // 0')
+        HIGH=$(cat audit-results.json | jq '.metadata.vulnerabilities.high // 0')
+        
+        echo "Critical vulnerabilities: $CRITICAL"
+        echo "High vulnerabilities: $HIGH"
+        
+        if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+          echo "❌ Security vulnerabilities found"
+          exit 1
+        else
+          echo "✅ No critical or high vulnerabilities found"
+        fi
+        
+    - name: Run security tests
+      run: npm run test:security
+      
+  build-gate:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build application
+      run: npm run build
+      
+    - name: Check bundle size
+      run: |
+        # Check if bundle size is within limits
+        BUNDLE_SIZE=$(du -k dist/ | cut -f1)
+        MAX_SIZE=5120  # 5MB in KB
+        
+        echo "Bundle size: ${BUNDLE_SIZE}KB"
+        echo "Max allowed: ${MAX_SIZE}KB"
+        
+        if [ "$BUNDLE_SIZE" -gt "$MAX_SIZE" ]; then
+          echo "❌ Bundle size exceeds limit"
+          exit 1
+        else
+          echo "✅ Bundle size within limits"
+        fi
+        
+  dependency-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check for dependency changes
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { data: files } = await github.rest.pulls.listFiles({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+          });
+          
+          const hasPackageJsonChanges = files.some(file => 
+            file.filename === 'package.json' || file.filename === 'package-lock.json'
+          );
+          
+          if (hasPackageJsonChanges) {
+            const comment = `## 📦 Dependency Changes Detected
+            
+            This PR modifies dependencies. Please ensure:
+            - [ ] New dependencies are necessary and well-maintained
+            - [ ] License compatibility has been verified
+            - [ ] Security audit passes
+            - [ ] Bundle size impact has been considered
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }

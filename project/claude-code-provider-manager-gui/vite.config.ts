@@ -58,10 +58,10 @@ export default defineConfig(async () => ({
     minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,
     sourcemap: !!process.env.TAURI_DEBUG,
     rollupOptions: {
+      external: ['keytar', 'electron'],
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          electron: ['electron'],
           icons: ['lucide-react'],
           forms: ['react-hook-form', 'zod'],
         },

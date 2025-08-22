@@ -5,9 +5,13 @@
  * 用于验证项目结构和配置的完整性
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PROJECT_ROOT = process.cwd();
 const REQUIRED_FILES = [
@@ -248,8 +252,7 @@ function main() {
   }
 }
 
-if (require.main === module) {
+// 如果是直接运行脚本
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
-
-module.exports = { main };

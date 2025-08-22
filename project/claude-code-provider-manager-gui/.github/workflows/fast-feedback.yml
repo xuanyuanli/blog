@@ -1,0 +1,80 @@
+name: Fast Feedback Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  fast-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Code quality checks
+      run: |
+        npm run lint
+        npm run type-check
+        
+    - name: Unit tests (core modules)
+      run: npm run test:unit:core
+      
+    - name: Security scan
+      run: npm run security:scan
+      
+    - name: Build verification
+      run: npm run build
+      
+    - name: Upload coverage reports
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-reports
+        path: coverage/
+        
+  code-quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: ESLint
+      run: npm run lint -- --format json --output-file eslint-report.json
+      continue-on-error: true
+      
+    - name: TypeScript check
+      run: npm run type-check
+      
+    - name: Prettier check
+      run: npx prettier --check "src/**/*.{ts,tsx,css,md}"
+      
+    - name: Upload ESLint report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: eslint-report
+        path: eslint-report.json

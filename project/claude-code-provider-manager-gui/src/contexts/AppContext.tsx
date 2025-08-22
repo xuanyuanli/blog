@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import { api } from '@/services/api';
+import { api } from '@/services/api.mock';
 import type { AppContextType, AppState, Provider, CreateProviderRequest, UpdateProviderRequest, ValidationResult, LaunchConfig } from '@/types';
 
 const initialState: AppState = {

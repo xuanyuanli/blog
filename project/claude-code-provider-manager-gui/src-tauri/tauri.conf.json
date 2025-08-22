@@ -71,8 +71,6 @@
       "shortDescription": "Claude Code Provider Manager",
       "longDescription": "A cross-platform desktop application for managing Claude API providers and configurations with secure credential storage.",
       "copyright": "Copyright © 2024 Claude Code Provider Manager Team",
-      "license": "MIT",
-      "licenseFile": "../LICENSE",
       "externalBin": [],
       "resources": [],
       "macOS": {
@@ -104,17 +102,6 @@
           "customLanguageFiles": {},
           "displayLanguageSelector": true
         }
-      },
-      "linux": {
-        "deb": {
-          "depends": [],
-          "files": {},
-          "desktopTemplate": null
-        },
-        "appimage": {
-          "bundleMediaFramework": false,
-          "files": {}
-        }
       }
     },
     "security": {
@@ -136,12 +123,6 @@
         "theme": "Light"
       }
     ],
-    "systemTray": {
-      "iconPath": "icons/icon.png",
-      "iconAsTemplate": true,
-      "menuOnLeftClick": false,
-      "tooltip": "Claude Code Provider Manager"
-    },
     "updater": {
       "active": false,
       "endpoints": [],

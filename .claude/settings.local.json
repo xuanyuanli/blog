@@ -1,36 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "env": {
-    "HTTP_PROXY": "http://127.0.0.1:10808",
-    "BASH_DEFAULT_TIMEOUT_MS": "1800000",
-    "BASH_MAX_TIMEOUT_MS": "1800000"
-  },
   "permissions": {
     "allow": [
-      "Bash(powershell:*)",
-      "Bash(npm:*)",
-      "Bash(npx:*)",
-      "WebFetch(domain:uniapp.dcloud.net.cn)",
-      "WebFetch(domain:mp.weixin.qq.com)",
-      "WebFetch(domain:docs.anthropic.com)",
       "mcp__playwright__browser_navigate",
       "mcp__playwright__browser_snapshot",
       "mcp__playwright__browser_take_screenshot",
       "mcp__playwright__browser_resize",
-      "mcp__playwright__browser_close",
-      "Bash(mkdir:*)",
-      "Bash(node:*)",
-      "Bash(rm:*)",
-      "Bash(claude:*)",
-      "Bash(dir:*)",
-      "Bash(cat:*)",
-      "WebFetch(domain:docs.oracle.com)",
-      "WebFetch(domain:openjdk.org)",
-      "WebSearch",
-      "WebFetch(domain:docs.spring.io)",
-      "WebFetch(domain:spring.io)",
-      "WebFetch(domain:github.com)",
-      "Bash(touch:*)"
+      "mcp__playwright__browser_close"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
