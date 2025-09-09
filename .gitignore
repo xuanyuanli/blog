@@ -22,3 +22,4 @@ urls.txt
 # mac
 .DS_Store
 .claude/settings.local.json
+.cache/
