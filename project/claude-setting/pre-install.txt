@@ -3,3 +3,5 @@ claude mcp add -s user --transport http grep https://mcp.grep.app
 claude mcp add -s user --transport http context7 https://mcp.context7.com/mcp 
 
 claude mcp add spec-workflow-mcp -s user -- npx -y spec-workflow-mcp@latest
+
+claude mcp add playwright -s user npx @playwright/mcp@latest
