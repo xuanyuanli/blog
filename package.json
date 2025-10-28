@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "scripts": {
     "dev": "vuepress dev docs",
-    "build": "vuepress build docs",
+    "build": "node --max-old-space-size=3072 ./node_modules/.bin/vuepress build docs",
     "deploy": "bash deploy.sh",
     "editFm": "node utils/editFrontmatter.mjs",
     "baiduPush": "node utils/baiduPush.mjs https://www.xuanyuanli.cn && bash baiduPush.sh",
