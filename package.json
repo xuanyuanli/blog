@@ -11,8 +11,7 @@
     "updateTheme": "yarn remove vuepress-theme-vdoing && rm -rf node_modules && yarn && yarn add vuepress-theme-vdoing -D"
   },
   "engines": {
-    "node": "18.x",
-    "npm": ">=10.0.0"
+    "node": ">18.0.0 <=20.x"
   },
   "devDependencies": {
     "chalk": "^5.0.1",
