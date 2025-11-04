@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "ask": [
+      "Read(!D:\\workspace\\opensource\\blog/**)",
+      "Edit(!D:\\workspace\\opensource\\blog/**)"
+    ],
+    "allow": [
+      "Read(D:\\workspace\\opensource\\blog/**)",
+      "Edit(D:\\workspace\\opensource\\blog/**)"
+    ]
+  },
+  "memoryImport": {},
+  "monitoring": {}
+}
