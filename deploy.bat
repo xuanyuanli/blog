@@ -1,2 +1,1 @@
-npm run build
-dcr
+npm run build && dcr
