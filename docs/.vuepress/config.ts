@@ -43,8 +43,12 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 text: '前端',
                 link: '/web/',
                 items: [
-                    {text: 'HTML&CSS', link: '/web/htmlcss/'},
                     {text: 'JavaScript', link: '/web/js/'},
+                    {text: 'TypeScript', link: '/web/ts/'},
+                    {text: 'Node.js', link: '/web/node/'},
+                    {text: 'Vue.js', link: '/web/vue/'},
+                    {text: '前端工程化', link: '/web/engineering/'},
+                    {text: '浏览器与Web API', link: '/web/browser/'},
                 ],
             },
             {
