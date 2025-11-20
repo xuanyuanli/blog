@@ -17,12 +17,10 @@
 ### 现代CSS篇
 1. 现代CSS-CSS预处理器对比.md - Sass、Less、Stylus的使用场景
 2. 现代CSS-CSS-in-JS方案.md - styled-components、emotion、CSS Modules
-3. 现代CSS-新特性探索.md - container queries、:has()、层叠层(cascade layers)
 
 ### 工程化篇
 1. CSS工程化-架构与规范.md - BEM、OOCSS、SMACSS、命名约定
 2. CSS工程化-性能优化.md - 关键CSS、代码分割、压缩、避免重排重绘
-3. CSS工程化-调试技巧.md - DevTools技巧、常见问题排查
 
 每篇文章建议包含：
 
@@ -35,9 +33,3 @@
 - 实战案例使用 ::: demo [vanilla] 进行demo演示，注意每个demo的标签class要有独立性（生成一个随机hash作为统一后缀），防止影响其他的页面样式或者被项目默认样式影响
 
 文章从2019-03-06开始，每隔20天一篇
-
-未来选题：
-- scss
-- Tailwind CSS
-- postcss：autoprefixer、postcss-preset-env、cssnano、postcss-nested
-- Element Plus、Ant Design Vue
