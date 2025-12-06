@@ -55,7 +55,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                 text: '架构',
                 link: '/framework/',
                 items: [
-                    {text: '分布式', link: '/framework/distribution/'},
+                    {text: '架构设计与模式', link: '/framework/distribution/'},
                     {text: '代码质量管理', link: '/framework/codeQuality/'},
                     {text: '基础', link: '/framework/base/'},
                     {text: '操作系统', link: '/framework/os/'},
