@@ -11,6 +11,7 @@ import htmlModules from './config/htmlModules' // 自定义插入的html块
 // @ts-ignore
 export default defineConfig4CustomTheme<VdoingThemeConfig>({
     theme: 'vdoing', // 使用npm主题包
+    port: 9090,
     // theme: resolve(__dirname, '../../vdoing'), // 使用本地主题包
 
     locales: {
@@ -46,7 +47,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
                     {text: 'JavaScript', link: '/web/js/'},
                     {text: 'TypeScript', link: '/web/ts/'},
                     {text: 'Node.js', link: '/web/node/'},
-                    {text: 'Vue.js', link: '/web/vue/'},
+                    {text: '前端框架', link: '/web/framework/'},
                     {text: '前端工程化', link: '/web/engineering/'},
                     {text: '浏览器与Web API', link: '/web/browser/'},
                 ],
