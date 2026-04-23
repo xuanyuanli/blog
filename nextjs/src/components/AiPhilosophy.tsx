@@ -1,17 +1,19 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Users, Terminal, Scale } from 'lucide-react';
+import { Crosshair, Gauge, Shuffle, Scale, Users } from 'lucide-react';
 import { philosophies } from '@/content/site';
 
 /** 图标映射表 */
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Users,
-  Terminal,
+  Crosshair,
+  Gauge,
+  Shuffle,
   Scale,
+  Users,
 };
 
-/** AI 编程观板块组件 - 展示 3 个核心观点 */
+/** AI 编程观板块组件 - 展示 5 个核心观点 */
 export default function AiPhilosophy() {
   return (
     <section id="philosophy" className="py-24 px-6">
@@ -35,7 +37,7 @@ export default function AiPhilosophy() {
           关于 AI 与编程，我坚信的几件事
         </motion.p>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {philosophies.map((item, index) => {
             const Icon = iconMap[item.icon];
             return (

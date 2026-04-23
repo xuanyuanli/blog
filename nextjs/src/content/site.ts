@@ -19,28 +19,42 @@ export const navItems: NavItem[] = [
   { label: '联系', href: '#contact' },
 ];
 
-/** AI 编程观 - 3 个核心观点 */
+/** AI 编程观 - 5 个核心观点 */
 export const philosophies: Philosophy[] = [
   {
-    id: 'partner',
-    icon: 'Users',
-    title: 'AI 是搭档，不是工具',
+    id: 'intent-precision',
+    icon: 'Crosshair',
+    title: '意图精度是新的类型系统',
     description:
-      '工具是被动的，你用它做事；搭档是主动的，它和你一起思考。当 AI 能理解上下文、提出建议、甚至质疑你的决策时，编程就变成了对话。',
+      '传统编程靠类型约束代码，AI 编程靠意图约束输出。意图模糊 = 输出必定跑偏，和类型缺失 = 运行时报错是同一件事。精确表达意图，是 AI 时代的类型安全。',
   },
   {
-    id: 'prompt-engineering',
-    icon: 'Terminal',
-    title: '提示工程是新的编程范式',
+    id: 'review-bottleneck',
+    icon: 'Gauge',
+    title: '速度翻倍，审核是瓶颈',
     description:
-      '从前我们用语法告诉机器做什么，现在我们用意图告诉 AI 想要什么。表达清晰、逻辑完整、边界明确——这不就是编程的本质吗？',
+      'AI 让代码产出翻倍，但审核压力也翻倍。越快，越需要慢下来审查。你的阅读理解力和判断力才是真正的吞吐量瓶颈——投资审码能力，比研究 Prompt 技巧回报更高。',
   },
   {
-    id: 'judgment',
+    id: 'probabilistic',
+    icon: 'Shuffle',
+    title: '确定性退化为概率性',
+    description:
+      '传统代码：相同输入确定输出。AI 辅助代码：相同意图可能产出不同实现。这改变了正确性的定义——你不能只测一次，你需要持续验证。',
+  },
+  {
+    id: 'commander',
     icon: 'Scale',
-    title: '人的价值在判断力，不在编码力',
+    title: '从编码者到指挥者',
     description:
-      'AI 可以写出你想到的任何代码，但它无法替你判断：该不该写？为谁写？写了值不值得？未来的核心竞争力是品味、判断和决策。',
+      '工作重心从生产代码行转向策展、审核、决策。不要和 AI 比编码，要比谁能更好地指挥 AI——command、skill、agent、工作流、质量管理、规则管理。',
+  },
+  {
+    id: 'intern',
+    icon: 'Users',
+    title: 'AI 是高能实习生',
+    description:
+      '能力强、速度快、没判断力、偶尔一本正经胡说八道。用它完成 80% 的执行工作，你把控最后 20%——这 20% 就是你的价值所在。',
   },
 ];
 
