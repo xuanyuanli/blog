@@ -7,16 +7,18 @@ import Navbar from '@/components/Navbar';
 
 /** 静态路由参数生成 */
 export function generateStaticParams(): { slug: string }[] {
-  return getAllThoughtSlugs().map((slug) => ({ slug }));
+  return getAllThoughtSlugs().map((slug) => ({ slug: encodeURIComponent(slug) }));
 }
 
 /** 思考碎片详情页 */
-export default function ThoughtDetailPage({
+export default async function ThoughtDetailPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const thought = getThoughtBySlug(params.slug);
+  const { slug: encodedSlug } = await params;
+  const slug = decodeURIComponent(encodedSlug);
+  const thought = getThoughtBySlug(slug);
 
   if (!thought) {
     return (

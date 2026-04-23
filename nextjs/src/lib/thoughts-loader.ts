@@ -11,6 +11,28 @@ function slugFromFilename(filename: string): string {
   return filename.replace(/\.md$/, '').replace(/^\d+\./, '');
 }
 
+/**
+ * 将 frontmatter 中的 date 统一格式化为 YYYY-MM-DD
+ * gray-matter 会自动将日期字符串解析为 Date 对象，
+ * 需要将其转换回简洁的日期格式。
+ */
+function normalizeDate(raw: unknown): string {
+  if (raw instanceof Date) {
+    return raw.toISOString().slice(0, 10);
+  }
+  const str = String(raw).trim();
+  // 如果已经是 YYYY-MM-DD 格式，直接返回
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
+    return str;
+  }
+  // 尝试解析其他格式
+  const d = new Date(str);
+  if (!isNaN(d.getTime())) {
+    return d.toISOString().slice(0, 10);
+  }
+  return str;
+}
+
 /** 读取并解析单个 Markdown 文件 */
 function parseThoughtFile(filename: string): Thought {
   const slug = slugFromFilename(filename);
@@ -21,7 +43,7 @@ function parseThoughtFile(filename: string): Thought {
   return {
     slug,
     title: String(data.title),
-    date: String(data.date),
+    date: normalizeDate(data.date),
     excerpt: String(data.excerpt),
     content: content.trim(),
   };
