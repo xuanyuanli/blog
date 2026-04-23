@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { thoughts } from '@/content/thoughts';
+import { getAllThoughts } from '@/lib/thoughts-loader';
 import Navbar from '@/components/Navbar';
 
 /** 思考碎片列表页 */
 export default function ThoughtsPage() {
+  const thoughts = getAllThoughts();
+
   return (
     <main>
       <Navbar />

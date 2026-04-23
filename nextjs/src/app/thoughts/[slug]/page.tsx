@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { getAllThoughtSlugs, getThoughtBySlug } from '@/content/thoughts';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { getAllThoughtSlugs, getThoughtBySlug } from '@/lib/thoughts-loader';
 import Navbar from '@/components/Navbar';
 
 /** 静态路由参数生成 */
@@ -48,50 +50,14 @@ export default function ThoughtDetailPage({
             {thought.date}
           </time>
 
-          {/* 正文 - 简单的 Markdown 渲染 */}
-          <div className="prose prose-invert max-w-none">
-            {thought.content.split('\n').map((line, i) => {
-              // 标题
-              if (line.startsWith('### ')) {
-                return <h3 key={i} className="text-xl font-semibold mt-8 mb-4">{line.slice(4)}</h3>;
-              }
-              if (line.startsWith('## ')) {
-                return <h2 key={i} className="text-2xl font-semibold mt-8 mb-4">{line.slice(3)}</h2>;
-              }
-              // 列表项
-              if (line.startsWith('- ')) {
-                return <li key={i} className="text-[var(--text-secondary)] ml-4">{renderInlineMarkdown(line.slice(2))}</li>;
-              }
-              // 有序列表
-              if (/^\d+\.\s/.test(line)) {
-                const text = line.replace(/^\d+\.\s/, '');
-                return <li key={i} className="text-[var(--text-secondary)] ml-4 list-decimal">{renderInlineMarkdown(text)}</li>;
-              }
-              // 加粗
-              if (line.startsWith('**') && line.endsWith('**')) {
-                return <p key={i} className="font-semibold mt-4">{line.slice(2, -2)}</p>;
-              }
-              // 空行
-              if (line.trim() === '') {
-                return <br key={i} />;
-              }
-              // 普通段落
-              return <p key={i} className="text-[var(--text-secondary)] leading-relaxed">{renderInlineMarkdown(line)}</p>;
-            })}
+          {/* 正文 - react-markdown 渲染 */}
+          <div className="markdown-body">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {thought.content}
+            </ReactMarkdown>
           </div>
         </div>
       </article>
     </main>
   );
-}
-
-/** 简单的内联 Markdown 渲染（加粗） */
-function renderInlineMarkdown(text: string): React.ReactNode {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
-    }
-    return part;
-  });
 }

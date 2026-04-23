@@ -3,11 +3,10 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { getLatestThoughts } from '@/content/thoughts';
+import type { Thought } from '@/lib/types';
 
-/** 首页思考碎片板块组件 - 展示最新 3 条思考 */
-export default function Thoughts() {
-  const latestThoughts = getLatestThoughts(3);
+/** 首页思考碎片板块组件 - 展示最新思考 */
+export default function Thoughts({ thoughts }: { thoughts: Thought[] }) {
 
   return (
     <section id="thoughts" className="py-24 px-6">
@@ -32,7 +31,7 @@ export default function Thoughts() {
         </motion.p>
 
         <div className="space-y-6">
-          {latestThoughts.map((thought, index) => (
+          {thoughts.map((thought, index) => (
             <motion.div
               key={thought.slug}
               initial={{ opacity: 0, y: 20 }}
