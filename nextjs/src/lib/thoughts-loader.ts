@@ -6,9 +6,9 @@ import type { Thought } from '@/lib/types';
 /** Markdown 文件目录 */
 const THOUGHTS_DIR = path.join(process.cwd(), 'src', 'content', 'thoughts');
 
-/** 从文件名提取 slug */
+/** 从文件名提取 slug（去掉数字前缀） */
 function slugFromFilename(filename: string): string {
-  return filename.replace(/\.md$/, '');
+  return filename.replace(/\.md$/, '').replace(/^\d+\./, '');
 }
 
 /** 读取并解析单个 Markdown 文件 */
@@ -52,10 +52,17 @@ export function getLatestThoughts(count: number = 3): Thought[] {
 
 /** 根据 slug 获取思考碎片 */
 export function getThoughtBySlug(slug: string): Thought | undefined {
-  const filename = `${slug}.md`;
-  const filePath = path.join(THOUGHTS_DIR, filename);
+  if (!fs.existsSync(THOUGHTS_DIR)) {
+    return undefined;
+  }
 
-  if (!fs.existsSync(filePath)) {
+  const files = fs
+    .readdirSync(THOUGHTS_DIR)
+    .filter((f) => f.endsWith('.md'));
+
+  // 查找 slug 匹配的文件
+  const filename = files.find((f) => slugFromFilename(f) === slug);
+  if (!filename) {
     return undefined;
   }
 
