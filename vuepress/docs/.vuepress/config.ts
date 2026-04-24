@@ -22,7 +22,7 @@ export default defineConfig4CustomTheme<VdoingThemeConfig>({
         }
     },
     // @ts-ignore
-    base: '/', // 默认'/'。如果你想将你的网站部署到如 https://foo.github.io/bar/，那么 base 应该被设置成 "/bar/",（否则页面将失去样式等文件）
+    base: '/archive/', // 旧博客已迁移到 /archive/ 子路径，base 必须与部署路径一致，否则资源引用 404
 
     // 主题配置
     themeConfig: {
