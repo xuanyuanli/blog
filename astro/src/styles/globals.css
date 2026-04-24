@@ -11,6 +11,8 @@
   --accent-end: #8b5cf6;
   --border-color: rgba(255, 255, 255, 0.1);
   --card-bg: rgba(255, 255, 255, 0.05);
+  --font-geist-sans: 'Geist', system-ui, sans-serif;
+  --font-geist-mono: 'Geist Mono', monospace;
 }
 
 * {
@@ -20,6 +22,7 @@
 body {
   color: var(--text-primary);
   background: var(--bg-primary);
+  cursor: default;
 }
 
 /* 自定义滚动条 */

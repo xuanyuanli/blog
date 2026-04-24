@@ -1,0 +1,41 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import AiPhilosophy from '@/components/AiPhilosophy';
+import CaseStudy from '@/components/CaseStudy';
+import Thoughts from '@/components/Thoughts';
+import Archive from '@/components/Archive';
+import Contact from '@/components/Contact';
+import { getCollection } from 'astro:content';
+import type { Thought } from '@/lib/types';
+
+/** 获取最新 N 条思考碎片 */
+async function getLatestThoughts(count: number = 3): Promise<Thought[]> {
+  const entries = await getCollection('thoughts');
+  const sorted = entries.sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime()
+  );
+  return sorted.slice(0, count).map((entry) => ({
+    slug: entry.data.path || entry.slug,
+    title: entry.data.title,
+    date: entry.data.date.toISOString().slice(0, 10),
+    excerpt: entry.data.excerpt,
+    content: entry.body ?? '',
+  }));
+}
+
+const latestThoughts = await getLatestThoughts(3);
+---
+
+<BaseLayout>
+  <main>
+    <Navbar client:load />
+    <Hero client:load />
+    <AiPhilosophy client:visible />
+    <CaseStudy client:visible />
+    <Thoughts client:visible thoughts={latestThoughts} />
+    <Archive client:visible />
+    <Contact client:visible />
+  </main>
+</BaseLayout>

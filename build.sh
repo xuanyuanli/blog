@@ -11,8 +11,8 @@ for arg in "$@"; do
     esac
 done
 
-# 构建 Next.js 新站
-docker run --rm -v /workspace/blog:/app -w /app/nextjs docker.1ms.run/node:20 sh -c \
+# 构建 Astro 新站
+docker run --rm -v /workspace/blog:/app -w /app/astro docker.1ms.run/node:20 sh -c \
   'npm install --registry=https://registry.npmmirror.com && npm run build'
 
 # 构建旧博客（可选）
@@ -26,7 +26,7 @@ fi
 if [ ! -d /var/www/blog ];then
   mkdir -p /var/www/blog
 fi
-rsync -av --delete /workspace/blog/nextjs/out/ /var/www/blog/
+rsync -av --delete /workspace/blog/astro/dist/ /var/www/blog/
 
 # 部署旧博客到 /archive/ 子路径（可选）
 if [ "$WITH_ARCHIVE" = true ]; then

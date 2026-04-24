@@ -27,9 +27,9 @@ node bin/bops.js
   ╚═══════════════════════════════╝
 
 ❯ 配置服务器连接信息
-  构建并发布新博客（Next.js）
+  构建并发布新博客（Astro）
   构建并发布旧博客（VuePress）
-  构建并发布新旧博客（Next.js + VuePress）
+  构建并发布新旧博客（Astro + VuePress）
   同步 Nginx 配置
   查看版本历史
   退出
@@ -76,7 +76,7 @@ node bin/bops.js versions
 
 以 `deploy` 为例，完整流程：
 
-1. **本地构建** — 在 `nextjs/` 或 `vuepress/` 目录执行 `npm run build`
+1. **本地构建** — 在 `astro/` 或 `vuepress/` 目录执行 `npm run build`
 2. **压缩产物** — 将构建输出目录打包为 zip
 3. **SSH 上传** — 通过 SFTP 上传 zip 到服务器 `/tmp/`
 4. **归档旧版本** — 将服务器当前版本备份到 `/data/deploy/blog-archives/<项目>/<tag>/`
@@ -87,7 +87,7 @@ node bin/bops.js versions
 
 | 项目 | 本地目录 | 远程路径 | 构建产物 |
 |------|----------|----------|----------|
-| nextjs | `nextjs/` | `/var/www/blog/` | `nextjs/out/` |
+| astro | `astro/` | `/var/www/blog/` | `astro/dist/` |
 | vuepress | `vuepress/` | `/var/www/blog/archive/` | `vuepress/docs/.vuepress/dist/` |
 
 ## Nginx 同步

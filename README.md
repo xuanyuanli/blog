@@ -6,20 +6,21 @@
 
 ```
 .
-├── nextjs/          # 新站（Next.js）
+├── astro/           # 新站（Astro）
 ├── vuepress/        # 旧博客（VuePress）
 ├── nginx/           # Nginx 配置
+├── blog-ops/        # 运维工具
 └── build.sh         # 构建脚本
 ```
 
 ## 子项目
 
-### nextjs
+### astro
 
-基于 [Next.js](https://nextjs.org) 构建的新版博客。
+基于 [Astro](https://astro.build) + React 构建的新版博客。
 
 ```bash
-cd nextjs
+cd astro
 npm install
 npm run dev        # 本地开发
 npm run build      # 生产构建
@@ -40,4 +41,11 @@ npm run build      # 生产构建
 
 ```bash
 bash build.sh
+```
+
+或使用运维工具：
+
+```bash
+cd blog-ops
+node bin/bops.js
 ```

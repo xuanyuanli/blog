@@ -16,9 +16,9 @@ type MenuItem = {
 
 const MENU_ITEMS: MenuItem[] = [
   { name: '配置服务器连接信息', value: 'config' },
-  { name: '构建并发布新博客（Next.js）', value: 'deploy-nextjs' },
+  { name: '构建并发布新博客（Astro）', value: 'deploy-astro' },
   { name: '构建并发布旧博客（VuePress）', value: 'deploy-vuepress' },
-  { name: '构建并发布新旧博客（Next.js + VuePress）', value: 'deploy-all' },
+  { name: '构建并发布新旧博客（Astro + VuePress）', value: 'deploy-all' },
   { name: '同步 Nginx 配置', value: 'nginx' },
   { name: '查看版本历史', value: 'versions' },
   { name: '退出', value: 'exit' },
@@ -77,11 +77,11 @@ async function runDeploy(opts: {
   }
 
   // 确定要部署的项目
-  const projects: ('nextjs' | 'vuepress')[] = opts.vuepressOnly
+  const projects: ('astro' | 'vuepress')[] = opts.vuepressOnly
     ? ['vuepress']
     : opts.withArchive
-      ? ['nextjs', 'vuepress']
-      : ['nextjs'];
+      ? ['astro', 'vuepress']
+      : ['astro'];
 
   printBanner();
   console.log(chalk.gray('  服务器: ') + chalk.yellow(`${config.server.username}@${config.server.host}`));
@@ -247,9 +247,9 @@ async function main(): Promise<void> {
 
     try {
       switch (action) {
-        case 'deploy-nextjs':
+        case 'deploy-astro':
           await blogDeploy(currentConfig, {
-            projects: ['nextjs'],
+            projects: ['astro'],
             skipBuild: false,
             skipConfirm: false,
           });
@@ -263,7 +263,7 @@ async function main(): Promise<void> {
           break;
         case 'deploy-all':
           await blogDeploy(currentConfig, {
-            projects: ['nextjs', 'vuepress'],
+            projects: ['astro', 'vuepress'],
             skipBuild: false,
             skipConfirm: false,
           });

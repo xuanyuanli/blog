@@ -1,0 +1,47 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Navbar from '@/components/Navbar';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('thoughts');
+  return entries.map((entry) => ({
+    params: { slug: entry.data.path || entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const title = entry.data.title;
+const date = entry.data.date.toISOString().slice(0, 10);
+const { Content } = await entry.render();
+---
+
+<BaseLayout title={`${title} | 轩辕李`}>
+  <main>
+    <Navbar client:load />
+    <article class="min-h-screen pt-24 pb-16 px-6 cursor-default">
+      <div class="max-w-3xl mx-auto">
+        <!-- 返回 -->
+        <a
+          href="/thoughts"
+          class="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-white transition-colors mb-12"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>返回列表</span>
+        </a>
+
+        <!-- 标题 -->
+        <h1 class="text-4xl font-bold mb-4">{title}</h1>
+        <time class="text-sm text-[var(--text-secondary)] mb-8 block">{date}</time>
+
+        <!-- 正文 -->
+        <div class="markdown-body">
+          <Content />
+        </div>
+      </div>
+    </article>
+  </main>
+</BaseLayout>

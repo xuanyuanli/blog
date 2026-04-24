@@ -1,5 +1,3 @@
-'use client';
-
 import { motion } from 'framer-motion';
 import { caseStudies } from '@/content/site';
 

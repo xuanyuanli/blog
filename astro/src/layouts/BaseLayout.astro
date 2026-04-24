@@ -1,0 +1,68 @@
+---
+import '@/styles/globals.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = '轩辕李 | 和 AI 一起编程',
+  description = 'AI 编程时代的实践者与思考者',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content="AI编程,提示工程,轩辕李,个人展示" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>{title}</title>
+  </head>
+  <body class="font-sans antialiased bg-primary text-[var(--text-primary)]">
+    <slot />
+
+    <!-- 滚动位置恢复脚本（替代 React 版 ScrollRestoration） -->
+    <script>
+      const KEY_PREFIX = 'scroll-pos-';
+
+      function getKey(path: string): string {
+        return KEY_PREFIX + path;
+      }
+
+      // 页面加载时恢复滚动位置
+      const saved = sessionStorage.getItem(getKey(location.pathname));
+      if (saved) {
+        try {
+          const pos = parseInt(saved, 10);
+          if (!isNaN(pos) && pos > 0) {
+            requestAnimationFrame(() => {
+              scrollTo({ top: pos, behavior: 'instant' as ScrollBehavior });
+            });
+          }
+        } catch { /* ignore */ }
+        sessionStorage.removeItem(getKey(location.pathname));
+      }
+
+      // F5 刷新前保存
+      window.addEventListener('beforeunload', () => {
+        sessionStorage.setItem(getKey(location.pathname), String(scrollY));
+      });
+
+      // 点击内部导航链接时保存当前位置
+      document.addEventListener('click', (e: MouseEvent) => {
+        const el = (e.target as HTMLElement).closest('a');
+        if (!el) return;
+        const href = el.getAttribute('href');
+        if (!href) return;
+        // 内部链接且不是锚点
+        if (href.startsWith('/') && !href.startsWith('//') && !href.startsWith('#')) {
+          sessionStorage.setItem(getKey(location.pathname), String(scrollY));
+        }
+      }, true);
+    </script>
+  </body>
+</html>

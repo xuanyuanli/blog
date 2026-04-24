@@ -1,13 +1,13 @@
-'use client';
-
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
 import type { Thought } from '@/lib/types';
 
-/** 首页思考碎片板块组件 - 展示最新思考 */
-export default function Thoughts({ thoughts }: { thoughts: Thought[] }) {
+interface Props {
+  thoughts: Thought[];
+}
 
+/** 首页思考碎片板块组件 - 展示最新思考 */
+export default function Thoughts({ thoughts }: Props) {
   return (
     <section id="thoughts" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
@@ -39,7 +39,7 @@ export default function Thoughts({ thoughts }: { thoughts: Thought[] }) {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
             >
-              <Link
+              <a
                 href={`/thoughts/${thought.slug}`}
                 className="block p-6 rounded-xl border border-white/10 bg-[var(--card-bg)] hover:border-accent-start/50 transition-all duration-300 group"
               >
@@ -59,7 +59,7 @@ export default function Thoughts({ thoughts }: { thoughts: Thought[] }) {
                   </div>
                   <ArrowRight className="w-5 h-5 text-[var(--text-secondary)] group-hover:text-accent-start transition-colors mt-6 flex-shrink-0" />
                 </div>
-              </Link>
+              </a>
             </motion.div>
           ))}
         </div>
@@ -72,13 +72,13 @@ export default function Thoughts({ thoughts }: { thoughts: Thought[] }) {
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
         >
-          <Link
+          <a
             href="/thoughts"
             className="inline-flex items-center gap-2 text-accent-start hover:text-accent-end transition-colors"
           >
             <span>查看全部</span>
             <ArrowRight className="w-4 h-4" />
-          </Link>
+          </a>
         </motion.div>
       </div>
     </section>

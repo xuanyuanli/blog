@@ -1,5 +1,3 @@
-'use client';
-
 import { motion } from 'framer-motion';
 import { Crosshair, Gauge, Shuffle, Scale, Users } from 'lucide-react';
 import { philosophies } from '@/content/site';

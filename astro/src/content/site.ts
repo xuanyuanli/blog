@@ -64,10 +64,10 @@ export const caseStudies: CaseStudy[] = [
     id: 'this-site',
     title: '本站：用 AI 重构个人品牌站点',
     description:
-      '从 VuePress + vdoing 主题的传统博客，到 Next.js + Tailwind CSS 的现代展示站。AI 参与了 80% 的代码生成。',
-    tags: ['Next.js 16', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
+      '从 VuePress + vdoing 主题的传统博客，到 Astro + Tailwind CSS 的现代展示站。AI 参与了 80% 的代码生成。',
+    tags: ['Astro', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
     highlights: [
-      'VuePress → Next.js，技术栈全面升级',
+      'VuePress → Astro，技术栈全面升级',
       'AI 参与架构设计、组件实现、样式编写',
       '静态导出，零运维成本',
       '从"知识仓库"到"个人品牌"的定位转型',

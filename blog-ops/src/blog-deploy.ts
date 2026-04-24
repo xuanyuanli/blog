@@ -18,13 +18,13 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
 
 /**
  * 博客项目列表
- * nextjs: 新博客（必选）
+ * astro: 新博客（必选）
  * vuepress: 旧博客（可选，部署到 /archive/ 子路径）
  */
 const BLOG_PROJECTS: BlogProject[] = [
   {
-    name: 'nextjs',
-    dir: 'nextjs',
+    name: 'astro',
+    dir: 'astro',
     optional: false,
   },
   {
@@ -97,21 +97,21 @@ export async function blogDeploy(
   config: DeployConfig,
   options: {
     /** 要部署的项目列表 */
-    projects: ('nextjs' | 'vuepress')[];
+    projects: ('astro' | 'vuepress')[];
     /** 是否跳过构建（直接部署已有产物） */
     skipBuild: boolean;
     /** 是否跳过确认 */
     skipConfirm: boolean;
-  } = { projects: ['nextjs'], skipBuild: false, skipConfirm: false }
+  } = { projects: ['astro'], skipBuild: false, skipConfirm: false }
 ): Promise<void> {
   // 确定要部署的项目
-  const selectedProjects = BLOG_PROJECTS.filter((p) => options.projects.includes(p.name as 'nextjs' | 'vuepress'));
+  const selectedProjects = BLOG_PROJECTS.filter((p) => options.projects.includes(p.name as 'astro' | 'vuepress'));
 
   // 显示操作信息
   console.log(chalk.yellow('\n即将执行：'));
   console.log(`  目标服务器: ${chalk.white(`${config.server.username}@${config.server.host}`)}`);
   for (const p of selectedProjects) {
-    const remoteDesc = p.name === 'nextjs'
+    const remoteDesc = p.name === 'astro'
       ? config.blogRemoteRoot
       : `${config.blogRemoteRoot}/archive/`;
     console.log(`  ${chalk.white(p.name)}  →  ${chalk.gray(remoteDesc)}`);
@@ -162,15 +162,15 @@ export async function blogDeploy(
       }
 
       // 确定构建产物目录
-      const distDir = project.name === 'nextjs'
-        ? path.join(projectDir, 'out')
+      const distDir = project.name === 'astro'
+        ? path.join(projectDir, 'dist')
         : path.join(projectDir, 'docs', '.vuepress', 'dist');
 
       // 构建（除非跳过）
       if (!options.skipBuild) {
         console.log(chalk.cyan(`\n[${project.name}] 开始构建\n`));
 
-        const buildCmd = project.name === 'nextjs' ? 'npm run build' : 'npm run build';
+        const buildCmd = project.name === 'astro' ? 'npm run build' : 'npm run build';
         console.log(chalk.green(`执行 ${buildCmd}...`));
         const buildCode = await runLocal('npm', ['run', 'build'], projectDir);
         if (buildCode !== 0) {
@@ -191,7 +191,7 @@ export async function blogDeploy(
       compressSpinner.succeed(`[${project.name}] 压缩完成 (${formatBytes(zipSize)})`);
 
       // 确定远程目标目录
-      const remoteTargetDir = project.name === 'nextjs'
+      const remoteTargetDir = project.name === 'astro'
         ? config.blogRemoteRoot
         : `${config.blogRemoteRoot}/archive/`;
       const remoteZipPath = `/tmp/${zipName}`;
