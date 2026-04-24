@@ -190,10 +190,10 @@ export async function blogDeploy(
       const zipSize = fs.statSync(zipPath).size;
       compressSpinner.succeed(`[${project.name}] 压缩完成 (${formatBytes(zipSize)})`);
 
-      // 确定远程目标目录
+      // 确定远程目标目录（vuepress 独立存放，避免 astro 部署时 rm -rf 误删）
       const remoteTargetDir = project.name === 'astro'
         ? config.blogRemoteRoot
-        : `${config.blogRemoteRoot}/archive/`;
+        : '/var/www/blog-archive';
       const remoteZipPath = `/tmp/${zipName}`;
 
       // 上传 zip

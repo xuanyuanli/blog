@@ -88,7 +88,7 @@ node bin/bops.js versions
 | 项目 | 本地目录 | 远程路径 | 构建产物 |
 |------|----------|----------|----------|
 | astro | `astro/` | `/var/www/blog/` | `astro/dist/` |
-| vuepress | `vuepress/` | `/var/www/blog/archive/` | `vuepress/docs/.vuepress/dist/` |
+| vuepress | `vuepress/` | `/var/www/blog-archive/` | `vuepress/docs/.vuepress/dist/` |
 
 ## Nginx 同步
 
