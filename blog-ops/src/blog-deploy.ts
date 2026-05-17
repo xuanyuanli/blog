@@ -7,7 +7,7 @@ import os from 'os';
 import archiver from 'archiver';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
-import { DeployConfig, BlogProject } from './types.js';
+import { DeployConfig, BlogProject, BlogProjectName } from './types.js';
 import { createSSHClient, formatBytes } from './ssh.js';
 import { VersionManager } from './version-manager.js';
 
@@ -20,17 +20,26 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
  * 博客项目列表
  * astro: 新博客（必选）
  * vuepress: 旧博客（可选，部署到 /archive/ 子路径）
+ * stock: 股票静态页（可选，部署到主站 /stock/ 路径）
  */
 const BLOG_PROJECTS: BlogProject[] = [
   {
     name: 'astro',
     dir: 'astro',
     optional: false,
+    build: true,
   },
   {
     name: 'vuepress',
     dir: 'vuepress',
     optional: true,
+    build: true,
+  },
+  {
+    name: 'stock',
+    dir: 'stock',
+    optional: true,
+    build: false,
   },
 ];
 
@@ -88,6 +97,28 @@ function generateTag(): string {
   return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
 }
 
+function getDistDir(project: BlogProject, projectDir: string): string {
+  switch (project.name) {
+    case 'astro':
+      return path.join(projectDir, 'dist');
+    case 'vuepress':
+      return path.join(projectDir, 'docs', '.vuepress', 'dist');
+    case 'stock':
+      return projectDir;
+  }
+}
+
+function getRemoteTargetDir(project: BlogProject, config: DeployConfig): string {
+  switch (project.name) {
+    case 'astro':
+      return config.blogRemoteRoot;
+    case 'vuepress':
+      return '/var/www/blog-archive';
+    case 'stock':
+      return '/var/www/stock';
+  }
+}
+
 /**
  * 博客构建与部署主流程
  * @param config 环境配置
@@ -97,7 +128,7 @@ export async function blogDeploy(
   config: DeployConfig,
   options: {
     /** 要部署的项目列表 */
-    projects: ('astro' | 'vuepress')[];
+    projects: BlogProjectName[];
     /** 是否跳过构建（直接部署已有产物） */
     skipBuild: boolean;
     /** 是否跳过确认 */
@@ -105,15 +136,13 @@ export async function blogDeploy(
   } = { projects: ['astro'], skipBuild: false, skipConfirm: false }
 ): Promise<void> {
   // 确定要部署的项目
-  const selectedProjects = BLOG_PROJECTS.filter((p) => options.projects.includes(p.name as 'astro' | 'vuepress'));
+  const selectedProjects = BLOG_PROJECTS.filter((p) => options.projects.includes(p.name));
 
   // 显示操作信息
   console.log(chalk.yellow('\n即将执行：'));
   console.log(`  目标服务器: ${chalk.white(`${config.server.username}@${config.server.host}`)}`);
   for (const p of selectedProjects) {
-    const remoteDesc = p.name === 'astro'
-      ? config.blogRemoteRoot
-      : `${config.blogRemoteRoot}/archive/`;
+    const remoteDesc = getRemoteTargetDir(p, config);
     console.log(`  ${chalk.white(p.name)}  →  ${chalk.gray(remoteDesc)}`);
   }
 
@@ -161,17 +190,14 @@ export async function blogDeploy(
         throw new Error(`[${project.name}] 本地项目目录不存在: ${projectDir}`);
       }
 
-      // 确定构建产物目录
-      const distDir = project.name === 'astro'
-        ? path.join(projectDir, 'dist')
-        : path.join(projectDir, 'docs', '.vuepress', 'dist');
+      // 确定构建产物目录；stock 是纯静态目录，不需要构建
+      const distDir = getDistDir(project, projectDir);
 
       // 构建（除非跳过）
-      if (!options.skipBuild) {
+      if (project.build && !options.skipBuild) {
         console.log(chalk.cyan(`\n[${project.name}] 开始构建\n`));
 
-        const buildCmd = project.name === 'astro' ? 'npm run build' : 'npm run build';
-        console.log(chalk.green(`执行 ${buildCmd}...`));
+        console.log(chalk.green('执行 npm run build...'));
         const buildCode = await runLocal('npm', ['run', 'build'], projectDir);
         if (buildCode !== 0) {
           throw new Error(`[${project.name}] 构建失败 (exit code ${buildCode})`);
@@ -190,10 +216,8 @@ export async function blogDeploy(
       const zipSize = fs.statSync(zipPath).size;
       compressSpinner.succeed(`[${project.name}] 压缩完成 (${formatBytes(zipSize)})`);
 
-      // 确定远程目标目录（vuepress 独立存放，避免 astro 部署时 rm -rf 误删）
-      const remoteTargetDir = project.name === 'astro'
-        ? config.blogRemoteRoot
-        : '/var/www/blog-archive';
+      // 确定远程目标目录（各项目独立存放，避免互相清空）
+      const remoteTargetDir = getRemoteTargetDir(project, config);
       const remoteZipPath = `/tmp/${zipName}`;
 
       // 上传 zip

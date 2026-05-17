@@ -8,6 +8,7 @@ import { nginxSync } from './nginx-sync.js';
 import { blogDeploy } from './blog-deploy.js';
 import { createSSHClient } from './ssh.js';
 import { VersionManager } from './version-manager.js';
+import { BlogProjectName } from './types.js';
 
 type MenuItem = {
   name: string;
@@ -18,6 +19,7 @@ const MENU_ITEMS: MenuItem[] = [
   { name: '配置服务器连接信息', value: 'config' },
   { name: '构建并发布新博客（Astro）', value: 'deploy-astro' },
   { name: '构建并发布旧博客（VuePress）', value: 'deploy-vuepress' },
+  { name: '发布股票静态页（Stock）', value: 'deploy-stock' },
   { name: '构建并发布新旧博客（Astro + VuePress）', value: 'deploy-all' },
   { name: '同步 Nginx 配置', value: 'nginx' },
   { name: '查看版本历史', value: 'versions' },
@@ -63,11 +65,13 @@ async function requireConfig(): Promise<ReturnType<typeof configManager.getConfi
 
 /**
  * 命令行一键发布模式
- * bops deploy [--with-archive | --vuepress-only] [--skip-build]
+ * bops deploy [--with-archive | --with-stock | --vuepress-only | --stock-only] [--skip-build]
  */
 async function runDeploy(opts: {
   withArchive: boolean;
+  withStock: boolean;
   vuepressOnly: boolean;
+  stockOnly: boolean;
   skipBuild: boolean;
 }): Promise<void> {
   const config = configManager.getConfig();
@@ -77,11 +81,20 @@ async function runDeploy(opts: {
   }
 
   // 确定要部署的项目
-  const projects: ('astro' | 'vuepress')[] = opts.vuepressOnly
-    ? ['vuepress']
-    : opts.withArchive
-      ? ['astro', 'vuepress']
-      : ['astro'];
+  let projects: BlogProjectName[];
+  if (opts.stockOnly) {
+    projects = ['stock'];
+  } else if (opts.vuepressOnly) {
+    projects = ['vuepress'];
+  } else {
+    projects = ['astro'];
+    if (opts.withArchive) {
+      projects.push('vuepress');
+    }
+    if (opts.withStock) {
+      projects.push('stock');
+    }
+  }
 
   printBanner();
   console.log(chalk.gray('  服务器: ') + chalk.yellow(`${config.server.username}@${config.server.host}`));
@@ -153,12 +166,16 @@ async function main(): Promise<void> {
     .command('deploy')
     .description('构建并发布博客')
     .option('-a, --with-archive', '同时发布旧博客（VuePress）到 /archive/')
+    .option('--with-stock', '同时发布股票静态页（Stock）')
     .option('-v, --vuepress-only', '仅发布旧博客（VuePress）')
+    .option('--stock-only', '仅发布股票静态页（Stock）')
     .option('-s, --skip-build', '跳过构建，直接部署已有产物')
     .action(async (opts) => {
       await runDeploy({
         withArchive: opts.withArchive ?? false,
+        withStock: opts.withStock ?? false,
         vuepressOnly: opts.vuepressOnly ?? false,
+        stockOnly: opts.stockOnly ?? false,
         skipBuild: opts.skipBuild ?? false,
       });
     });
@@ -258,6 +275,13 @@ async function main(): Promise<void> {
           await blogDeploy(currentConfig, {
             projects: ['vuepress'],
             skipBuild: false,
+            skipConfirm: false,
+          });
+          break;
+        case 'deploy-stock':
+          await blogDeploy(currentConfig, {
+            projects: ['stock'],
+            skipBuild: true,
             skipConfirm: false,
           });
           break;

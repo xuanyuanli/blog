@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>H200 整机成本产业链拆解</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #dbeafe; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #2563eb; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #2563eb; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .tree details details > summary { font-weight: 700; }
+    .cost { display: inline-block; border-radius: 999px; background: #e0f2fe; color: #075985; padding: .12rem .55rem; font-size: .78rem; font-weight: 700; vertical-align: middle; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .why { color: #475569; }
+    a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-blue-400/20 px-3 py-1 text-sm text-blue-100">8 卡 NVIDIA DGX/HGX H200 服务器</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">更新口径：2026-05-17 19:58 UTC+8</span>
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">公开资料估算，非官方 BOM</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">H200 整机成本产业链拆解</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        本页以 8 卡 H200 服务器为对象，从成本角度拆解整机、GPU（图形处理器）模块、HBM（高带宽存储器）、CoWoS（Chip-on-Wafer-on-Substrate，晶圆上芯片再上基板的 2.5D 先进封装）、PCB（印制电路板）、网络、电源散热等环节。由于 NVIDIA（英伟达）和 OEM（原始设备制造商）不披露逐项 BOM（物料清单），下方比例采用公开报价、官方规格、供应商公告和产业研究资料交叉后的区间表达。
+      </p>
+      <div class="mt-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm leading-6 text-slate-100">
+        <p class="font-semibold">数据与信源规则</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li>所有供应链判断以最新可得数据为准，并在页面标注当前更新时间；过期信息不作为核心结论依据。</li>
+          <li>优先采用 NVIDIA 官方资料、供应商公告、上市公司定期报告、交易所问询回复、客户认证披露和权威产业研究；不把自媒体、传闻或未经交叉验证的新闻当作确认供货依据。</li>
+          <li>A 股公司只有在具备权威资料支撑，或在对应环节与 NVIDIA AI 服务器链条有明确高相关性时才列入；无法确认进入 NVIDIA 产业链的公司不写入本报告。</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">8 卡整机公开报价</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 23.6-36.6 万美元起</p>
+        <p class="mt-2 text-sm text-slate-600">Supermicro、Dell 等公开配置区间。含服务、交期和渠道溢价后可更高。</p>
+      </div>
+      <div class="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">最大成本池</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">GPU 加速子系统</p>
+        <p class="mt-2 text-sm text-slate-600">约占整机硬件价值 75%-85%，也是 H200 供需缺口核心。</p>
+      </div>
+      <div class="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">H200 官方规格</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">141GB HBM3e / GPU</p>
+        <p class="mt-2 text-sm text-slate-600">8 卡合计 1,128GB HBM3e，单 GPU 带宽 4.8TB/s。</p>
+      </div>
+      <div class="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">A 股标记</p>
+        <p class="mt-2 text-2xl font-bold text-red-600">A股重点</p>
+        <p class="mt-2 text-sm text-slate-600">优先标可进入 NVIDIA 服务器、连接、PCB、光通信、电源散热链的核心或高相关公司。</p>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-950">
+      <p class="font-semibold">阅读口径</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>“整机价值占比”按客户采购一台 8 卡 H200 服务器的硬件价值分布理解，不等同于 NVIDIA 制造成本。</li>
+        <li>“GPU（图形处理器）模块制造成本占比”只用于拆 H200 SXM（NVIDIA 服务器 GPU 模组形态）本身的成本结构，和最终市场售价差异很大。</li>
+        <li>EDA（电子设计自动化）、设备、材料不一定出现在单台服务器 BOM（物料清单）上，但会通过晶圆、封装、载板和 PCB（印制电路板）价格进入最终成本。</li>
+        <li>涉及 A 股公司时，优先列已被权威资料支撑或具备明确高相关卡位的公司；仅有市场传闻、媒体猜测或无法验证的“进入 NVIDIA 产业链”说法不纳入。</li>
+      </ul>
+    </section>
+
+    <section class="tree rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <ul class="list-disc space-y-3 pl-5">
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">0. 成本总览 <span class="cost">整机 100%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">GPU（图形处理器）加速子系统</span> <span class="cost">约 75%-85% / 约 18-31 万美元</span>：8 颗 H200 SXM、HBM3e（第三代增强型高带宽存储器）、CoWoS-S（硅中介层版 CoWoS，即晶圆上芯片再上基板的 2.5D 封装）、ABF（味之素堆积膜）载板、SXM 模块、NVSwitch（英伟达高速互连交换芯片）、HGX baseboard（HGX GPU 底板）、局部供电和热材料。它决定整机价格、交付周期和利润分配。</li>
+              <li><span class="font-semibold">主机平台</span> <span class="cost">约 6%-10% / 约 1.5-3.5 万美元</span>：双路 CPU（中央处理器）、2TB DDR5（第五代双倍数据率内存）、30TB NVMe（非易失性内存主机控制器接口规范）存储、服务器主板、BMC（基板管理控制器）、PCIe retimer（PCIe 信号重定时器）、电源管理 IC（集成电路）和机箱背板。</li>
+              <li><span class="font-semibold">网络互连</span> <span class="cost">约 5%-10% / 约 1.2-3.5 万美元</span>：10 张 ConnectX-7 400G NIC（网络接口卡）、线缆、光模块和交换机端口分摊。单机占比不如 GPU，但集群 TCO（总拥有成本）中权重会放大。</li>
+              <li><span class="font-semibold">电源、散热、结构件</span> <span class="cost">约 4%-8% / 约 1-3 万美元</span>：6 个 3.3kW PSU（电源供应器）、高风量风扇、散热器、风道、机箱、电源背板和机柜配套。</li>
+              <li><span class="font-semibold">整机集成、测试、保修、渠道和软件</span> <span class="cost">约 5%-12%</span>：老化测试、系统验证、售后服务、库存和交付风险。不同报价差异很大，往往来自这里和 GPU 供需溢价。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">1. 整机与系统集成链 <span class="cost">整机 100%；集成服务约 5%-12%</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">平台定义方</span> <span class="cost">决定整机价值分配</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVIDIA（英伟达）</span>：H200 GPU（图形处理器）、NVLink（英伟达 GPU 高速互连）、NVSwitch（英伟达高速互连交换芯片）、ConnectX（英伟达网卡产品线）、CUDA（英伟达并行计算平台）和 DGX/HGX（英伟达整机/服务器加速平台）参考架构的定义者。<span class="why">重要性在于它不是只卖 GPU，而是把芯片、互连、网络和软件栈绑定成事实标准，所以拥有最高议价权。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">品牌服务器/OEM</span> <span class="cost">整机报价中的服务、验证和交付价值</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Dell Technologies（戴尔科技）</span>：PowerEdge XE9680 是公开可见的 8 卡 H200 服务器代表。<span class="why">核心卡位在企业客户、售后、全球交付和系统认证。</span></li>
+                  <li><span class="font-semibold">HPE（慧与科技）</span>：HPC（高性能计算）和企业 AI（人工智能）基础设施强势。<span class="why">重要性在大客户集成、集群网络和长期服务能力。</span></li>
+                  <li><span class="font-semibold">Lenovo（联想）</span>：ThinkSystem 支持 H200 配置，全球服务器份额高。<span class="why">核心卡位是企业服务器渠道、供应链规模和多区域交付。</span></li>
+                  <li><span class="font-semibold">Supermicro（超微电脑）</span>：HGX H200 产品线丰富，价格透明度高。<span class="why">常是 AI 服务器快速上量的核心 OEM（原始设备制造商），也适合作为市场报价锚。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">官网产品</span> <span class="font-semibold">浪潮信息</span>：官网 GPU 服务器产品线可见采用 NVIDIA HGX Hopper 8-GPU 模块的机型。<span class="why">合作关系更适合表述为 NVIDIA HGX 平台服务器集成与产品适配，不写成单独 H200 订单；同时要跟踪出口管制、区域市场和具体 GPU 型号限制。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">ODM/JDM 与整机制造</span> <span class="cost">制造毛利薄，但决定交期和量产</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Quanta / QCT（广达 / 云达科技）</span>：全球云服务器 ODM（原始设计制造商）龙头。<span class="why">卡位在大型云客户定制服务器和高密度 GPU 系统制造。</span></li>
+                  <li><span class="font-semibold">Wiwynn（纬颖）</span>：云数据中心服务器 ODM 龙头之一。<span class="why">擅长 hyperscale（超大规模云）客户的定制化设计和快速量产。</span></li>
+                  <li><span class="font-semibold">Wistron（纬创）</span>：AI 服务器和加速模块重要厂商。<span class="why">卡位在 GPU 服务器制造、板卡集成和客户导入。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">NVIDIA/Foxconn</span> <span class="font-semibold">工业富联</span>：Foxconn 旗下 A 股平台，集团层面与 NVIDIA 在 Blackwell AI 工厂、AI 服务器和超级计算中心上有公开合作。<span class="why">核心卡位在 AI 服务器整机制造、高速交换设备和全球电子制造规模；报告按 Foxconn 体系和工业富联业务承接能力处理，不把未披露订单金额写成确定数。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">2. GPU（图形处理器）加速模块 <span class="cost">整机约 75%-85%</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">H200 SXM（服务器 GPU 模组形态）与平台控制权</span> <span class="cost">整机最大价值池</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVIDIA（英伟达）</span>：H200 SXM、NVLink（英伟达 GPU 高速互连）/NVSwitch（英伟达高速互连交换芯片）和 CUDA（英伟达并行计算平台）生态的唯一平台方。<span class="why">H200 价格不是由硅片成本单独决定，而由算力稀缺、软件生态、互连能力和客户迁移成本共同决定。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">EDA（电子设计自动化）、仿真和验证</span> <span class="cost">不进单台 BOM（物料清单）；摊入 GPU 溢价</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Synopsys（新思科技）</span>：全球 EDA 双寡头之一，覆盖逻辑综合、验证、时序、DFT（可测试性设计）和大量接口 IP（知识产权核）。<span class="why">大 GPU 设计复杂度极高，工具链决定功耗、面积、时序能否收敛。</span></li>
+                  <li><span class="font-semibold">Cadence（楷登电子）</span>：数字后端、模拟混合信号、封装协同设计和仿真强势。<span class="why">H200 这类产品要同时处理芯片、封装、SI（信号完整性）和 PI（电源完整性）。</span></li>
+                  <li><span class="font-semibold">Siemens EDA（西门子 EDA）</span>：Calibre 物理验证和 Mentor（明导）系工具是先进制程签核关键环节。<span class="why">先进节点流片前的 DRC（设计规则检查）/LVS（版图与原理图一致性检查）/DFM（面向制造的设计）签核决定能否进入 TSMC（台积电）量产流程。</span></li>
+                  <li><span class="font-semibold">Ansys（安似科技）</span>：电源完整性、热仿真和多物理场仿真龙头。<span class="why">H200 功耗和封装密度高，IR drop（电压降）、热热点和电迁移会影响频率、良率和寿命。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">GPU Die（图形处理器裸片）晶圆制造</span> <span class="cost">GPU 模块制造成本约 8%-15%；整机约 2%-5%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">TSMC（台积电）</span>：Hopper（NVIDIA Hopper GPU 架构代号，H100/H200 所属架构）GPU 使用 NVIDIA 定制的 TSMC 4N 工艺。<span class="why">同时掌握先进逻辑制造和 CoWoS（Chip-on-Wafer-on-Substrate，晶圆上芯片再上基板的 2.5D 先进封装），是 H200 量产交付的核心瓶颈之一。</span></li>
+                  <li><span class="font-semibold">ASML（阿斯麦）</span>：EUV（极紫外光刻）/DUV（深紫外光刻）设备核心供应商。<span class="why">先进逻辑产能扩张离不开 ASML，成本最终体现在 TSMC 晶圆价格里。</span></li>
+                  <li><span class="font-semibold">Applied Materials（应用材料）</span>：沉积、刻蚀、离子注入、CMP（化学机械抛光）等设备覆盖面最广。<span class="why">先进逻辑和先进封装都依赖其设备。</span></li>
+                  <li><span class="font-semibold">Lam Research（泛林集团）</span>：刻蚀和沉积设备强势。<span class="why">先进制程多层结构和 HBM（高带宽存储器）/封装相关工艺需要高一致性刻蚀沉积能力。</span></li>
+                  <li><span class="font-semibold">KLA（科磊）</span>：缺陷检测和量测龙头。<span class="why">H200 逻辑 Die 面积大，良率对成本极敏感。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">HBM3e（第三代增强型高带宽存储器）存储</span> <span class="cost">GPU 模块制造成本约 35%-45%；H200 最大增量</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">SK hynix（SK 海力士）</span>：HBM 龙头，率先量产 HBM3e。<span class="why">HBM 是 H200 的性能和成本核心，SK hynix 在堆叠、TSV（硅通孔）、热管理和 NVIDIA 认证上领先。</span></li>
+                  <li><span class="font-semibold">Micron（美光科技）</span>：官方宣布 24GB 8H（8 层堆叠）HBM3e 量产并用于 NVIDIA H200。<span class="why">Micron 是 H200 HBM3e 供应多元化的关键，公开资料中与 H200 绑定最明确。</span></li>
+                  <li><span class="font-semibold">Samsung Electronics（三星电子）</span>：全球 DRAM（动态随机存取存储器）龙头和 HBM 重要追赶者。<span class="why">即使 HBM3e 节奏相对慢，三星仍是 HBM 供给扩张和价格竞争的重要变量。</span></li>
+                  <li><span class="font-semibold">Advantest（爱德万测试）</span>：高端存储和 SoC（系统级芯片）测试设备龙头。<span class="why">HBM 需要 KGD（已知合格裸片）测试，测试良率直接影响可用于 CoWoS 的合格堆叠数量。</span></li>
+                  <li><span class="font-semibold">DISCO（迪思科）</span>：晶圆切割、减薄和研磨设备龙头。<span class="why">HBM 堆叠需要薄晶圆处理，是 TSV/HBM 制程中的关键设备商。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">CoWoS-S（硅中介层版 CoWoS，晶圆上芯片再上基板的 2.5D 先进封装）和硅中介层</span> <span class="cost">GPU 模块制造成本约 20%-30%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">TSMC（台积电）</span>：H200 所在 Hopper（NVIDIA Hopper GPU 架构代号）代际主要依赖 CoWoS-S。<span class="why">CoWoS 把 GPU Die（裸片）和多颗 HBM（高带宽存储器）放到同一封装中，是 H200 高带宽的物理基础。</span></li>
+                  <li><span class="font-semibold">BESI（贝思半导体）</span>：先进封装键合设备龙头。<span class="why">键合精度和吞吐影响先进封装良率。</span></li>
+                  <li><span class="font-semibold">ASMPT（ASM 太平洋科技）</span>：封装设备大厂，覆盖贴装、键合、互连等环节。<span class="why">先进封装扩产离不开封装设备供应。</span></li>
+                  <li><span class="font-semibold">Resonac（力森诺科）</span>：半导体封装材料大厂。<span class="why">底填、模塑等材料影响翘曲、可靠性和散热。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">ABF（味之素堆积膜）载板、SXM 模块和热材料</span> <span class="cost">GPU 模块制造成本约 5%-10%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Ibiden（揖斐电）</span>：高端 ABF 载板龙头。<span class="why">大尺寸 GPU 封装载板对层数、线宽线距和翘曲控制要求极高。</span></li>
+                  <li><span class="font-semibold">Shinko Electric（新光电气工业）</span>：高端封装载板和半导体封装大厂。<span class="why">在 CPU/GPU 高端载板中卡位深，客户认证壁垒高。</span></li>
+                  <li><span class="font-semibold">Unimicron 欣兴</span>：台系 IC 载板和高阶 PCB 龙头。<span class="why">同时覆盖 ABF 载板和高端 PCB，是 AI 服务器板级价值提升的重要受益者。</span></li>
+                  <li><span class="font-semibold">Ajinomoto（味之素）</span>：ABF 膜关键供应商。<span class="why">ABF 载板以 Ajinomoto Build-up Film（味之素堆积膜）命名，其材料供应决定高端载板扩产能力。</span></li>
+                  <li><span class="font-semibold">Henkel（汉高）</span>：热界面材料、胶黏剂和封装材料大厂。<span class="why">H200 功耗高，TIM（热界面材料）、导热胶和结构胶影响散热效率和长期可靠性。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">NVSwitch（英伟达高速互连交换芯片）、HGX baseboard（HGX GPU 底板）和高速连接</span> <span class="cost">整机约 3%-8%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVIDIA（英伟达）</span>：DGX H200 官方披露 4 个 NVSwitch，提供 7.2TB/s 双向 GPU-to-GPU 带宽。<span class="why">NVSwitch 把 8 颗 H200 组织成统一高带宽加速域，是 HGX 与普通多卡服务器的关键差异。</span></li>
+                  <li><span class="font-semibold">Amphenol（安费诺）</span>：高速连接器全球龙头。<span class="why">GPU 服务器内部高速信号和高电流连接对 SI/PI（信号完整性/电源完整性）要求极高。</span></li>
+                  <li><span class="font-semibold">TE Connectivity（泰科电子）</span>：连接器和传感器大厂。<span class="why">在服务器、网络设备和电源连接中覆盖广。</span></li>
+                  <li><span class="font-semibold">Molex（莫仕）</span>：高速连接器、线缆和背板互连供应商。<span class="why">AI 服务器高速互连和内部布线密度提升，Molex 受益于高速连接升级。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">间接核验</span> <span class="font-semibold">沃尔核材</span>：公司高速通信线产品用于 DAC/AEC 等铜连接方案，公开口径显示客户包括安费诺、莫仕、泰科等国际连接器厂。<span class="why">更稳妥的表述是通过连接器/线缆组件客户间接参与 NVIDIA GB200/后续机柜级高速铜连接链；未见公司直接披露 NVIDIA 订单，因此不写成直接供货。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">3. PCB（印制电路板）产业链 <span class="cost">整机约 2%-5%；高层数、低损耗材料决定弹性</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">HGX baseboard / GPU tray（HGX GPU 底板 / GPU 托盘）与板级价值核心</span> <span class="cost">单机 PCB 价值最高</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVIDIA（英伟达）</span>：通过 HGX H200 参考架构定义 GPU tray、NVSwitch、SXM 模块、高速连接和供电布局。<span class="why">PCB 价值不是普通服务器板平均放大，而是被 8 颗 H200、4 个 NVSwitch、高电流供电和高速互连集中推高。</span></li>
+                  <li><span class="font-semibold">价值排序小结</span> <span class="cost">GPU tray 最高，其次主板，再到网卡/背板/控制板</span>：H200 的 PCB 钱主要花在 HGX baseboard/GPU tray 和高速服务器主板上。<span class="why">判断 PCB 公司是否真正受益，要看它能否做高层数、低损耗、高速服务器板，而不是只看是否有普通服务器 PCB 产能。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">PCB 设计、SI/PI（信号完整性 / 电源完整性）仿真和验证</span> <span class="cost">不单独进 BOM（物料清单）；决定可制造性和认证周期</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Cadence（楷登电子）</span>：高速 PCB、封装协同设计和 SI/PI 仿真工具强势。<span class="why">H200 板级设计要同时处理 PCIe、NVLink、SerDes、高电流供电和散热约束，前期仿真直接影响改板次数。</span></li>
+                  <li><span class="font-semibold">Synopsys（新思科技）</span>：覆盖芯片、封装和系统级验证工具。<span class="why">GPU、封装载板和 PCB 的协同验证越重要，EDA 工具链对系统成本和交付节奏的影响越大。</span></li>
+                  <li><span class="font-semibold">Ansys（安似科技）</span>：电磁、电源完整性、热和结构仿真龙头。<span class="why">高功耗 GPU 服务器容易受 IR drop（电压降）、串扰、损耗和热点影响，仿真能力决定板级可靠性。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">高价值板卡：GPU 底板、服务器主板、高速网卡板和背板</span> <span class="cost">说明整机 PCB 钱花在哪些板卡上</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">HGX baseboard / GPU tray（HGX GPU 底板 / GPU 托盘）</span> <span class="cost">单机 PCB 价值最高</span>：承载或连接 8 颗 H200 SXM、4 个 NVSwitch、GPU 供电、高速信号走线和管理控制。<span class="why">这是 H200 整机里 PCB 难度和价值量最高的区域，要求高层数、低损耗材料、严格阻抗控制、高电流供电和高可靠性。</span></li>
+                  <li><span class="font-semibold">服务器主板 / CPU motherboard（主机主板）</span> <span class="cost">面积大、层数高、验证复杂</span>：连接双路 CPU（中央处理器）、DDR5（第五代双倍数据率内存）、PCIe（高速串行计算机扩展总线）、BMC（基板管理控制器）、NVMe 存储和管理接口。<span class="why">它的单板难度通常低于 GPU tray，但面积大、接口多、可靠性和固件验证复杂，是主机平台成本的重要组成。</span></li>
+                  <li><span class="font-semibold">高速网卡板 / OCP NIC 板（开放计算项目网卡板）</span> <span class="cost">随 400G/800G 网络升级提高</span>：承载 ConnectX-7 NIC（网络接口卡）、高速 SerDes（串并转换高速接口）、供电和散热结构。<span class="why">单板价值小于 GPU tray，但 400G/800G 速率提升后，对低损耗 PCB、连接器和信号完整性的要求明显提高。</span></li>
+                  <li><span class="font-semibold">NVMe 背板、电源背板、风扇/管理控制板</span> <span class="cost">数量多，单板价值较低</span>：负责 SSD（固态硬盘）连接、电源分配、风扇控制、BMC 管理信号和机箱内部互连。<span class="why">这些板卡不是最高价值环节，但 H200 高功耗和高密度设计会抬升它们的可靠性、散热和供电要求。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">高多层板和 HDI（高密度互连）制造</span> <span class="cost">PCB 成本主体：加工、材料损耗和良率</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Unimicron 欣兴</span>：台系高端 PCB/IC 载板龙头。<span class="why">核心在 AI 服务器高层数板、HDI 和载板能力，既吃 PCB 价值提升，也参与封装载板升级。</span></li>
+                  <li><span class="font-semibold">Gold Circuit 金像电</span>：服务器 PCB 重要供应商。<span class="why">卡位在高多层服务器板，AI 服务器放大其层数、面积和材料价值。</span></li>
+                  <li><span class="font-semibold">Compeq 华通</span>：高阶 PCB 大厂。<span class="why">在高密度、高层数板制造中有规模和客户基础。</span></li>
+                  <li><span class="font-semibold">TTM Technologies（迅达科技）</span>：美国高端 PCB 龙头。<span class="why">在网络、航空航天和高可靠 PCB 中强势。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">沪电股份</span>：公司确认产品核心应用包括高速运算服务器、人工智能和数据中心基础设施，但对具体客户不便披露。<span class="why">可以作为 AI 服务器高多层 PCB 重点跟踪公司，不写成 NVIDIA 直接订单；若后续无权威资料确认具体客户，应维持“客户保密/高相关”口径。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">深南电路</span>：年报披露数据中心领域订单同比显著增长，并成为 PCB 业务重要下游。<span class="why">适合表述为 AI 服务器/数据中心 PCB 受益公司，未看到直接 NVIDIA 订单或合格供应商证据，因此不标“重点确认”。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">高置信</span> <span class="font-semibold">胜宏科技</span>：公开招股材料和主流财经报道将其列为 NVIDIA AI 服务器 PCB 核心供应商，公司也多次回应核心客户订单未发生较大变动。<span class="why">具体客户名称和订单细节受商业保密限制，报告保留为高置信供应链公司，但不编造单一订单金额。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">互动平台</span> <span class="font-semibold">景旺电子</span>：公开投资者互动口径显示公司在 NVIDIA 合格供应商名单内，并已实现对客户批量供货。<span class="why">这是 A 股 PCB 公司中相对明确的 NVIDIA 供应链证据，仍需继续跟踪对应产品、平台代际和收入占比。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">高速 CCL（覆铜箔层压板）和低损耗材料</span> <span class="cost">约占 PCB 原材料成本 30%-50%；高速板溢价核心</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Elite Material 台光电子</span>：全球高速 CCL 龙头。<span class="why">AI 服务器和交换机需要低 Dk/Df 材料，台光在 M7/M8 等高速材料上卡位强。</span></li>
+                  <li><span class="font-semibold">Panasonic Industry（松下工业）</span>：Megtron 系列是高端高速材料代表。<span class="why">高频高速 PCB 中常被视为高性能标杆，认证壁垒高。</span></li>
+                  <li><span class="font-semibold">Rogers（罗杰斯）</span>：高频材料龙头。<span class="why">在低损耗、高可靠材料上深耕，技术壁垒高。</span></li>
+                  <li><span class="font-semibold">ITEQ 联茂</span>：台系高速 CCL 重要厂商。<span class="why">受益于 AI 服务器对低损耗材料的第二供应和成本优化需求。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">间接核验</span> <span class="font-semibold">生益科技</span>：高速 CCL 通过北美大客户验证，AI/通用服务器材料需求提升。<span class="why">更稳妥的表述是通过 PCB 厂和服务器高速板间接参与 NVIDIA/北美 AI 服务器链条；目前不写成直接向 NVIDIA 供货。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">铜箔、玻纤布、树脂和填料</span> <span class="cost">决定高速损耗、介电性能和热可靠性</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Mitsui Mining & Smelting（三井金属矿业）</span>：高端电子铜箔龙头。<span class="why">HVLP/VLP（极低轮廓/超低轮廓）铜箔对高速信号损耗至关重要。</span></li>
+                  <li><span class="font-semibold">Furukawa Electric（古河电工）</span>：电子材料和铜箔重要厂商。<span class="why">在高性能铜材料和低损耗应用上有积累。</span></li>
+                  <li><span class="font-semibold">JX Advanced Metals（JX 金属）</span>：高端金属材料供应商。<span class="why">铜箔品质影响高速板一致性和良率。</span></li>
+                  <li><span class="font-semibold">Co-Tech 长春铜箔</span>：台系高性能铜箔厂。<span class="why">受益于 AI 服务器高速板对低粗糙度铜箔的需求提升。</span></li>
+                  <li><span class="font-semibold">Nitto Boseki（日东纺）</span>：低介电玻纤布重要供应商。<span class="why">高速 CCL 需要低 Dk（低介电常数）玻纤布降低信号损耗，材料认证周期长。</span></li>
+                  <li><span class="font-semibold">AGY</span>：高性能玻璃纤维供应商。<span class="why">高频高速和高可靠板材需要稳定玻纤体系。</span></li>
+                  <li><span class="font-semibold">Mitsubishi Gas Chemical（三菱瓦斯化学）</span>：树脂和电子材料大厂。<span class="why">低损耗树脂体系直接影响 Dk/Df（介电常数/介电损耗）和耐热性。</span></li>
+                  <li><span class="font-semibold">Admatechs（雅都玛）</span>：球形硅微粉等填料强势。<span class="why">填料影响 CCL 热膨胀、介电性能和加工稳定性。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">4. 主机平台 <span class="cost">整机约 6%-10%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">CPU（中央处理器）</span> <span class="cost">整机约 2%-4%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Intel（英特尔）</span>：DGX H200 官方配置使用双路 Xeon Platinum 8480C。<span class="why">负责主机调度、PCIe（高速串行计算机扩展总线）、内存和系统控制，是 DGX H200 标准配置中的确定供应商。</span></li>
+                  <li><span class="font-semibold">AMD（超威半导体）</span>：部分 HGX/OEM 平台可选 EPYC。<span class="why">核心卡位在 PCIe 通道、内存带宽和服务器性价比。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">DDR5 RDIMM（第五代双倍数据率寄存式内存模组）与内存接口</span> <span class="cost">整机约 2%-5%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Samsung Electronics（三星电子）</span>：DRAM 和企业级内存龙头。<span class="why">2TB 系统内存需要高可靠 DDR5 RDIMM，三星具备规模和客户认证优势。</span></li>
+                  <li><span class="font-semibold">SK hynix（SK 海力士）</span>：DRAM/HBM 双强。<span class="why">既供应 HBM，也供应服务器 DRAM，受益于 AI 服务器内存容量提升。</span></li>
+                  <li><span class="font-semibold">Micron（美光科技）</span>：服务器 DRAM 和 HBM3e 供应商。<span class="why">在 H200 中既有 HBM3e 公开供货信息，也覆盖 DDR5 服务器内存。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">NVMe SSD（基于 NVMe 协议的固态硬盘）</span> <span class="cost">整机约 1%-3%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Samsung Electronics（三星电子）</span>：企业级 SSD（固态硬盘）和 NAND（闪存）龙头。<span class="why">DGX H200 配 30TB NVMe，企业级 SSD 要求耐久、固件和稳定供货。</span></li>
+                  <li><span class="font-semibold">Solidigm（海力士旗下企业级 SSD 公司）</span>：企业级 SSD 重要供应商。<span class="why">在数据中心 SSD 中卡位强，适合高容量缓存和企业负载。</span></li>
+                  <li><span class="font-semibold">Kioxia / Western Digital（铠侠 / 西部数据）</span>：NAND 和企业级存储重要厂商。<span class="why">影响企业级 SSD 价格和供给。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">BMC（基板管理控制器）、Retimer（信号重定时器）和电源管理</span> <span class="cost">整机约 1%-2%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">ASPEED（信骅科技）</span>：服务器 BMC 龙头。<span class="why">远程管理、监控和故障诊断依赖 BMC，是数据中心服务器不可缺的控制芯片。</span></li>
+                  <li><span class="font-semibold">Astera Labs（阿斯特拉实验室）</span>：PCIe/CXL（高速总线 / 计算快速链接）retimer 和连接芯片新龙头。<span class="why">GPU 服务器高速信号路径长，retimer 保障 PCIe Gen5（第五代 PCIe）信号完整性。</span></li>
+                  <li><span class="font-semibold">Monolithic Power Systems（芯源系统，MPS）</span>：高性能电源管理芯片公司。<span class="why">GPU 和 CPU 供电对瞬态响应、效率和热设计要求高。</span></li>
+                  <li><span class="font-semibold">Infineon（英飞凌）</span>：功率半导体和电源管理大厂。<span class="why">服务器 PSU（电源供应器）、VRM（电压调节模块）和功率器件链条中具备强卡位。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">5. 网络互连 <span class="cost">单机约 5%-10%；集群 TCO 中更高</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">网卡、DPU（数据处理器）和交换芯片</span> <span class="cost">单机网络成本主体</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVIDIA Networking / Mellanox（英伟达网络 / 迈络思）</span>：DGX H200 官方配置含 10 张 ConnectX-7 400G NIC（网络接口卡）。<span class="why">NVIDIA 同时控制 GPU 和网络栈，降低大模型训练通信瓶颈。</span></li>
+                  <li><span class="font-semibold">Broadcom（博通）</span>：以太网交换芯片和网络 ASIC（专用集成电路）龙头。<span class="why">在大规模 AI 集群以太网化趋势中是交换芯片核心供应商。</span></li>
+                  <li><span class="font-semibold">Marvell（美满电子）</span>：网络芯片、DSP（数字信号处理器）、定制 ASIC 和存储控制器供应商。<span class="why">AI 集群中的光模块 DSP、交换和定制芯片需求都与 Marvell 相关。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">光模块和光器件</span> <span class="cost">集群每 GPU 分摊可达数千美元</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Coherent（相干公司）</span>：光器件和光模块上游龙头。<span class="why">激光器、光芯片和模块能力深，是高速光通信基础供应商。</span></li>
+                  <li><span class="font-semibold">Lumentum（朗美通）</span>：激光器和光器件龙头。<span class="why">高速光模块上游核心器件供应商，受益于 400G/800G 升级。</span></li>
+                  <li><span class="font-semibold">Fabrinet（法布里奈特）</span>：光模块代工龙头。<span class="why">高速光模块制造工艺复杂，Fabrinet 是全球光通信制造链关键公司。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">中际旭创</span>：全球高速光模块龙头之一，主流产业链资料将其列为 NVIDIA 800G/1.6T 光模块核心供应商。<span class="why">光模块客户和份额通常受保密约束，报告按“高置信核心供应商”处理，并重点跟踪 800G/1.6T 出货、客户集中度和新平台验证。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">新易盛</span>：高速光模块重要供应商，公开互动和主流报道显示 1.6T 光模块已批量交付并持续扩产。<span class="why">可作为 NVIDIA AI 集群光模块链条高置信公司跟踪，但具体客户、订单份额和商务条款需要以公告或定期报告为准。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">光引擎链</span> <span class="font-semibold">天孚通信</span>：光器件平台型公司，主流产业资料将其放在 NVIDIA 硅光/CPO 光引擎和精密无源器件链条中。<span class="why">更稳妥的表述是光引擎、FAU、精密耦合等上游环节高相关，不写成已披露的 NVIDIA 直接订单。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">6. 电源、散热和结构件 <span class="cost">整机约 4%-8%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">服务器电源 PSU（电源供应器）和电源架构</span> <span class="cost">整机约 2%-4%；DGX H200 为 6 个 3.3kW PSU</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Delta Electronics（台达电）</span>：服务器电源和数据中心电力设备龙头。<span class="why">H200 高功耗服务器需要高效率、高功率密度和冗余电源，台达在 PSU、BBU（备用电池单元）、CDU（冷却液分配单元）和机房电力链都强。</span></li>
+                  <li><span class="font-semibold">Lite-On（光宝科技）</span>：服务器电源重要供应商。<span class="why">AI 服务器功率密度提升，光宝受益于 PSU、BBU 和机柜电源升级。</span></li>
+                  <li><span class="font-semibold">AcBel（康舒）</span>：服务器电源供应商。<span class="why">在 AI 服务器电源需求增长中具备产能和客户基础。</span></li>
+                  <li><span class="font-semibold">Vicor（怀格）</span>：高密度电源模块公司。<span class="why">GPU 高电流供电需要高效率电源模块，Vicor 在高性能计算电源架构中辨识度高。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">公司公告</span> <span class="font-semibold">麦格米特</span>：公司自愿性公告披露，作为 NVIDIA 指定的 40 余家数据中心部件提供商之一，参与 Blackwell GB200 系统创新设计与合作建设，并推出适用于 NVIDIA MGX 平台的 33kW 电源系统。<span class="why">这是本报告中 A 股电源链最明确的 NVIDIA 合作证据；公司也提示实际执行以客户正式订单为准，存在延期、变更或取消风险。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">风冷散热和热材料</span> <span class="cost">整机约 1%-3%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Delta Electronics（台达电）</span>：风扇、热管理和电源一体化能力强。<span class="why">H200 风冷服务器需要高风量和高可靠性风扇。</span></li>
+                  <li><span class="font-semibold">Nidec（尼得科）</span>：精密电机和风扇龙头。<span class="why">高转速、高可靠服务器风扇是高功耗机箱基础。</span></li>
+                  <li><span class="font-semibold">Auras / AVC（双鸿 / 奇鋐）</span>：服务器散热模组供应商。<span class="why">散热器、均热板和风冷模组决定 GPU 是否能稳定维持性能。</span></li>
+                  <li><span class="font-semibold">Boyd（博伊德）</span>：热管理材料和散热方案供应商。<span class="why">高功耗 AI 服务器对导热界面、冷板和系统散热设计要求提升。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">液冷和数据中心热管理</span> <span class="cost">H200 单机非主流刚需；机房 CAPEX/OPEX（资本开支/运营开支）重要</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Vertiv（维谛技术）</span>：数据中心电力和热管理龙头。<span class="why">AI 集群不只买服务器，还要买机房供电和制冷。</span></li>
+                  <li><span class="font-semibold">Schneider Electric（施耐德电气）</span>：数据中心配电、机柜和能效管理龙头。<span class="why">在高密度机房建设中提供从配电到管理软件的完整方案。</span></li>
+                  <li><span class="font-semibold">CoolIT Systems（酷冷系统）</span>：液冷解决方案厂商。<span class="why">液冷在 Blackwell/GB200 后更关键，H200 高密度部署也会拉动部分 CDU、冷板和快接头需求。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">7. A 股公司核验清单 <span class="cost">逐一说明合作、订单和证据等级</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">直接或较明确证据</span> <span class="cost">可重点跟踪</span>
+                <ul class="list-disc">
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-confirmed">官网产品</span> <span class="font-semibold">浪潮信息</span>：浪潮信息官网可见采用 NVIDIA HGX Hopper 8-GPU 模块的 AI 服务器产品。<span class="why">合作关系写为 NVIDIA HGX 平台适配和整机集成，不写成单独 H200 订单。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-confirmed">NVIDIA/Foxconn</span> <span class="font-semibold">工业富联</span>：NVIDIA 官方披露 Foxconn 采用 Blackwell 平台建设 AI 超算/AI 工厂，工业富联属于 Foxconn 体系内 AI 服务器制造和高速网络设备核心平台。<span class="why">可作为 NVIDIA AI 服务器制造链重点跟踪，但订单金额和具体平台份额以公司公告为准。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-confirmed">互动平台</span> <span class="font-semibold">景旺电子</span>：公开互动平台口径显示公司在 NVIDIA 合格供应商名单内，并已实现批量供货。<span class="why">这是相对明确的 PCB 供应链证据，后续重点看对应板卡类型、平台代际和收入占比。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-confirmed">公司公告</span> <span class="font-semibold">麦格米特</span>：公司公告披露其作为 NVIDIA 指定的 40 余家数据中心部件提供商之一，参与 Blackwell GB200 系统创新设计与合作建设，并推出适用于 NVIDIA MGX 平台的 33kW 电源系统。<span class="why">这是电源链条最明确的 A 股证据；公司同时提示实际执行以正式订单为准。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">客户保密但产业链高置信</span> <span class="cost">保留，但不编造订单金额</span>
+                <ul class="list-disc">
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">胜宏科技</span>：公开招股材料和主流财经报道将其列为 NVIDIA AI 服务器 PCB 核心供应商，公司回应核心客户订单未发生较大变动。<span class="why">因客户名称和订单条款通常受保密限制，报告只写高置信供应链关系，不写未经公告确认的订单金额。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">中际旭创</span>：主流产业链资料将其列为 NVIDIA 800G/1.6T 光模块核心供应商。<span class="why">光模块订单通常按客户保密处理，跟踪重点是 800G/1.6T 出货、海外大客户集中度和新平台验证。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">新易盛</span>：公司公开披露 1.6T 光模块已批量交付并持续扩产，主流产业链资料将其放在 NVIDIA 高速光模块供应格局中。<span class="why">可跟踪为高置信光模块链公司，但具体客户、份额和订单金额仍以公告为准。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">光引擎链</span> <span class="font-semibold">天孚通信</span>：产业资料将其放在 NVIDIA 硅光/CPO 光引擎、FAU 和精密无源器件链条。<span class="why">更稳妥的表述是光引擎和精密耦合上游高相关，不写成已披露直接订单。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">间接参与或高相关环节</span> <span class="cost">不等同于 NVIDIA 直接供应商</span>
+                <ul class="list-disc">
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">间接核验</span> <span class="font-semibold">沃尔核材</span>：高速通信线产品面向 DAC/AEC 等铜连接方案，公开口径显示客户包括安费诺、莫仕、泰科等国际连接器厂。<span class="why">按通过连接器/线缆组件客户间接参与 NVIDIA 机柜级高速铜连接链处理，不写成直接供货。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">沪电股份</span>：公司确认产品核心应用包括高速运算服务器、人工智能和数据中心基础设施，但不披露具体客户。<span class="why">作为 AI 服务器高多层 PCB 重点跟踪，不写成 NVIDIA 直接订单。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">深南电路</span>：年报披露数据中心领域订单同比显著增长，并成为 PCB 业务重要下游。<span class="why">作为数据中心/AI 服务器 PCB 高相关公司保留，未确认 NVIDIA 直接订单。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">间接核验</span> <span class="font-semibold">生益科技</span>：高速 CCL 通过北美大客户验证，AI/通用服务器材料需求提升。<span class="why">按通过 PCB 厂和服务器高速板间接参与 NVIDIA/北美 AI 服务器链条处理，不写成直接向 NVIDIA 供货。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">8. 最值得跟踪的成本项 <span class="cost">按敏感度排序</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">HBM3e（第三代增强型高带宽存储器）</span> <span class="cost">第一优先级</span>：看 SK hynix（SK 海力士）、Micron（美光科技）、Samsung（三星）的 HBM bit（HBM 位元）出货、12H（12 层堆叠）占比、NVIDIA 认证和 ASP（平均销售价格）。H200 的升级核心就是 HBM3e 容量和带宽。</li>
+              <li><span class="font-semibold">CoWoS（Chip-on-Wafer-on-Substrate，晶圆上芯片再上基板的 2.5D 先进封装）和 ABF（味之素堆积膜）载板</span> <span class="cost">第一优先级</span>：看 TSMC（台积电）CoWoS 产能、Hopper（NVIDIA Hopper GPU 架构代号）与 Blackwell（NVIDIA 下一代 GPU 架构代号）产能切换、Ibiden（揖斐电）/Shinko（新光电气）/Unimicron（欣兴）的载板交付。它们决定交期，不只是成本。</li>
+              <li><span class="font-semibold">高速 PCB（印制电路板）/CCL（覆铜箔层压板）</span> <span class="cost">第二优先级</span>：看 AI 服务器板层数、低损耗材料升级、台光/生益/沪电/深南的订单结构。</li>
+              <li><span class="font-semibold">网络光模块</span> <span class="cost">第二优先级</span>：单机可选项多，但大集群绕不开网络。看 400G/800G 端口、光模块价格、DSP（数字信号处理器）供应和硅光渗透率。</li>
+              <li><span class="font-semibold">电源和散热</span> <span class="cost">第三优先级</span>：H200 以风冷为主，GB200 后液冷弹性更大。跟踪时要区分 H200 单机成本和下一代机柜级成本。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">9. 主要来源与可信度处理 <span class="cost">官方规格优先；报价只作区间参考</span></summary>
+            <ul class="list-disc">
+              <li>NVIDIA（英伟达）H200 官方页和数据表：确认 141GB HBM3e、4.8TB/s、HGX/DGX 平台信息。</li>
+              <li>NVIDIA DGX H200 官方页面和 DGX H100/H200 User Guide（用户指南）：确认 8 GPU、4 个 NVSwitch、10 张 ConnectX-7、2TB 内存、30TB NVMe、6 个 3.3kW PSU 等配置。</li>
+              <li>NVIDIA 官方博客、Foxconn/工业富联官网、浪潮信息官网、麦格米特自愿性信息披露公告、上市公司年报、互动平台和主流财经报道：用于核验 A 股公司是否具备明确合作、订单、认证或高相关供应链证据。</li>
+              <li>Micron（美光科技）官方公告：确认 Micron HBM3e 已量产并用于 NVIDIA H200。</li>
+              <li>SK hynix（SK 海力士）官方公告：确认 HBM3e 量产和 12 层 HBM3e 进展。</li>
+              <li>TSMC（台积电）年报、法说会和官方资料：确认先进制程、先进封装和 AI 需求背景。</li>
+              <li>Dell、Supermicro、Newegg、Arc Compute、Uvation 等公开报价：用于建立 8 卡 H200 整机价格区间，但不把渠道价当作 BOM。</li>
+              <li>TrendForce、Digitimes、Lenovo Press、Supermicro 白皮书等行业资料：用于补充出货节奏、PCB、ODM 和材料链信息。缺少官方确认的供应关系，只按“核心环节公司”处理，不写成确定供货。</li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本文用于产业链研究，不构成投资建议。</li>
+        <li>H200 供应链存在大量 NDA。除官方资料明确披露外，本文不把“行业龙头”写成“确定供货 H200”。</li>
+        <li>“A股重点”表示该公司在 NVIDIA 服务器产业链相关环节中值得优先跟踪，不等同于确认直接供货 H200，也不代表收入一定来自 H200。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+
+        while (li.firstChild && li.firstChild !== childList) {
+          summary.appendChild(li.firstChild);
+        }
+
+        details.appendChild(summary);
+        details.appendChild(childList);
+
+        while (li.firstChild) {
+          details.appendChild(li.firstChild);
+        }
+
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>

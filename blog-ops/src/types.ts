@@ -29,10 +29,15 @@ export interface DeployConfig {
 }
 
 /**
+ * 可部署项目名称
+ */
+export type BlogProjectName = 'astro' | 'vuepress' | 'stock';
+
+/**
  * 版本记录
  */
 export interface VersionRecord {
-  /** 项目名称（astro / vuepress） */
+  /** 项目名称（astro / vuepress / stock） */
   project: string;
   /** 版本 tag（格式：yyyyMMdd-HHmm） */
   tag: string;
@@ -47,11 +52,13 @@ export interface VersionRecord {
  */
 export interface BlogProject {
   /** 项目名称 */
-  name: string;
+  name: BlogProjectName;
   /** 相对于博客根目录的子目录路径 */
   dir: string;
   /** 是否为可选构建（旧博客为可选） */
   optional: boolean;
+  /** 是否需要执行 npm run build */
+  build: boolean;
 }
 
 /**
