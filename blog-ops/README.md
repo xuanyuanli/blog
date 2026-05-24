@@ -27,38 +27,30 @@ node bin/bops.js
   ╚═══════════════════════════════╝
 
 ❯ 配置服务器连接信息
-  构建并发布新博客（Astro）
-  构建并发布旧博客（VuePress）
-  发布股票静态页（Stock）
-  构建并发布新旧博客（Astro + VuePress）
-  同步 Nginx 配置
-  查看版本历史
+  发布新博客（bops new）
+  发布旧博客（bops old）
+  发布股票静态页（bops stock）
+  发布新旧博客（Astro + VuePress）
+  同步 Nginx 配置（bops nginx）
+  查看版本历史（bops versions）
   退出
 ```
 
 ### 命令行模式
 
 ```bash
-# 部署新博客
-node bin/bops.js deploy
+# 发布新博客（Astro）
+node bin/bops.js new
 
-# 仅部署旧博客到 /archive/
-node bin/bops.js deploy --vuepress-only
-node bin/bops.js deploy -v
+# 发布旧博客（VuePress）到 /archive/
+node bin/bops.js old
 
-# 部署新旧博客
-node bin/bops.js deploy --with-archive
-node bin/bops.js deploy -a
+# 发布股票静态页（Stock）到 /stock/
+node bin/bops.js stock
 
-# 同时部署新博客和股票静态页
-node bin/bops.js deploy --with-stock
-
-# 跳过构建，直接部署已有产物
-node bin/bops.js deploy --skip-build
-node bin/bops.js deploy -s
-
-# 仅部署股票静态页
-node bin/bops.js deploy --stock-only
+# 跳过构建，直接部署已有产物（new / old 可用）
+node bin/bops.js new -s
+node bin/bops.js old --skip-build
 
 # 同步 Nginx 配置
 node bin/bops.js nginx
@@ -81,7 +73,7 @@ node bin/bops.js versions
 
 ## 部署流程
 
-以 `deploy` 为例，完整流程：
+以 `bops new` 为例，完整流程：
 
 1. **本地构建** — 在 `astro/` 或 `vuepress/` 目录执行 `npm run build`，`stock/` 为纯静态目录不构建
 2. **压缩产物** — 将构建输出目录打包为 zip

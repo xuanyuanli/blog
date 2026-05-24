@@ -17,12 +17,12 @@ type MenuItem = {
 
 const MENU_ITEMS: MenuItem[] = [
   { name: '配置服务器连接信息', value: 'config' },
-  { name: '构建并发布新博客（Astro）', value: 'deploy-astro' },
-  { name: '构建并发布旧博客（VuePress）', value: 'deploy-vuepress' },
-  { name: '发布股票静态页（Stock）', value: 'deploy-stock' },
-  { name: '构建并发布新旧博客（Astro + VuePress）', value: 'deploy-all' },
-  { name: '同步 Nginx 配置', value: 'nginx' },
-  { name: '查看版本历史', value: 'versions' },
+  { name: '发布新博客（bops new）', value: 'new' },
+  { name: '发布旧博客（bops old）', value: 'old' },
+  { name: '发布股票静态页（bops stock）', value: 'stock' },
+  { name: '发布新旧博客（Astro + VuePress）', value: 'all' },
+  { name: '同步 Nginx 配置（bops nginx）', value: 'nginx' },
+  { name: '查看版本历史（bops versions）', value: 'versions' },
   { name: '退出', value: 'exit' },
 ];
 
@@ -64,36 +64,16 @@ async function requireConfig(): Promise<ReturnType<typeof configManager.getConfi
 }
 
 /**
- * 命令行一键发布模式
- * bops deploy [--with-archive | --with-stock | --vuepress-only | --stock-only] [--skip-build]
+ * 命令行发布：bops new | bops old | bops stock
  */
-async function runDeploy(opts: {
-  withArchive: boolean;
-  withStock: boolean;
-  vuepressOnly: boolean;
-  stockOnly: boolean;
-  skipBuild: boolean;
-}): Promise<void> {
+async function runProjectDeploy(
+  projects: BlogProjectName[],
+  skipBuild: boolean
+): Promise<void> {
   const config = configManager.getConfig();
   if (!config) {
     console.error(chalk.red('尚未配置服务器信息，请先运行: bops，完成配置'));
     process.exit(1);
-  }
-
-  // 确定要部署的项目
-  let projects: BlogProjectName[];
-  if (opts.stockOnly) {
-    projects = ['stock'];
-  } else if (opts.vuepressOnly) {
-    projects = ['vuepress'];
-  } else {
-    projects = ['astro'];
-    if (opts.withArchive) {
-      projects.push('vuepress');
-    }
-    if (opts.withStock) {
-      projects.push('stock');
-    }
   }
 
   printBanner();
@@ -103,10 +83,10 @@ async function runDeploy(opts: {
   try {
     await blogDeploy(config, {
       projects,
-      skipBuild: opts.skipBuild,
+      skipBuild,
       skipConfirm: true,
     });
-    console.log(chalk.green('\n一键发布完成！'));
+    console.log(chalk.green('\n发布完成！'));
   } catch (err) {
     console.error(chalk.red(`\n发布失败: ${err instanceof Error ? err.message : String(err)}`));
     process.exit(1);
@@ -163,21 +143,26 @@ async function main(): Promise<void> {
     .allowUnknownOption();
 
   program
-    .command('deploy')
-    .description('构建并发布博客')
-    .option('-a, --with-archive', '同时发布旧博客（VuePress）到 /archive/')
-    .option('--with-stock', '同时发布股票静态页（Stock）')
-    .option('-v, --vuepress-only', '仅发布旧博客（VuePress）')
-    .option('--stock-only', '仅发布股票静态页（Stock）')
+    .command('new')
+    .description('构建并发布新博客（Astro）')
     .option('-s, --skip-build', '跳过构建，直接部署已有产物')
     .action(async (opts) => {
-      await runDeploy({
-        withArchive: opts.withArchive ?? false,
-        withStock: opts.withStock ?? false,
-        vuepressOnly: opts.vuepressOnly ?? false,
-        stockOnly: opts.stockOnly ?? false,
-        skipBuild: opts.skipBuild ?? false,
-      });
+      await runProjectDeploy(['astro'], opts.skipBuild ?? false);
+    });
+
+  program
+    .command('old')
+    .description('构建并发布旧博客（VuePress）到 /archive/')
+    .option('-s, --skip-build', '跳过构建，直接部署已有产物')
+    .action(async (opts) => {
+      await runProjectDeploy(['vuepress'], opts.skipBuild ?? false);
+    });
+
+  program
+    .command('stock')
+    .description('发布股票静态页（Stock）到 /stock/')
+    .action(async () => {
+      await runProjectDeploy(['stock'], true);
     });
 
   program
@@ -194,8 +179,9 @@ async function main(): Promise<void> {
       await handleVersions();
     });
 
-  // 有子命令时由 commander 处理
-  if (args.length > 0 && !args[0].startsWith('-')) {
+  // 有子命令或 --help / --version 时由 commander 处理
+  const isCliFlag = args.some((a) => ['--help', '-h', '--version', '-V'].includes(a));
+  if ((args.length > 0 && !args[0].startsWith('-')) || isCliFlag) {
     await program.parseAsync(process.argv);
     return;
   }
@@ -264,28 +250,28 @@ async function main(): Promise<void> {
 
     try {
       switch (action) {
-        case 'deploy-astro':
+        case 'new':
           await blogDeploy(currentConfig, {
             projects: ['astro'],
             skipBuild: false,
             skipConfirm: false,
           });
           break;
-        case 'deploy-vuepress':
+        case 'old':
           await blogDeploy(currentConfig, {
             projects: ['vuepress'],
             skipBuild: false,
             skipConfirm: false,
           });
           break;
-        case 'deploy-stock':
+        case 'stock':
           await blogDeploy(currentConfig, {
             projects: ['stock'],
             skipBuild: true,
             skipConfirm: false,
           });
           break;
-        case 'deploy-all':
+        case 'all':
           await blogDeploy(currentConfig, {
             projects: ['astro', 'vuepress'],
             skipBuild: false,

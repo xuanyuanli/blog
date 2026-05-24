@@ -126,10 +126,10 @@ CLI 用法：
 
 ```bash
 node bin/bops.js
-node bin/bops.js deploy
-node bin/bops.js deploy --with-archive
-node bin/bops.js deploy --vuepress-only
-node bin/bops.js deploy --skip-build
+node bin/bops.js new
+node bin/bops.js old
+node bin/bops.js stock
+node bin/bops.js new --skip-build
 node bin/bops.js nginx
 node bin/bops.js versions
 ```
