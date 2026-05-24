@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>股票定价模式：入门框架与短长期变量权重</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tag { display: inline-block; border-radius: 999px; padding: .12rem .55rem; font-size: .75rem; font-weight: 700; }
+    .tag-macro { background: #dbeafe; color: #1e40af; }
+    .tag-fundamental { background: #dcfce7; color: #166534; }
+    .tag-market { background: #fef3c7; color: #92400e; }
+    .tag-behavior { background: #fce7f3; color: #9d174d; }
+    .tag-short { background: #fef3c7; color: #92400e; }
+    .tag-long { background: #ede9fe; color: #5b21b6; }
+    .formula { font-family: ui-monospace, monospace; background: #f1f5f9; border-radius: .5rem; padding: .75rem 1rem; font-size: .9rem; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .callout { border-left: 4px solid #2563eb; background: #eff6ff; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; }
+    .callout-warn { border-left-color: #d97706; background: #fffbeb; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-5xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-blue-950 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-indigo-400/20 px-3 py-1 text-sm text-indigo-100">股票 · 入门</span>
+        <span class="rounded-full bg-slate-400/20 px-3 py-1 text-sm text-slate-200">定价框架 · 非投资建议</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">更新：2026-05-24</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-4xl">股票定价模式：全面入门框架</h1>
+      <p class="mt-4 max-w-3xl text-base leading-7 text-slate-200">
+        股票价格是<strong>公司价值</strong>、<strong>市场资金</strong>和<strong>参与者预期</strong>共同作用的结果。
+        同一时刻，有人用 DCF 算「值多少钱」，有人看 P/E 比同行贵不贵，有人追热点、有人看北向资金——这些并不矛盾，只是站在不同时间尺度和不同定价范式上。
+        本文从入门视角梳理四种主流定价模式，搭建「宏观 → 公司 → 市场」三层框架，并给出短长期变量权重对照与实用检查清单。
+      </p>
+    </header>
+
+    <nav class="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm text-sm leading-7">
+      <p class="font-semibold text-slate-800">目录</p>
+      <ol class="mt-2 list-decimal pl-5 text-slate-700">
+        <li><a class="text-blue-600 underline" href="#mental-model">核心心智：价格在回答什么</a></li>
+        <li><a class="text-blue-600 underline" href="#paradigms">四种定价范式一览</a></li>
+        <li><a class="text-blue-600 underline" href="#intrinsic">内在价值定价（绝对估值）</a></li>
+        <li><a class="text-blue-600 underline" href="#relative">相对估值定价</a></li>
+        <li><a class="text-blue-600 underline" href="#supply-demand">供需与资金定价</a></li>
+        <li><a class="text-blue-600 underline" href="#behavioral">行为与情绪定价</a></li>
+        <li><a class="text-blue-600 underline" href="#framework">总框架：三层、两时钟</a></li>
+        <li><a class="text-blue-600 underline" href="#rates">利率、流动性与风险溢价</a></li>
+        <li><a class="text-blue-600 underline" href="#fundamentals">盈利、增长与护城河</a></li>
+        <li><a class="text-blue-600 underline" href="#flows">资金流向与市场结构</a></li>
+        <li><a class="text-blue-600 underline" href="#matrix">短长期影响权重矩阵</a></li>
+        <li><a class="text-blue-600 underline" href="#by-type">分类型：价值 / 成长 / 周期 / 防御</a></li>
+        <li><a class="text-blue-600 underline" href="#misconceptions">常见误区</a></li>
+        <li><a class="text-blue-600 underline" href="#workflow">怎么用这套框架</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <section id="mental-model" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">1. 核心心智：价格在回答什么</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p>打开行情软件，你看到的是<strong>成交价</strong>——最后一笔买卖双方愿意接受的价格。它同时隐含三个问题：</p>
+        <ul class="mt-3 list-disc pl-6 space-y-2">
+          <li><strong>这家公司未来能赚多少钱？</strong>（基本面 / 内在价值）</li>
+          <li><strong>和同类资产比，贵还是便宜？</strong>（相对估值 / 横向比较）</li>
+          <li><strong>现在有多少钱想买、多少钱想卖？</strong>（供需 / 资金 / 情绪）</li>
+        </ul>
+        <p class="mt-4">三个问题的权重随<strong>时间尺度</strong>变化：日内交易几乎只看供需；季度财报季基本面权重上升；三五年持有则宏观利率与公司竞争力更重要。</p>
+        <div class="callout mt-5 text-sm">
+          <p class="font-semibold text-blue-900">一句话记忆</p>
+          <p class="mt-1 text-slate-700">基本面定<strong>价值锚</strong>，估值倍数定<strong>贵不贵</strong>，资金与情绪定<strong>短期偏离幅度</strong>。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section id="paradigms" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">2. 四种定价范式一览</h2>
+      <table class="data w-full rounded-2xl border border-slate-200 bg-white text-sm shadow-sm">
+        <thead>
+          <tr><th>范式</th><th>核心问题</th><th>典型工具</th><th>适合场景</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-fundamental">内在价值</span></td>
+            <td>未来现金流折现后值多少？</td>
+            <td>DCF、DDM（股利贴现）、剩余收益模型</td>
+            <td>现金流稳定、可预测的业务；长期投资</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-fundamental">相对估值</span></td>
+            <td>比同行 / 历史贵还是便宜？</td>
+            <td>P/E、P/B、EV/EBITDA、PEG</td>
+            <td>同业可比、快速筛选、周期股区间判断</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-market">供需资金</span></td>
+            <td>谁在买、谁在卖、有多少筹码？</td>
+            <td>成交量、北向/ETF 流向、融资余额、指数权重</td>
+            <td>短期趋势、主题炒作、流动性危机</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-behavior">行为情绪</span></td>
+            <td>群体现在在恐惧还是贪婪？</td>
+            <td>VIX、换手率、新股申购热度、舆情</td>
+            <td>极端行情、拐点识别、逆向思考</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="mt-4 text-sm text-slate-600 leading-6">四种范式不是互斥的。专业分析通常以<strong>内在价值或相对估值</strong>定方向，用<strong>资金与情绪</strong>判断入场时机与短期波动。</p>
+    </section>
+
+    <!-- 3 -->
+    <section id="intrinsic" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">3. 内在价值定价（绝对估值）</h2>
+      <div class="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <div>
+          <h3 class="text-lg font-bold">3.1 基本逻辑</h3>
+          <p class="mt-2">股票代表公司所有权。内在价值定价认为：<strong>价格长期应围绕未来可分配现金流的现值波动</strong>。今天花的钱，买的是未来股息、回购或清算时能拿回的现金。</p>
+          <div class="formula mt-4">内在价值 ≈ Σ（未来自由现金流 / (1 + 折现率)ⁿ）</div>
+          <p class="mt-3 text-sm text-slate-600">DCF（Discounted Cash Flow，现金流折现）是最常见的绝对估值方法。DDM 可看作「只折现股利」的特例。</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold">3.2 三个输入，决定结果</h3>
+          <table class="data mt-3 w-full text-sm">
+            <thead>
+              <tr><th>输入</th><th>含义</th><th>常见误区</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>未来现金流</strong></td>
+                <td>营收增长、利润率、资本开支、营运资本变化</td>
+                <td>线性外推高增长太久；忽略周期下行</td>
+              </tr>
+              <tr>
+                <td><strong>折现率（WACC / 要求回报率）</strong></td>
+                <td>反映无风险利率 + 股权风险溢价 + 公司特定风险</td>
+                <td>折现率过低 → 估值虚高；忽视利率上行</td>
+              </tr>
+              <tr>
+                <td><strong>永续增长率</strong></td>
+                <td>预测期之后公司能长期维持多快的增速</td>
+                <td>永续 g 设得比 GDP 还高 → 数学上不合理</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout-warn callout text-sm">
+          <p class="font-semibold text-amber-900">入门提示</p>
+          <p class="mt-1 text-slate-700">DCF 的价值在于<strong>强迫你想清楚假设</strong>，而不是算出一个精确到分的「正确价格」。改假设 1–2 个百分点，结果可能差一半——所以绝对估值更适合定<strong>区间</strong>，不适合追求小数点。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section id="relative" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">4. 相对估值定价</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p>相对估值不直接算「值多少」，而是问：<strong>和可比对象比，市场给了多少溢价或折价？</strong> 本质是找锚——同行、历史、大盘。</p>
+
+        <h3 class="mt-5 text-lg font-bold">4.1 常用倍数及含义</h3>
+        <table class="data mt-3 w-full text-sm">
+          <thead>
+            <tr><th>倍数</th><th>公式</th><th>适用</th><th>读法</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>P/E</strong>（市盈率）</td>
+              <td>股价 / 每股收益</td>
+              <td>盈利稳定、非 heavy 资本开支</td>
+              <td>市场愿意为 1 元利润付多少价格；周期股高点 P/E 反而低</td>
+            </tr>
+            <tr>
+              <td><strong>P/B</strong>（市净率）</td>
+              <td>股价 / 每股净资产</td>
+              <td>银行、保险、重资产</td>
+              <td>&lt;1 可能低估或资产质量差，需结合 ROE</td>
+            </tr>
+            <tr>
+              <td><strong>EV/EBITDA</strong></td>
+              <td>企业价值 / 息税折旧摊销前利润</td>
+              <td>并购、资本结构差异大的同业</td>
+              <td>剔除杠杆和折旧差异，便于跨公司比</td>
+            </tr>
+            <tr>
+              <td><strong>PEG</strong></td>
+              <td>P/E / 盈利增速</td>
+              <td>成长股</td>
+              <td>≈1 常被视为「增速与估值匹配」的粗参考</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="mt-5 text-lg font-bold">4.2 为什么同一只股票「有时贵有时便宜」？</h3>
+        <p class="mt-2">倍数 = f（利率环境，增长预期，风险偏好，行业景气）。<strong>利率下行</strong>时，同样 1 元未来利润的现值更高 → 市场愿意给更高 P/E；<strong>增长故事变强</strong>时，PEG 可长期维持高位。相对估值因此必须<strong>放在同一宏观与行业背景下</strong>比较，不能孤立看一个数字。</p>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section id="supply-demand" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">5. 供需与资金定价</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p>短期价格由<strong>边际买家与边际卖家</strong>决定。即使基本面没变，大量资金涌入或撤离也会推动价格明显偏离「合理区间」。</p>
+
+        <h3 class="mt-4 text-lg font-bold">5.1 供给端：筹码结构</h3>
+        <ul class="mt-2 list-disc pl-6 space-y-1 text-sm">
+          <li><strong>限售解禁</strong>：大股东、IPO 原始股东可卖量突然增加 → 供给冲击</li>
+          <li><strong>回购 / 增发</strong>：回购减少流通盘（偏利多）；增发稀释（偏利空，除非项目 ROI 极高）</li>
+          <li><strong>指数调样</strong>：纳入 MSCI、沪深 300 等 → 被动基金必须买入，与基本面无关的刚性需求</li>
+        </ul>
+
+        <h3 class="mt-4 text-lg font-bold">5.2 需求端：谁在买</h3>
+        <ul class="mt-2 list-disc pl-6 space-y-1 text-sm">
+          <li><strong>北向 / 南向资金</strong>：跨境配置资金，对大盘蓝筹和热门赛道影响显著</li>
+          <li><strong>ETF 与被动指数</strong>：按权重机械买入，放大龙头效应</li>
+          <li><strong>融资余额</strong>：杠杆资金多 → 趋势自我强化，但去杠杆时波动加剧</li>
+          <li><strong>主题资金</strong>：政策、产业叙事驱动下的板块轮动</li>
+        </ul>
+
+        <div class="callout mt-5 text-sm">
+          <p class="font-semibold text-blue-900">与基本面的关系</p>
+          <p class="mt-1 text-slate-700">资金定价可以<strong>领先</strong>基本面（预期交易），也可以<strong>脱离</strong>基本面（泡沫或错杀）。持续时间取决于后续盈利能否「兑现故事」。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section id="behavioral" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">6. 行为与情绪定价</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p>人不是理性计算器。行为金融学指出：损失厌恶、 herd behavior（羊群效应）、过度自信、锚定效应等，会让价格系统性偏离「理性价值」。</p>
+
+        <table class="data mt-4 w-full text-sm">
+          <thead>
+            <tr><th>现象</th><th>表现</th><th>对定价的含义</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>过度反应</strong></td>
+              <td>利空一出暴跌、利好一出暴涨</td>
+              <td>短期偏离大，有时创造逆向机会</td>
+            </tr>
+            <tr>
+              <td><strong>动量 / 趋势</strong></td>
+              <td>涨者恒涨、跌者恒跌一段时期</td>
+              <td>趋势策略有效，直到基本面或流动性拐点</td>
+            </tr>
+            <tr>
+              <td><strong>叙事与主题</strong></td>
+              <td>「AI」「新能源」等标签自带溢价</td>
+              <td>同一盈利，不同叙事下 P/E 可差数倍</td>
+            </tr>
+            <tr>
+              <td><strong>极端情绪</strong></td>
+              <td>恐慌底、狂热顶</td>
+              <td>VIX 飙升、换手率极端、新股狂热 — 常是反向指标</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="mt-4 text-sm text-slate-600">入门阶段不必精通行为金融理论，但需记住：<strong>价格 ≠ 价值</strong>，尤其在极端情绪时。</p>
+      </div>
+    </section>
+
+    <!-- 7 -->
+    <section id="framework" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">7. 总框架：三层、两时钟</h2>
+      <div class="grid gap-4 md:grid-cols-3">
+        <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+          <p class="tag tag-macro">宏观金融层</p>
+          <p class="mt-3 text-sm leading-6">无风险利率、通胀、信用利差、流动性、政策取向、风险偏好</p>
+        </div>
+        <div class="rounded-2xl border border-green-200 bg-green-50 p-5">
+          <p class="tag tag-fundamental">公司基本面层</p>
+          <p class="mt-3 text-sm leading-6">盈利增速、ROE、现金流、护城河、管理层、行业景气</p>
+        </div>
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <p class="tag tag-market">市场结构层</p>
+          <p class="mt-3 text-sm leading-6">资金流向、筹码、指数权重、杠杆、情绪、事件冲击</p>
+        </div>
+      </div>
+      <p class="mt-5 text-sm text-slate-600 leading-6">
+        <strong>两时钟</strong>：交易时钟（日～周）看资金、事件、技术面与情绪；投资时钟（季～年）看盈利趋势、利率周期、行业格局。
+      </p>
+      <pre class="mt-5 overflow-x-auto rounded-xl bg-slate-900 p-5 text-xs leading-6 text-slate-100">                    ┌─────────────────────────────────────┐
+                    │     宏观金融层（估值倍数 / 折现率）   │
+                    │  利率 · 流动性 · 风险偏好 · 政策      │
+                    └─────────────────┬───────────────────┘
+                                      │ 影响整体 P/E 中枢
+                    ┌─────────────────▼───────────────────┐
+                    │     公司基本面层（价值锚 / EPS）       │
+                    │  盈利 · 增长 · 现金流 · 竞争格局      │
+                    └─────────────────┬───────────────────┘
+                                      │ 个股 alpha 来源
+                    ┌─────────────────▼───────────────────┐
+                    │     市场结构层（短期偏离）            │
+                    │  资金 · 筹码 · 情绪 · 事件            │
+                    └─────────────────────────────────────┘</pre>
+    </section>
+
+    <!-- 8 -->
+    <section id="rates" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">8. 利率、流动性与风险溢价</h2>
+      <div class="space-y-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <div>
+          <h3 class="text-lg font-bold">8.1 利率：股票的「机会成本锚」</h3>
+          <p class="mt-2">10 年期国债收益率常被视为无风险利率参考。利率上行 → 未来现金流折现值下降 → 成长股（远期现金流占比高）通常比价值股更敏感。这就是「<strong>杀估值</strong>」的宏观来源之一。</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold">8.2 流动性：水位决定鱼有多大</h3>
+          <p class="mt-2">央行宽松、信贷扩张、居民储蓄搬家入市 → 同样基本面下可支撑更高整体估值。反之，紧信用、外资流出、杠杆去化 → 倍数压缩，「好公司也跌」。</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold">8.3 股权风险溢价（ERP）</h3>
+          <p class="mt-2">投资者承担股票波动所要求的<strong>额外回报</strong>。恐慌时 ERP 飙升（要求更高回报 → 价格跌）；狂热时 ERP 压缩（接受更低回报 → 价格涨）。可粗理解为：<strong>整体市场 P/E 的「情绪调节器」</strong>。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section id="fundamentals" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">9. 盈利、增长与护城河</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p>长期看，股价涨幅≈盈利涨幅 + 估值变化 + 股息。其中<strong>可持续的盈利增长</strong>是最可靠的贡献来源。</p>
+
+        <table class="data mt-4 w-full text-sm">
+          <thead>
+            <tr><th>变量</th><th>关注什么</th><th>定价影响</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>EPS 及增速</strong></td>
+              <td>营收、毛利率、费用率、非经常损益</td>
+              <td>直接驱动 P/E 公式分子；超预期 → 短期跳涨</td>
+            </tr>
+            <tr>
+              <td><strong>ROE / ROIC</strong></td>
+              <td>投入资本回报是否高于融资成本</td>
+              <td>高且稳的 ROE 支撑高 P/B 和长期复利</td>
+            </tr>
+            <tr>
+              <td><strong>自由现金流</strong></td>
+              <td>利润是否转化为真实现金</td>
+              <td>DCF 核心输入；「有利润无现金」需警惕</td>
+            </tr>
+            <tr>
+              <td><strong>护城河</strong></td>
+              <td>品牌、网络效应、成本、切换成本、监管牌照</td>
+              <td>决定高盈利能否持续 → 影响永续假设</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="mt-4 text-sm text-slate-600">定价公式可简记为：<strong>股价 ≈ EPS × P/E</strong>。EPS 来自公司层，P/E 来自宏观 + 增长预期 + 情绪。</p>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section id="flows" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">10. 资金流向与市场结构</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p>A 股与全球市场相比，<strong>散户占比高、政策与主题驱动强、板块轮动快</strong>，资金定价的权重往往更大。入门时可重点观察：</p>
+        <ul class="mt-3 list-disc pl-6 space-y-2 text-sm">
+          <li><strong>总量</strong>：两市成交额 — 低于 6000 亿常意味风险偏好弱；放量突破 1 万亿则主题活跃</li>
+          <li><strong>结构</strong>：大盘 vs 小盘、成长 vs 价值、行业 ETF 份额变化</li>
+          <li><strong>外资</strong>：北向净流入/流出与权重股联动</li>
+          <li><strong>杠杆</strong>：融资余额增减 — 趋势末端常伴随杠杆峰值</li>
+          <li><strong>事件日历</strong>：财报季、美联储议息、国内重要会议、指数调样生效日</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section id="matrix" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">11. 短长期影响权重矩阵</h2>
+      <p class="mb-4 text-sm text-slate-600">★ 越多表示该时间尺度下影响越大（主观框架，用于建立直觉，非精确计量）。</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full text-sm">
+          <thead>
+            <tr><th>变量</th><th>短期（日～周）</th><th>长期（年～多年）</th><th>备注</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>资金流向 / 主题 / 情绪</td>
+              <td>★★★★★</td>
+              <td>★</td>
+              <td>短期主导；长期若缺乏盈利支撑则均值回归</td>
+            </tr>
+            <tr>
+              <td>财报 surprise / 指引</td>
+              <td>★★★★</td>
+              <td>★★★</td>
+              <td>短期跳变；累积成长期 EPS 趋势</td>
+            </tr>
+            <tr>
+              <td>利率 / 流动性</td>
+              <td>★★★★</td>
+              <td>★★★★</td>
+              <td>估值倍数中枢；成长股短期弹性更大</td>
+            </tr>
+            <tr>
+              <td>盈利增速 / ROE</td>
+              <td>★★</td>
+              <td>★★★★★</td>
+              <td><strong>长期回报</strong>最核心的基本面来源</td>
+            </tr>
+            <tr>
+              <td>行业景气 / 政策</td>
+              <td>★★★★</td>
+              <td>★★★★</td>
+              <td>A 股政策权重高；需区分一次性 vs 结构性</td>
+            </tr>
+            <tr>
+              <td>相对估值（P/E 分位）</td>
+              <td>★★</td>
+              <td>★★★</td>
+              <td>极端分位时有均值回归倾向，但可长期「贵下去」</td>
+            </tr>
+            <tr>
+              <td>筹码 / 解禁 / 指数调样</td>
+              <td>★★★★</td>
+              <td>★★</td>
+              <td>机械性买卖，与基本面短期脱钩</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <p class="font-bold text-amber-950">短期谁说了算？</p>
+          <p class="mt-2 text-sm leading-6 text-amber-900">政策表态、板块资金、财报 beat/miss、北向大幅波动、解禁与指数调样 — 可在几天内推动 ±10% 甚至更多。</p>
+        </div>
+        <div class="rounded-2xl border border-violet-200 bg-violet-50 p-5">
+          <p class="font-bold text-violet-950">长期谁说了算？</p>
+          <p class="mt-2 text-sm leading-6 text-violet-900">盈利复合增长率、ROE、行业格局、利率大周期 — 决定十年维度的股东回报。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section id="by-type" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">12. 分类型：价值 / 成长 / 周期 / 防御</h2>
+      <table class="data w-full rounded-2xl border border-slate-200 bg-white text-sm shadow-sm">
+        <thead>
+          <tr><th>类型</th><th>定价侧重</th><th>关键倍数 / 变量</th><th>常见陷阱</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>价值</strong></td>
+            <td>现有资产与现金流折价</td>
+            <td>P/B、股息率、EV/EBITDA、清算价值</td>
+            <td>价值陷阱 — 便宜因为生意在恶化</td>
+          </tr>
+          <tr>
+            <td><strong>成长</strong></td>
+            <td>未来增速与 TAM（可寻址市场）</td>
+            <td>PEG、营收增速、毛利率趋势</td>
+            <td>增速放缓时 P/E 双杀</td>
+          </tr>
+          <tr>
+            <td><strong>周期</strong></td>
+            <td>行业景气位置</td>
+            <td>P/E 反向、PB、产能利用率、商品价格</td>
+            <td>景气顶点 P/E 最低，看起来「便宜」</td>
+          </tr>
+          <tr>
+            <td><strong>防御</strong></td>
+            <td>盈利稳定、股息可持续</td>
+            <td>股息率、盈利波动率、必需消费属性</td>
+            <td>利率上行时股息吸引力相对下降</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 13 -->
+    <section id="misconceptions" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">13. 常见误区</h2>
+      <ol class="list-decimal space-y-3 rounded-2xl border border-slate-200 bg-white p-6 pl-10 shadow-sm leading-7">
+        <li><strong>把短期价格当长期价值</strong>：连板≠好公司；暴跌≠公司破产。</li>
+        <li><strong>单一倍数决策</strong>：P/E 低可能周期顶点或永续 decline，需结合类型与历史分位。</li>
+        <li><strong>忽视宏观时钟</strong>：2019 年的合理 P/E 与 2022 年不可直接比。</li>
+        <li><strong>DCF 精确幻觉</strong>：假设微小变动导致结果巨变，却误以为「算出来了」。</li>
+        <li><strong>忽视机会成本</strong>：持有弱势股「没亏」但跑输指数，仍是损失。</li>
+        <li><strong>叙事替代研究</strong>：「国产替代」「AI+」需落到订单、毛利、现金流验证。</li>
+      </ol>
+    </section>
+
+    <!-- 14 -->
+    <section id="workflow" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">14. 怎么用这套框架（检查清单）</h2>
+      <ol class="list-decimal space-y-3 rounded-2xl border border-slate-200 bg-white p-6 pl-10 shadow-sm leading-7">
+        <li><strong>定时钟</strong>：短线看资金与事件，长线看盈利与利率 — 别用日线解释十年逻辑。</li>
+        <li><strong>定类型</strong>：价值 / 成长 / 周期 / 防御 — 选对工具（P/E 还是 P/B 还是景气指标）。</li>
+        <li><strong>宏观扫一眼</strong>：利率方向、流动性、政策基调 — 定估值倍数区间。</li>
+        <li><strong>公司算一遍</strong>：EPS 趋势、现金流、护城河 — 定方向（好生意 / 一般 / 回避）。</li>
+        <li><strong>相对比一比</strong>：同行 P/E、历史分位 — 定「贵不贵」，不是「买不买」的唯一条件。</li>
+        <li><strong>市场看结构</strong>：成交额、北向、融资、解禁日历 — 定时机与仓位。</li>
+        <li><strong>写下假设</strong>：什么证伪你的观点？财报、政策、利率 — 提前想好退出条件。</li>
+      </ol>
+    </section>
+
+    <footer class="rounded-2xl border border-slate-200 bg-slate-100 p-5 text-sm leading-6 text-slate-600">
+      <p class="font-semibold text-slate-800">免责声明</p>
+      <p class="mt-2">本文为个人学习用的入门框架整理，不构成任何投资建议。股票市场有风险，请独立判断、分散配置并控制仓位。</p>
+      <p class="mt-3">相关页面：
+        <a class="text-blue-600 underline" href="commodity-pricing-framework.html">大宗商品定价逻辑</a> ·
+        <a class="text-blue-600 underline" href="h200-industry-chain.html">H200 产业链拆解</a>
+      </p>
+    </footer>
+  </main>
+</body>
+</html>

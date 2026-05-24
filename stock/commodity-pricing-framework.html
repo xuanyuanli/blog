@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>大宗商品定价逻辑：分析框架与短长期变量权重</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tag { display: inline-block; border-radius: 999px; padding: .12rem .55rem; font-size: .75rem; font-weight: 700; }
+    .tag-macro { background: #dbeafe; color: #1e40af; }
+    .tag-physical { background: #dcfce7; color: #166534; }
+    .tag-geo { background: #fee2e2; color: #991b1b; }
+    .tag-short { background: #fef3c7; color: #92400e; }
+    .tag-long { background: #ede9fe; color: #5b21b6; }
+    .formula { font-family: ui-monospace, monospace; background: #f1f5f9; border-radius: .5rem; padding: .75rem 1rem; font-size: .9rem; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .callout { border-left: 4px solid #2563eb; background: #eff6ff; padding: 1rem 1.25rem; border-radius: 0 .75rem .75rem 0; }
+    .callout-warn { border-left-color: #d97706; background: #fffbeb; }
+    .invest-verdict { border-radius: .75rem; border: 2px solid; padding: 1rem 1.25rem; margin-top: 1.25rem; font-size: .875rem; line-height: 1.65; }
+    .invest-verdict h4 { font-weight: 800; margin-bottom: .5rem; }
+    .invest-verdict-gold { border-color: #d97706; background: #fffbeb; }
+    .invest-verdict-oil { border-color: #57534e; background: #fafaf9; }
+    .invest-verdict-copper { border-color: #ea580c; background: #fff7ed; }
+    .verdict-tag { display: inline-block; border-radius: .35rem; padding: .1rem .45rem; font-size: .7rem; font-weight: 800; margin-right: .35rem; }
+    .verdict-bear { background: #fee2e2; color: #991b1b; }
+    .verdict-neutral { background: #f1f5f9; color: #334155; }
+    .verdict-bull { background: #dcfce7; color: #166534; }
+    h2 { scroll-margin-top: 5rem; }
+    a.toc-link { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-5xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-amber-950 via-stone-900 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">大宗商品</span>
+        <span class="rounded-full bg-slate-400/20 px-3 py-1 text-sm text-slate-200">分析框架 · 非投资建议</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">更新：2026-05-24</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-4xl">大宗商品定价逻辑：全面分析框架</h1>
+      <p class="mt-4 max-w-3xl text-base leading-7 text-slate-200">
+        大宗商品同时是<strong>实物</strong>（要被开采、运输、消费）和<strong>金融资产</strong>（在期货、ETF、指数里被买卖）。
+        价格短期常被资金与情绪驱动，长期则更多回到供需与资本开支。
+        本文按「宏观金融 → 实物供需 → 事件冲击」三层搭建框架，并对美债、美元指数、实际利率等概念做展开说明，最后给出<strong>短期 vs 长期</strong>各变量影响大小的对照表。
+      </p>
+    </header>
+
+    <nav class="mb-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm text-sm leading-7">
+      <p class="font-semibold text-slate-800">目录</p>
+      <ol class="mt-2 list-decimal pl-5 text-slate-700">
+        <li><a class="toc-link" href="#mental-model">核心心智：两条定价曲线</a></li>
+        <li><a class="toc-link" href="#framework">总框架：三层、两时钟</a></li>
+        <li><a class="toc-link" href="#treasury">美债与利率体系（含美元、长短期资本）</a></li>
+        <li><a class="toc-link" href="#real-rates">实际利率与通胀预期</a></li>
+        <li><a class="toc-link" href="#usd-credit">美元信用与计价货币</a></li>
+        <li><a class="toc-link" href="#supply-demand">供需与资本开支</a></li>
+        <li><a class="toc-link" href="#inventory">库存与期限结构</a></li>
+        <li><a class="toc-link" href="#geo">地缘与政策</a></li>
+        <li><a class="toc-link" href="#weather">天气与季节性</a></li>
+        <li><a class="toc-link" href="#matrix">短长期影响权重矩阵</a></li>
+        <li><a class="toc-link" href="#by-type">分品种：谁听谁的</a></li>
+        <li><a class="toc-link" href="#workflow">怎么用这套框架</a></li>
+        <li><a class="toc-link" href="#cases">实例：黄金、石油、铜（2026 年 5 月）</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1. Mental model -->
+    <section id="mental-model" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">1. 核心心智：两条定价曲线</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p><strong>现货/近月价格</strong>回答：「现在缺不缺货？」——库存、开工、运输、突发事件权重高。</p>
+        <p class="mt-3"><strong>远月/曲线形状</strong>回答：「未来会不会更缺？」——资本开支、产能周期、长期需求预期权重高。</p>
+        <p class="mt-3"><strong>金融定价层</strong>回答：「持有这类资产的机会成本是多少？」——美债收益率、实际利率、美元强弱、风险偏好权重高。</p>
+        <div class="callout mt-5 text-sm">
+          <p class="font-semibold text-blue-900">一句话记忆</p>
+          <p class="mt-1 text-slate-700">实物层决定<strong>方向的中枢</strong>，金融层决定<strong>估值倍数与波动放大</strong>，事件层决定<strong>短期偏离幅度</strong>。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Framework -->
+    <section id="framework" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">2. 总框架：三层、两时钟</h2>
+      <div class="grid gap-4 md:grid-cols-3">
+        <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+          <p class="tag tag-macro">宏观金融层</p>
+          <p class="mt-3 text-sm leading-6">美债收益率、实际利率、通胀预期、美元指数、美元信用叙事、风险偏好、流动性</p>
+        </div>
+        <div class="rounded-2xl border border-green-200 bg-green-50 p-5">
+          <p class="tag tag-physical">实物供需层</p>
+          <p class="mt-3 text-sm leading-6">产量、消费量、替代品、回收料、资本开支、成本曲线、贸易流</p>
+        </div>
+        <div class="rounded-2xl border border-red-200 bg-red-50 p-5">
+          <p class="tag tag-geo">冲击层</p>
+          <p class="mt-3 text-sm leading-6">地缘、制裁、关税、收储/抛储、极端天气、物流瓶颈</p>
+        </div>
+      </div>
+      <p class="mt-5 text-sm text-slate-600 leading-6">
+        <strong>两时钟</strong>：交易时钟（日～周）看仓位、数据 surprise、库存周报、天气窗口；
+        投资时钟（季～年）看资本开支、政策周期、实际利率趋势、产能释放。
+      </p>
+      <pre class="mt-5 overflow-x-auto rounded-xl bg-slate-900 p-5 text-xs leading-6 text-slate-100">                    ┌─────────────────────────────────────┐
+                    │     宏观金融层（机会成本 / 估值）      │
+                    │  美债 · 实际利率 · 美元 · 流动性      │
+                    └─────────────────┬───────────────────┘
+                                      │ 放大波动、影响持仓意愿
+                    ┌─────────────────▼───────────────────┐
+                    │     实物供需层（价格中枢）            │
+                    │  产量 · 需求 · 成本 · 资本开支       │
+                    └─────────────────┬───────────────────┘
+                                      │ 近端供需紧张度
+                    ┌─────────────────▼───────────────────┐
+                    │     冲击层（短期偏离）                │
+                    │  地缘 · 天气 · 政策 · 物流            │
+                    └─────────────────────────────────────┘</pre>
+    </section>
+
+    <!-- 3. Treasury -->
+    <section id="treasury" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">3. 美债与利率体系（展开）</h2>
+      <div class="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+
+        <div>
+          <h3 class="text-lg font-bold">3.1 为什么大宗商品要关心美债？</h3>
+          <p class="mt-2">美债收益率被广泛视为全球资产的<strong>无风险利率锚</strong>。大宗商品大多本身不产生利息（持有黄金、铜、原油现货要付仓储、保险、资金占用），因此价格里隐含一个问题：</p>
+          <p class="mt-2 font-medium text-slate-800">「我不买债券、转而囤商品，值得吗？」</p>
+          <p class="mt-2">当美债收益率上升，持有无息商品的机会成本上升，金融属性强的品种（黄金、白银）往往承压；工业金属还叠加经济放缓预期。反之，利率下行或流动性宽松时，商品更容易被当作通胀对冲或风险资产来配置。</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold">3.2 收益率曲线：短端 vs 长端</h3>
+          <table class="data mt-3 w-full text-sm">
+            <thead>
+              <tr><th>部位</th><th>谁在定价</th><th>对商品含义</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>短端</strong>（2 年期、联邦基金利率预期）</td>
+                <td>美联储政策路径、通胀数据、就业</td>
+                <td>影响美元流动性、风险偏好、融资成本；突发加息往往先杀高杠杆头寸</td>
+              </tr>
+              <tr>
+                <td><strong>长端</strong>（10 年、30 年）</td>
+                <td>长期增长、通胀预期、财政供给、海外买盘</td>
+                <td>影响贴现率与「长期通胀」叙事；黄金对 10 年期<strong>实际</strong>利率更敏感（见第 4 节）</td>
+              </tr>
+              <tr>
+                <td><strong>曲线形态</strong>（陡峭 / 倒挂）</td>
+                <td>衰退预期 vs 再通胀预期</td>
+                <td>倒挂常伴随「经济放缓 → 工业需求担忧」；陡峭化有时伴随复苏交易推升工业金属</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold">3.3 美元指数（DXY）：和美债什么关系？</h3>
+          <p class="mt-2"><strong>美元指数</strong>衡量美元对一篮子主要货币（欧元、日元、英镑等）的强弱。逻辑链通常是：</p>
+          <ul class="mt-2 list-disc pl-6">
+            <li>美国加息预期上升 → 美债收益率上行、美元走强 → 以美元计价的商品对非美买家变贵 → 需求边际走弱 → 价格承压（<em>同向</em>：强美元往往压制商品，统计上常呈负相关，但非铁律）。</li>
+            <li>全球风险事件 → 避险买美债 + 买美元 → 美元、美债同涨，商品可能被「流动性抽走」而下跌（2008、2020 年 3 月都出现过）。</li>
+            <li>若避险来自<strong>通胀/供给冲击</strong>（能源危机），则可能出现美元强、油价也强的「滞胀组合」——此时不能机械套用「强美元必跌商品」。</li>
+          </ul>
+          <div class="callout-warn callout mt-4 text-sm">
+            <p><strong>常见误区</strong>：把 DXY 当成商品的单一开关。DXY 是<strong>相对汇率</strong>，还要分开看：① 全球美元流动性（美联储资产负债表、离岸美元紧张度）；② 各品种自身的供需冲击是否在主导。</p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold">3.4 长期资本 vs 短期资本</h3>
+          <p class="mt-2">同一商品市场上，不同资金的<strong>时间尺度</strong>和<strong>定价逻辑</strong>不同：</p>
+          <table class="data mt-3 w-full text-sm">
+            <thead>
+              <tr><th>类型</th><th>典型参与者</th><th>行为特征</th><th>对价格的影响</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="tag tag-long">长期资本</span></td>
+                <td>主权基金、养老金、战略储备、产业资本套保、保险配置</td>
+                <td>看多年供需、成本曲线、通胀中枢；换手低</td>
+                <td>塑造<strong>趋势与底部</strong>；矿企减产、国家收储、ETF 持续申购会缓慢抬升中枢</td>
+              </tr>
+              <tr>
+                <td><span class="tag tag-short">短期资本</span></td>
+                <td>CTA（商品趋势基金）、宏观对冲基金、量化、散户期货</td>
+                <td>跟动量、跟数据 surprise、杠杆高、止损密集</td>
+                <td>放大<strong>日内～数周波动</strong>；库存数据、美联储会议、地缘头条易触发连锁止损</td>
+              </tr>
+              <tr>
+                <td>产业资本</td>
+                <td>矿山、冶炼厂、炼油厂、贸易商的套期保值</td>
+                <td>在期货上对冲现货风险，不一定「看空/看多」</td>
+                <td>近月与现货的基差、<strong>期限结构</strong>（Backwardation / Contango）的重要力量</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="mt-4 text-sm text-slate-600">实用提示：看 CFTC 持仓、LME 持仓、ETF 流量时，先问「这是趋势资金加仓，还是产业套保？」——同样净多增加，含义可能相反。</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold">3.5 美债的「抵押品」渠道（进阶）</h3>
+          <p class="mt-2 text-sm">全球回购市场以美债为高质量抵押品。抵押品紧张或美债市场波动时，会牵动<strong>美元融资条件</strong>，进而影响大宗商品期货的保证金与杠杆资金成本。这条链路在平常日被忽视，在 2019 年 9 月回购利率飙升、2020 年 3 月、2023 年区域银行危机期间会变得显眼。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Real rates -->
+    <section id="real-rates" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">4. 实际利率与通胀预期（展开）</h2>
+      <div class="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+
+        <div>
+          <h3 class="text-lg font-bold">4.1 名义利率、通胀预期、实际利率</h3>
+          <p class="mt-2">先区分三个概念：</p>
+          <ul class="mt-2 list-disc pl-6">
+            <li><strong>名义利率</strong>：你看到的国债收益率，例如 10 年期 4.5%。</li>
+            <li><strong>通胀预期</strong>：市场对未来通胀的平均看法（不是已经发生的 CPI）。</li>
+            <li><strong>实际利率</strong>：扣掉通胀后，资金的「真实」回报。</li>
+          </ul>
+          <p class="formula mt-4">近似关系：实际利率 ≈ 名义利率 − 通胀预期</p>
+          <p class="mt-3">更干净的观测是 <strong>10 年期 TIPS 收益率</strong>（通胀保值国债），它可视为市场隐含的 10 年期实际利率。黄金研究者常用：金价与 10 年期实际利率<strong>长期负相关</strong>——实际利率越高，持有黄金的机会成本越大。</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold">4.2 用生活例子理解「实际利率」</h3>
+          <p class="mt-2">假设一年期理财名义收益 5%，你预期物价一年涨 3%：</p>
+          <ul class="mt-2 list-disc pl-6">
+            <li>名义赚 5%，物价涨 3%，你真实购买力大约多 2% → <strong>实际利率约 +2%</strong>。</li>
+            <li>若名义 5% 但预期通胀 6%，实际约 −1% → 现金在「缩水」，资金更愿意去找实物资产、资源股、黄金等。</li>
+          </ul>
+          <p class="mt-3">大宗商品在「实际利率很低或为负」的环境里，往往更容易获得<strong>通胀对冲 + 货币贬值对冲</strong>的配置需求（尤其是黄金）；工业金属则还要同时看经济景气——实际利率低可能因为经济差，那时铜的需求故事会打架。</p>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold">4.3 通胀预期从哪里来？</h3>
+          <table class="data mt-3 w-full text-sm">
+            <thead>
+              <tr><th>指标</th><th>含义</th><th>注意点</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>10Y 名义 − 10Y TIPS（盈亏平衡通胀）</td>
+                <td>未来 10 年平均通胀的市场定价</td>
+                <td>最常用；包含风险溢价，不是精确预测</td>
+              </tr>
+              <tr>
+                <td>5y5y 远期通胀</td>
+                <td>5 年后开始的 5 年平均通胀预期</td>
+                <td>更偏「长期通胀锚」</td>
+              </tr>
+              <tr>
+                <td>调查（密歇根、SPF）</td>
+                <td>家庭/经济学家主观预期</td>
+                <td>影响工资谈判与定价行为，传导慢</td>
+              </tr>
+              <tr>
+                <td>商品价格本身</td>
+                <td>油价上涨会推高短期通胀预期</td>
+                <td>存在<strong>反馈环</strong>：油价涨 → 通胀预期升 → 加息预期 → 又压制油价</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold">4.4 实际利率 vs 名义利率：谁对黄金更重要？</h3>
+          <p class="mt-2">经验上：<strong>黄金</strong>对实际利率敏感度高于名义利率——因为黄金无票息，比价对象本质是「实际回报为正的债券」。2022 年典型情形：名义利率升，但若通胀预期也升，实际利率升幅可能小于名义，黄金跌幅有时小于直觉。</p>
+          <p class="mt-2"><strong>工业金属</strong>（铜、铝）：实际利率反映宏观贴现，但更直接的是中国/全球 PMI、电网投资、地产链——金融属性弱于黄金。</p>
+          <p class="mt-2"><strong>能源</strong>：地缘与 OPEC+ 供给纪律常压过利率叙事，但高实际利率 + 强美元阶段，油价高估值段更容易回调。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. USD credit -->
+    <section id="usd-credit" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">5. 美元信用与计价货币</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p><strong>美元信用</strong>指全球市场对美元长期购买力、美债可兑付性、美国财政可持续性的信心。它与 DXY 的「汇率强弱」不是同一回事：</p>
+        <ul class="mt-3 list-disc pl-6">
+          <li><strong>汇率</strong>：美元相对欧元、日元等谁更强——短期受利差、避险驱动。</li>
+          <li><strong>信用</strong>：全球是否仍愿长期持有美元资产作为储备——慢变量，与财政赤字、债务上限政治、制裁武器化、央行增持黄金等相关。</li>
+        </ul>
+        <p class="mt-3">对商品的影响路径：</p>
+        <ul class="mt-2 list-disc pl-6">
+          <li>信用担忧上升 → 央行与私人部门增配黄金 → 支撑金价<strong>长期中枢</strong>（短期仍会被实际利率压制）。</li>
+          <li>「去美元化」若仅停留在双边本币结算，对大宗定价货币切换很慢；但若储备多元化加速，黄金结构性需求上台阶。</li>
+          <li>多数商品仍以美元计价；美元信用动摇不会一夜改变合约，但会改变<strong>持有实物与黄金的意愿</strong>。</li>
+        </ul>
+        <p class="mt-3 text-sm text-slate-600">分析时建议：区分「交易型美元走强（利空金价）」与「结构性信用担忧（利多黄金）」是否同时存在。</p>
+      </div>
+    </section>
+
+    <!-- 6. Supply demand -->
+    <section id="supply-demand" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">6. 供需与资本开支</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p><strong>长期价格中枢</strong>最终由边际成本与供需缺口决定：</p>
+        <ul class="mt-3 list-disc pl-6">
+          <li><strong>需求</strong>：宏观周期（基建、制造业、交通）、能源转型（铜、锂、铀）、人口与饮食（农产品）、替代（天然气 ↔ 煤炭）。</li>
+          <li><strong>供给</strong>：矿山品位下降、油田递减、炼厂产能、环保限产、罢工、出口禁令。</li>
+          <li><strong>资本开支周期</strong>：油价 2015–2020 低迷 → 油气资本开支不足 → 2021–2022 供给弹性差；铜矿从勘探到投产常需 7–10 年，价格暴涨后供给反应滞后。</li>
+        </ul>
+        <p class="mt-4">均衡思路：当价格长期高于 75% 分位成本曲线，高成本产能进入并压制价格；低于现金成本时，减产与出清支撑底部。这是<strong>长期投资时钟</strong>里权重最高的变量族。</p>
+      </div>
+    </section>
+
+    <!-- 7. Inventory -->
+    <section id="inventory" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">7. 库存与期限结构</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p>库存是<strong>供需矛盾在时间上的缓冲垫</strong>，也是短期定价的核心：</p>
+        <ul class="mt-3 list-disc pl-6">
+          <li><strong>可见库存</strong>：LME/SHFE/COMEX 注册仓单、API/EIA 原油商业库存、USDA 作物报告。</li>
+          <li><strong>不可见库存</strong>：生产商厂库、保税区、在途船货、地下储气库——低可见库存时，现货升水与波动率会飙升。</li>
+        </ul>
+        <p class="mt-4 font-medium">期限结构（通俗版）：</p>
+        <ul class="mt-2 list-disc pl-6">
+          <li><strong>Backwardation（现货溢价）</strong>：近月贵于远月 → 现货紧张，持有多头有时可「吃展期收益」。</li>
+          <li><strong>Contango（远月溢价）</strong>：库存充裕，持现货常要付仓储，期货多头需承担「滚仓损耗」。</li>
+        </ul>
+        <p class="mt-4 text-sm text-slate-600">短期交易：库存意外下降 + Backwardation 加深 → 往往比「一条宏观看多逻辑」更能解释当周涨幅。</p>
+      </div>
+    </section>
+
+    <!-- 8. Geo -->
+    <section id="geo" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">8. 地缘与政策</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <p>地缘冲击通过三条通道作用：</p>
+        <ol class="mt-3 list-decimal pl-6">
+          <li><strong>供给中断</strong>：战争、制裁、海峡封锁 → 可开采/可出口量瞬间下降（霍尔木兹、红海、俄罗斯能源）。</li>
+          <li><strong>风险溢价</strong>：不确定性上升 → 期货价差走阔，期权隐含波动率上升。</li>
+          <li><strong>政策回应</strong>：战略石油释放（SPR）、出口限制、关税、补贴——可压制或加剧价格波动。</li>
+        </ol>
+        <p class="mt-4"><strong>短期</strong>影响极大（油价单日 ±5% 常见）；<strong>长期</strong>是否改变中枢，取决于冲突是否结构化（例如多年制裁导致俄罗斯原油永久重定向）。</p>
+      </div>
+    </section>
+
+    <!-- 9. Weather -->
+    <section id="weather" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">9. 天气与季节性</h2>
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm leading-7">
+        <table class="data w-full text-sm">
+          <thead>
+            <tr><th>领域</th><th>机制</th><th>时间尺度</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>农产品</td>
+              <td>厄尔尼诺/拉尼娜、播种期干旱、霜冻、收割季降雨</td>
+              <td>数周～单季；可影响全年产量预期</td>
+            </tr>
+            <tr>
+              <td>天然气 / 电力</td>
+              <td>寒冬（采暖）、酷暑（空调）、飓风关停墨西哥湾平台</td>
+              <td>数周；冬季季节性极强</td>
+            </tr>
+            <tr>
+              <td>原油</td>
+              <td>飓风路径、炼油厂开工</td>
+              <td>数天～数周</td>
+            </tr>
+            <tr>
+              <td>水电密集金属（铝等）</td>
+              <td>干旱 → 水电不足 → 冶炼限产</td>
+              <td>月～季</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="mt-4 text-sm text-slate-600">天气对<strong>农产品与天然气短期权重极高</strong>；对铜、黄金长期中枢影响相对小，除非极端事件引发能源危机链式反应。</p>
+      </div>
+    </section>
+
+    <!-- 10. Matrix -->
+    <section id="matrix" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">10. 短长期影响权重矩阵</h2>
+      <p class="mb-4 text-sm text-slate-600">评级说明：★ 越多表示该时间尺度下<strong>相对更重要</strong>（非绝对）。同一变量在不同品种上可差很多，见第 11 节。</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[640px] text-sm">
+          <thead>
+            <tr>
+              <th>变量</th>
+              <th>短期（日～周）</th>
+              <th>长期（季～年）</th>
+              <th>简要结论</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>库存 / 基差 / 期限结构</td>
+              <td>★★★★★</td>
+              <td>★★★</td>
+              <td>短期定价「第一现场」；长期影响波动率与产能投资意愿</td>
+            </tr>
+            <tr>
+              <td>地缘与突发供给</td>
+              <td>★★★★★</td>
+              <td>★★～★★★</td>
+              <td>短期冲击最大；是否抬升长期中枢看持续性和资本开支</td>
+            </tr>
+            <tr>
+              <td>天气（农产品/天然气）</td>
+              <td>★★★★★</td>
+              <td>★★</td>
+              <td>典型短期变量；长期仅当改变种植结构或基础设施</td>
+            </tr>
+            <tr>
+              <td>短期资本 / 仓位 / 流动性</td>
+              <td>★★★★★</td>
+              <td>★</td>
+              <td>放大波动；很少单独决定多年趋势</td>
+            </tr>
+            <tr>
+              <td>美联储 / 数据 surprise / 名义利率</td>
+              <td>★★★★</td>
+              <td>★★★</td>
+              <td>短期影响风险偏好；长期形成利率周期</td>
+            </tr>
+            <tr>
+              <td>美元指数（DXY）</td>
+              <td>★★★★</td>
+              <td>★★★</td>
+              <td>短期与仓位、利差联动强；长期看美元周期</td>
+            </tr>
+            <tr>
+              <td>实际利率（尤其 TIPS）</td>
+              <td>★★★</td>
+              <td>★★★★★</td>
+              <td>对黄金<strong>长期</strong>压制/支撑更系统；短期常被避险打乱</td>
+            </tr>
+            <tr>
+              <td>通胀预期</td>
+              <td>★★★</td>
+              <td>★★★★</td>
+              <td>中期驱动黄金与曲线；短期跟随油价与数据</td>
+            </tr>
+            <tr>
+              <td>供需缺口 / 资本开支</td>
+              <td>★★</td>
+              <td>★★★★★</td>
+              <td><strong>长期中枢</strong>的最重要变量族</td>
+            </tr>
+            <tr>
+              <td>美元信用 / 储备多元化</td>
+              <td>★</td>
+              <td>★★★★</td>
+              <td>慢变量，主要影响黄金结构性需求</td>
+            </tr>
+            <tr>
+              <td>长期资本 / 产业配置</td>
+              <td>★★</td>
+              <td>★★★★</td>
+              <td>缓慢但持久；与 ETF、收储、矿企套保相关</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <p class="font-bold text-amber-950">短期谁说了算？</p>
+          <p class="mt-2 text-sm leading-6 text-amber-900">库存、地缘头条、天气、持仓与流动性、数据日（CPI、非农、EIA、USDA）— 往往压倒缓慢的供需故事。</p>
+        </div>
+        <div class="rounded-2xl border border-violet-200 bg-violet-50 p-5">
+          <p class="font-bold text-violet-950">长期谁说了算？</p>
+          <p class="mt-2 text-sm leading-6 text-violet-900">资本开支与产能周期、结构性需求、实际利率趋势、成本曲线 — 金融层定估值，实物层定中枢。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. By type -->
+    <section id="by-type" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">11. 分品种：谁听谁的</h2>
+      <table class="data w-full rounded-2xl border border-slate-200 bg-white text-sm shadow-sm">
+        <thead>
+          <tr><th>品种</th><th>短期主导</th><th>长期主导</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>黄金</strong></td>
+            <td>实际利率、美元、风险偏好、期权 Gamma</td>
+            <td>实际利率趋势、央行购金、美元信用叙事</td>
+          </tr>
+          <tr>
+            <td><strong>铜</strong></td>
+            <td>中国宏观数据、库存、美元</td>
+            <td>电网/新能源需求、矿端资本开支、废铜供应</td>
+          </tr>
+          <tr>
+            <td><strong>原油</strong></td>
+            <td>地缘、OPEC+ 政策、EIA 库存、美元</td>
+            <td>页岩/深水资本开支、全球需求、能源转型节奏</td>
+          </tr>
+          <tr>
+            <td><strong>天然气</strong></td>
+            <td>天气、库存、LNG 船期</td>
+            <td>管道/LNG 基础设施、地缘气源格局</td>
+          </tr>
+          <tr>
+            <td><strong>农产品</strong></td>
+            <td>天气、USDA 报告、出口禁令</td>
+            <td>种植面积趋势、全球人口与饮食结构</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="workflow" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">12. 怎么用这套框架（检查清单）</h2>
+      <ol class="list-decimal space-y-3 rounded-2xl border border-slate-200 bg-white p-6 pl-10 shadow-sm leading-7">
+        <li><strong>定时钟</strong>：做交易看 1–8 周，做投资看 1–3 年 — 别用长期逻辑解释本周波动。</li>
+        <li><strong>定品种属性</strong>：金融属性（金）还是实物属性（铜、豆）？</li>
+        <li><strong>看实物紧张度</strong>：库存、现货升贴水、期限结构是否 Backwardation？</li>
+        <li><strong>看金融环境</strong>：10Y 实际利率、DXY、流动性（VIX、回购利率）。</li>
+        <li><strong>扫冲击日历</strong>：地缘、OPEC、USDA、寒潮、美联储会议。</li>
+        <li><strong>找矛盾</strong>：若「实际利率上行（利空金）」但「央行购金（利多）」同时存在 — 分清哪个变量在当前时间尺度权重更大。</li>
+        <li><strong>仓位与风险</strong>：高 Backwardation + 低库存时，趋势策略有效；高 Contango + 高库存时，更适合区间或套利思维。</li>
+      </ol>
+    </section>
+
+    <section id="cases" class="mb-10">
+      <h2 class="mb-4 text-2xl font-bold">13. 实例分析：黄金、石油、铜（截至 2026 年 5 月中下旬）</h2>
+      <p class="mb-4 text-sm leading-6 text-slate-600">
+        以下用前文框架做<strong>当下对照</strong>。数据以美国政府、国际组织与行业机构的公开发布为准；现货与期货价格日内波动大，表中标注观测日期。分析为学习用途，不构成投资建议。
+      </p>
+
+      <div class="mb-6 overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[640px] text-sm">
+          <thead>
+            <tr>
+              <th>宏观指标</th>
+              <th>观测值（日期）</th>
+              <th>对大宗含义</th>
+              <th>来源</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>10 年期 TIPS 收益率（实际利率）</td>
+              <td><strong>2.18%</strong>（2026-05-21）</td>
+              <td>处于 2025 年中以来偏高水平；持有无息资产机会成本上升，压制黄金估值</td>
+              <td><a class="text-blue-600 underline" href="https://fred.stlouisfed.org/series/DFII10" target="_blank" rel="noopener">FRED DFII10</a></td>
+            </tr>
+            <tr>
+              <td>名义广义美元指数</td>
+              <td><strong>119.28</strong>（2026-05-15，2006年1月=100）</td>
+              <td>美元偏强；以美元计价的商品对非美买家变贵</td>
+              <td><a class="text-blue-600 underline" href="https://fred.stlouisfed.org/series/DTWEXBGS" target="_blank" rel="noopener">FRED DTWEXBGS</a></td>
+            </tr>
+            <tr>
+              <td>中东航运 / 霍尔木兹</td>
+              <td>EIA 假设海峡至 5 月下旬仍实质封闭，6 月起逐步恢复</td>
+              <td>供给冲击推升油价 → 通胀预期与降息预期博弈 → 联动黄金、铜</td>
+              <td><a class="text-blue-600 underline" href="https://www.eia.gov/pressroom/releases/press588.php" target="_blank" rel="noopener">EIA 新闻稿（2026-05-12）</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mb-6 text-sm text-slate-600">
+        <strong>共同背景（2026 年 2–5 月）</strong>：中东冲突导致霍尔木兹海峡航运受阻，约 1,050 万桶/日中东原油一度停产（EIA）；4 月布伦特现货均价约 117 美元/桶、盘中高点 138 美元/桶。同一事件通过「油价 → 通胀预期 → 美联储路径 → 实际利率」链条，同时作用于三种商品，但<strong>各品种主导变量不同</strong>——这正是框架要区分的。
+      </p>
+
+      <!-- Gold -->
+      <article class="mb-8 rounded-2xl border border-amber-200 bg-white p-6 shadow-sm">
+        <div class="mb-3 flex flex-wrap items-center gap-2">
+          <h3 class="text-xl font-bold text-amber-950">黄金（XAU）</h3>
+          <span class="tag tag-macro">金融属性主导</span>
+        </div>
+
+        <table class="data mb-4 w-full text-sm">
+          <thead>
+            <tr><th>关键数据</th><th>数值</th><th>来源</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Q1 2026 LBMA 金价季均</td>
+              <td><strong>4,873 美元/盎司</strong>（同比 +70%）</td>
+              <td><a class="text-blue-600 underline" href="https://www.gold.org/goldhub/research/gold-demand-trends/gold-demand-trends-q1-2026" target="_blank" rel="noopener">WGC《Gold Demand Trends: Q1 2026》</a></td>
+            </tr>
+            <tr>
+              <td>2026 年 1 月历史高点</td>
+              <td><strong>5,405 美元/盎司</strong>（季内高点）</td>
+              <td>同上；<a class="text-blue-600 underline" href="https://www.gold.org/news-and-events/press-releases/record-gold-prices-continue-shift-demand-dynamics" target="_blank" rel="noopener">WGC 新闻稿（2026-04-29）</a></td>
+            </tr>
+            <tr>
+              <td>4 月价格表现</td>
+              <td>LBMA 金价 PM（美元）<strong>基本持平</strong>（+0.1%）</td>
+              <td><a class="text-blue-600 underline" href="https://www.gold.org/goldhub/gold-focus/2026/05/china-gold-market-update-notable-rise-gold-reserves" target="_blank" rel="noopener">WGC 中国市场月评（2026-05-14）</a></td>
+            </tr>
+            <tr>
+              <td>央行净购金（Q1）</td>
+              <td><strong>244 吨</strong>（同比 +3%）</td>
+              <td>WGC Q1 报告</td>
+            </tr>
+            <tr>
+              <td>中国央行 4 月增持</td>
+              <td><strong>+8 吨</strong>（连续第 18 个月增持）</td>
+              <td>WGC 中国市场月评</td>
+            </tr>
+            <tr>
+              <td>金条与金币需求（Q1）</td>
+              <td><strong>474 吨</strong>（同比 +42%，历史第二高季度）</td>
+              <td>WGC Q1 报告</td>
+            </tr>
+            <tr>
+              <td>黄金 ETF 净流入（Q1）</td>
+              <td><strong>+62 吨</strong>（低于 2025 年 Q1 的 +230 吨）</td>
+              <td>WGC Q1 报告</td>
+            </tr>
+            <tr>
+              <td>首饰需求（Q1）</td>
+              <td><strong>335 吨</strong>（同比 -23%，高价抑制）</td>
+              <td>WGC Q1 报告</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 class="font-bold text-slate-800">框架映射</h4>
+        <ul class="mt-2 list-disc space-y-2 pl-6 text-sm leading-7">
+          <li><strong>宏观金融层（当前权重：高）</strong>：10 年期实际利率 5 月中下旬回升至约 2.1%–2.2%（FRED），处于近一年偏高位。实际利率上行提高持有黄金的机会成本，与 1 月创历史新高后的回调逻辑一致。广义美元指数同期走强（DTWEXBGS 约 119），对以美元计价的黄金形成额外压力。</li>
+          <li><strong>实物 / 需求层（结构性支撑仍在）</strong>：尽管价格高企抑制首饰，<strong>投资需求与央行购金</strong>在 Q1 仍强劲——这是近年黄金「定价公式」变化的核心：WGC 指出投资需求已远超首饰 fabrication。中国 4 月央行 +8 吨、国内黄金 ETF 连续净流入，体现官方与私人部门的长期配置意愿。</li>
+          <li><strong>冲击层（与油价交叉）</strong>：WGC 5 月报告指出，4 月初中东紧张缓和时金价反弹；<strong>4 月下旬霍尔木兹不确定性再起、油价走高，压低美联储降息预期，金价涨幅被逆转</strong>。说明当前黄金并非单纯「避险涨」，而是避险需求与「油价推通胀 → 实际利率难降」在打架。</li>
+        </ul>
+
+        <div class="callout mt-4 text-sm">
+          <p class="font-semibold text-blue-900">短期 vs 长期（黄金）</p>
+          <p class="mt-1 text-slate-700">
+            <span class="tag tag-short">短期</span> 实际利率 + 美元 + 美联储预期（受油价传导）主导波动。<br />
+            <span class="tag tag-long">长期</span> 央行购金（WGC 全年指引仍接近 2025 年 700–900 吨区间）、地缘与美元信用叙事提供底部；但若实际利率中枢长期维持 2% 以上，金价需靠持续的结构买盘消化估值。
+          </p>
+        </div>
+
+        <p class="mt-4 text-sm text-slate-600">
+          <strong>跟踪清单</strong>：FRED DFII10（实际利率）、DTWEXBGS（美元）、WGC 月度央行统计、美国 CPI 与能源分项、霍尔木兹航运恢复进度。
+        </p>
+
+        <div class="invest-verdict invest-verdict-gold">
+          <h4 class="text-amber-950">投资者结论（黄金）</h4>
+          <table class="data mb-3 w-full bg-white/80 text-sm">
+            <thead><tr><th>时间尺度</th><th>方向</th><th>一句话</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>1–3 个月</td>
+                <td><span class="verdict-tag verdict-neutral">观望 / 偏谨慎</span></td>
+                <td>实际利率约 2.2%、美元偏强，<strong>不宜追高</strong>；战争推油价反而压制金价</td>
+              </tr>
+              <tr>
+                <td>1–2 年</td>
+                <td><span class="verdict-tag verdict-bull">逢低配置</span></td>
+                <td>央行购金、地缘与储备多元化提供底部；适合<strong>核心仓</strong>，非短线博弈</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="font-semibold text-amber-950">操作建议</p>
+          <ul class="mt-1 list-disc pl-5 text-slate-800">
+            <li><strong>已有仓位</strong>：保留总资产约 <strong>5%–10%</strong> 的长期配置，暂不因回调清仓；战术仓可在利率冲顶阶段减仓。</li>
+            <li><strong>想买入</strong>：不要一次性梭哈；等 <strong>10Y TIPS 收益率回落</strong>（例如跌破约 1.8%）或<strong>美元明显走弱</strong>后再分 2–3 批建仓。</li>
+            <li><strong>想做空</strong>：仅适合短线交易者，需盯 DFII10 与美元；<strong>不建议</strong>普通投资者裸空黄金。</li>
+          </ul>
+          <p class="mt-3 font-semibold text-amber-950">改主意信号</p>
+          <ul class="mt-1 list-disc pl-5 text-slate-700">
+            <li>转多：实际利率趋势下行、美联储明确宽松、滞胀长期化且美元转弱。</li>
+            <li>转空/减配：TIPS 站稳 2.3%+、美元续强、霍尔木兹通航且油价大幅回落。</li>
+          </ul>
+          <p class="mt-3 text-xs text-amber-800/80">以上为基于公开数据的研究观点，非个人理财建议；期货/杠杆风险极高。</p>
+        </div>
+      </article>
+
+      <!-- Oil -->
+      <article class="mb-8 rounded-2xl border border-stone-300 bg-white p-6 shadow-sm">
+        <div class="mb-3 flex flex-wrap items-center gap-2">
+          <h3 class="text-xl font-bold text-stone-900">石油（布伦特 / WTI）</h3>
+          <span class="tag tag-geo">供给冲击主导</span>
+        </div>
+
+        <table class="data mb-4 w-full text-sm">
+          <thead>
+            <tr><th>关键数据</th><th>数值</th><th>来源</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>4 月布伦特现货均价</td>
+              <td><strong>117 美元/桶</strong></td>
+              <td><a class="text-blue-600 underline" href="https://www.eia.gov/pressroom/releases/press588.php" target="_blank" rel="noopener">EIA STEO 新闻稿（2026-05-12）</a></td>
+            </tr>
+            <tr>
+              <td>4 月 7 日盘中高点</td>
+              <td><strong>138 美元/桶</strong></td>
+              <td>同上</td>
+            </tr>
+            <tr>
+              <td>EIA 预测：5–6 月布伦特均价</td>
+              <td><strong>约 106 美元/桶</strong></td>
+              <td>同上</td>
+            </tr>
+            <tr>
+              <td>2026 全年布伦特预测均价</td>
+              <td><strong>95 美元/桶</strong>（2025 年为 69）</td>
+              <td><a class="text-blue-600 underline" href="https://www.eia.gov/outlooks/steo/" target="_blank" rel="noopener">EIA STEO（2026-05）</a></td>
+            </tr>
+            <tr>
+              <td>2027 全年预测均价</td>
+              <td><strong>79 美元/桶</strong></td>
+              <td>同上</td>
+            </tr>
+            <tr>
+              <td>2026 年 Q2 全球库存变化（预测）</td>
+              <td><strong>-850 万桶/日</strong>（平均）</td>
+              <td>EIA STEO 新闻稿</td>
+            </tr>
+            <tr>
+              <td>美国商业原油库存周变动</td>
+              <td><strong>-786.3 万桶</strong>（截至 2026-05-15 的一周）</td>
+              <td><a class="text-blue-600 underline" href="https://www.stonex.com/en/insights/eia-weekly-petroleum-data-recap-2026-05-20/" target="_blank" rel="noopener">EIA 周度数据摘要（StoneX，2026-05-20）</a></td>
+            </tr>
+            <tr>
+              <td>中东停产规模（4 月估计）</td>
+              <td>伊拉克、沙特、科威特、阿联酋、卡塔尔、巴林合计约 <strong>1,050 万桶/日</strong></td>
+              <td>EIA STEO 新闻稿</td>
+            </tr>
+            <tr>
+              <td>OPEC 结构变化</td>
+              <td>阿联酋 <strong>2026-05-01 退出 OPEC</strong>，STEO 起不再计入 OPEC 产量合计</td>
+              <td>EIA STEO 新闻稿</td>
+            </tr>
+            <tr>
+              <td>2026 年全球石油需求增速（EIA）</td>
+              <td><strong>+20 万桶/日</strong>（需求破坏，主要在亚洲）</td>
+              <td><a class="text-blue-600 underline" href="https://www.instituteforenergyresearch.org/international-issues/eia-now-sees-a-bigger-and-lengthier-outlook-to-the-middle-east-disruption-in-global-energy-supplies/" target="_blank" rel="noopener">IER 转引 EIA STEO</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 class="font-bold text-slate-800">框架映射</h4>
+        <ul class="mt-2 list-disc space-y-2 pl-6 text-sm leading-7">
+          <li><strong>冲击层 + 库存（短期绝对主导）</strong>：霍尔木兹受阻 → 实物供给骤降 → 4 月价格飙升。EIA 预计 Q2 全球库存日均减少 850 万桶，美国商业库存已较五年均值转为<strong>赤字约 1,028 万桶</strong>（周度数据），与「供给冲击定价」完全一致。这是教科书级的<strong>库存消化 + Backwardation 环境</strong>（近月贵于远月）。</li>
+          <li><strong>宏观金融层（次要但传导广）</strong>：高油价推升通胀预期，反过来影响美联储与美债——进而压制黄金、增加铜的宏观不确定性。油价本身对「加息预期」的敏感度，在此周期高于平时。</li>
+          <li><strong>供需长期层</strong>：EIA 假设冲突 5 月底结束、产量逐步恢复，故 5–6 月仍预测均价约 106 美元，但<strong>2026 年 Q4 降至约 89 美元、2027 年 79 美元</strong>——说明官方认为当前溢价含大量<strong>临时风险溢价</strong>，而非永久抬升中枢。美国 2026 年产量预测维持 1,360 万桶/日，2027 年升至 1,410 万桶/日。</li>
+        </ul>
+
+        <div class="callout-warn callout mt-4 text-sm">
+          <p class="font-semibold text-amber-900">短期 vs 长期（石油）</p>
+          <p class="mt-1 text-slate-700">
+            <span class="tag tag-short">短期</span> 地缘 + 库存 + OPEC 政策（含阿联酋退出后的备用产能重估）权重最高。<br />
+            <span class="tag tag-long">长期</span> 页岩/深水资本开支、全球需求（EIA 预计 2027 年需求 rebound +150 万桶/日）、能源转型节奏；当前 EIA 路径暗示<strong>「高油价 → 需求破坏 → 2027 价格回落」</strong>。
+          </p>
+        </div>
+
+        <p class="mt-4 text-sm text-slate-600">
+          <strong>跟踪清单</strong>：EIA 周度库存（每周三）、STEO 月度更新、霍尔木兹通行量（EIA 2026-05-13 起发布能源安全数据集）、OPEC 月报、美国 SPR 释放规模（周度显示 SPR 自 3 月下旬已显著下降）。
+        </p>
+
+        <div class="invest-verdict invest-verdict-oil">
+          <h4 class="text-stone-900">投资者结论（石油）</h4>
+          <table class="data mb-3 w-full bg-white/80 text-sm">
+            <thead><tr><th>时间尺度</th><th>方向</th><th>一句话</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>1–3 个月</td>
+                <td><span class="verdict-tag verdict-neutral">事件驱动 / 不追多</span></td>
+                <td>库存仍去化、地缘未完全解除，价格难崩；但 EIA 基准价约 <strong>106</strong>，相对 4 月高点溢价已大</td>
+              </tr>
+              <tr>
+                <td>1–2 年</td>
+                <td><span class="verdict-tag verdict-bear">中枢下移</span></td>
+                <td>EIA 路径：2026 全年约 <strong>95</strong> → 2027 约 <strong>79</strong>；当前含大量临时风险溢价</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="font-semibold text-stone-900">操作建议</p>
+          <ul class="mt-1 list-disc pl-5 text-slate-800">
+            <li><strong>股票投资者</strong>：优先通过<strong>能源股/油服盈利</strong>表达观点，少直接炒原油期货（杠杆、展期成本高）。</li>
+            <li><strong>实业/用油企业</strong>：<strong>买入保值</strong>（锁定成本）比赌方向更重要。</li>
+            <li><strong>期货交易者</strong>：不追突破式多单；若判断霍尔木兹较快恢复 → 考虑<strong>逢高试空/买看跌</strong>（与 EIA 基准一致）；若冲突长期化 → 仅回调分批做多并严格止损。</li>
+            <li><strong>已有多头</strong>：急涨后可<strong>分批止盈</strong>，不宜假设油价长期停在 100+。</li>
+          </ul>
+          <p class="mt-3 font-semibold text-stone-900">改主意信号</p>
+          <ul class="mt-1 list-disc pl-5 text-slate-700">
+            <li>转多/续持：海峡长期封锁、库存继续超预期下降、OPEC 再减产。</li>
+            <li>转空/减多：通航恢复、产量回升、全球需求破坏数据恶化、SPR 大规模释放。</li>
+          </ul>
+          <p class="mt-3 text-xs text-stone-600">以上为基于 EIA 等公开数据的研究观点，非个人理财建议。</p>
+        </div>
+      </article>
+
+      <!-- Copper -->
+      <article class="mb-8 rounded-2xl border border-orange-200 bg-white p-6 shadow-sm">
+        <div class="mb-3 flex flex-wrap items-center gap-2">
+          <h3 class="text-xl font-bold text-orange-950">铜（LME / SHFE）</h3>
+          <span class="tag tag-physical">实物与宏观博弈</span>
+        </div>
+
+        <table class="data mb-4 w-full text-sm">
+          <thead>
+            <tr><th>关键数据</th><th>数值</th><th>来源</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026 年内 LME 铜价区间（截至 4 月）</td>
+              <td>高 <strong>14,097</strong> 美元/吨（5 月 13 日）/ 低 <strong>11,826</strong>（3 月 19 日）</td>
+              <td><a class="text-blue-600 underline" href="https://news.metal.com/newscontent/103917906-global-copper-cathode-market-recorded-an-oversupply-of-396000-mt-in-q1-2026" target="_blank" rel="noopener">SMM 转引 ICSG 月报（2026-05-23）</a></td>
+            </tr>
+            <tr>
+              <td>2026 年至今 LME 均价</td>
+              <td><strong>12,947 美元/吨</strong>（较 2025 全年均价 +30%）</td>
+              <td>同上</td>
+            </tr>
+            <tr>
+              <td>4 月 LME 现货铜均价</td>
+              <td><strong>12,891 美元/吨</strong>（环比 +3%）</td>
+              <td>同上</td>
+            </tr>
+            <tr>
+              <td>Q1 2026 全球精炼铜平衡</td>
+              <td><strong>过剩约 39.6 万吨</strong>（2025 年同期约 13.5 万吨）</td>
+              <td><a class="text-blue-600 underline" href="https://icsg.org/" target="_blank" rel="noopener">ICSG</a> 月报，见 SMM / <a class="text-blue-600 underline" href="https://www.bigmint.co/insights/detail/copper-oversupply-deepens-in-q1cy26-exchange-stocks-hit-23-years-high-icsg-753373" target="_blank" rel="noopener">BigMint 摘要</a></td>
+            </tr>
+            <tr>
+              <td>全球精炼铜需求（Q1）</td>
+              <td>表观消费 <strong>+0.8%</strong>；中国表观需求<strong>基本持平</strong>（净进口约 -40%）</td>
+              <td>ICSG / SMM</td>
+            </tr>
+            <tr>
+              <td>全球精炼铜产量（Q1）</td>
+              <td><strong>+4.5%</strong>（原生 +3.8%，再生 +7.6%）</td>
+              <td>ICSG / SMM</td>
+            </tr>
+            <tr>
+              <td>三大交易所铜库存（4 月末）</td>
+              <td><strong>1,148,760 吨</strong>（2003 年 1 月以来最高；较 2025 年末 +55%）</td>
+              <td>ICSG / SMM</td>
+            </tr>
+            <tr>
+              <td>ICSG 2026 年全年预测（4 月修订）</td>
+              <td>从此前<strong>短缺 15 万吨</strong>调整为<strong>过剩约 9.6 万吨</strong></td>
+              <td><a class="text-blue-600 underline" href="https://icsg.org/" target="_blank" rel="noopener">ICSG《Copper Market Forecast 2026-2027》</a>（2026-04 发布，见 <a class="text-blue-600 underline" href="https://www.admis.com/icsg-flips-copper-forecast/" target="_blank" rel="noopener">ADMIS 市场评论 2026-04-24</a>）</td>
+            </tr>
+            <tr>
+              <td>机构短期价格区间（参考）</td>
+              <td>LME 或于 <strong>13,300–13,750</strong> 美元/吨区间震荡</td>
+              <td><a class="text-blue-600 underline" href="https://news.metal.com/newscontent/103917491-copper-prices-pulled-back-then-surged-as-market-fluctuated-china-premiums-declined-and-trade-was-sluggish-smm-macro-week" target="_blank" rel="noopener">SMM 宏观周报</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h4 class="font-bold text-slate-800">框架映射</h4>
+        <ul class="mt-2 list-disc space-y-2 pl-6 text-sm leading-7">
+          <li><strong>矛盾一：基本面 vs 价格</strong>——ICSG 显示 Q1 显著过剩、交易所库存创多年新高，但 2026 年内均价仍同比大涨 30%，5 月中旬一度逼近 1.4 万美元/吨。说明<strong>当前铜价并非由「显性库存紧张」单一驱动</strong>，而是 AI 电网投资叙事、矿端扰动预期、美国关税与 COMEX–LME 套利等<strong>预期与区域结构</strong>在定价。这是分析铜时最容易犯的错：只看全球库存总量，忽略<strong>可交割库存、区域溢价与资金仓位</strong>。</li>
+          <li><strong>宏观金融层（压制上行空间）</strong>：SMM 5 月周报明确指出，若美伊谈判进展、霍尔木兹通航改善，地缘风险溢价回落可能支撑铜价；但<strong>油价推升的通胀预期、美元走强、美债收益率上行</strong>将压制上方空间——与黄金面临的宏观链条相同，但铜还有<strong>中国需求偏弱</strong>的实物拖累（五一前后下游开工分化，线缆、电网订单前置后趋弱，SMM 劳动节调研）。</li>
+          <li><strong>实物层（中国）</strong>：Q1 中国精炼铜表观需求持平、净进口大降，与「过剩 39.6 万吨」一致；国内社会库存节前下降提供底价支撑，但高铜价抑制线缆企业补库。长期故事仍在新能源、储能、电网，但<strong>短期无法证伪的高价本身就在伤害需求</strong>。</li>
+        </ul>
+
+        <div class="callout mt-4 text-sm">
+          <p class="font-semibold text-blue-900">短期 vs 长期（铜）</p>
+          <p class="mt-1 text-slate-700">
+            <span class="tag tag-short">短期</span> 宏观（利率、美元、油价/地缘）+ 国内下游开工 + 交易所库存流向（LME 是否继续被注销拉货）并列。<br />
+            <span class="tag tag-long">长期</span> 矿端资本开支不足、精炼产能与废铜供应、能源转型需求；ICSG 4 月将 2026 年从「短缺」改为「小幅过剩」，与 2025 年 10 月展望（预测 2026 年短缺约 15 万吨）形成反差——说明<strong>长期故事也要随数据季度修订</strong>，不宜刻舟求剑。
+          </p>
+        </div>
+
+        <p class="mt-4 text-sm text-slate-600">
+          <strong>跟踪清单</strong>：ICSG 月度公报、LME/SHFE/COMEX 每日库存、中国现货升贴水（SMM）、美国 Section 232 铜关税后续报告（商务部 2026-06-30 截止）、智利/秘鲁供应扰动。
+        </p>
+
+        <div class="invest-verdict invest-verdict-copper">
+          <h4 class="text-orange-950">投资者结论（铜）</h4>
+          <table class="data mb-3 w-full bg-white/80 text-sm">
+            <thead><tr><th>时间尺度</th><th>方向</th><th>一句话</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>1–3 个月</td>
+                <td><span class="verdict-tag verdict-neutral">中性偏谨慎</span></td>
+                <td>库存过剩、价格高企，<strong>新开多单性价比差</strong>；叙事资金仍可再推一波</td>
+              </tr>
+              <tr>
+                <td>1–2 年</td>
+                <td><span class="verdict-tag verdict-bull">结构性看好，2026 年宜震荡思维</span></td>
+                <td>新能源/电网故事在，但 ICSG 已改判 2026 年<strong>小幅过剩</strong>，勿当确定性牛市</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="font-semibold text-orange-950">操作建议</p>
+          <ul class="mt-1 list-disc pl-5 text-slate-800">
+            <li><strong>股票投资者</strong>：优先<strong>铜矿龙头</strong>（低成本曲线），等业绩与股价回调；避免在叙事峰值追高冶炼/加工。</li>
+            <li><strong>想做多铜</strong>：等「利率/美元缓和 + 中国现货升贴水转强 + 库存止增」至少满足其一；价位可参考机构区间下沿约 <strong>13,300 美元/吨</strong> 分批，避免在 <strong>14,000+</strong> 追。</li>
+            <li><strong>想做空/对冲</strong>：高库存 + 弱需求在框架上支持逢高轻仓试空，<strong>必须设止损</strong>（AI/关税套利可再推高）。</li>
+            <li><strong>当前默认动作</strong>：<strong>不追高、不重仓赌趋势</strong>，以区间或股票替代裸铜期货。</li>
+          </ul>
+          <p class="mt-3 font-semibold text-orange-950">改主意信号</p>
+          <ul class="mt-1 list-disc pl-5 text-slate-700">
+            <li>转多：LME 注册库存持续被注销拉走、中国刺激/补库超预期、矿端大规模中断。</li>
+            <li>转空/观望：库存继续堆、ICSG 过剩兑现、霍尔木兹通航+美伊缓和、利率维持高位。</li>
+          </ul>
+          <p class="mt-3 text-xs text-orange-800/80">以上为基于 ICSG/SMM 等公开数据的研究观点，非个人理财建议。</p>
+        </div>
+      </article>
+
+      <!-- Cross comparison -->
+      <div class="rounded-2xl border border-slate-200 bg-slate-100 p-6 text-sm leading-7">
+        <h3 class="mb-3 text-lg font-bold text-slate-900">三品种对照：同一事件，不同权重</h3>
+        <table class="data w-full bg-white">
+          <thead>
+            <tr>
+              <th>变量</th>
+              <th>黄金</th>
+              <th>石油</th>
+              <th>铜</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>霍尔木兹 / 中东供给</td>
+              <td>间接：推高油价 → 通胀与利率预期 → <strong>压制</strong>为主</td>
+              <td><strong>直接定价</strong>（供给 + 风险溢价）</td>
+              <td>间接：地缘情绪 + 通胀链条；若通航改善则利好</td>
+            </tr>
+            <tr>
+              <td>10Y 实际利率 ↑</td>
+              <td><strong>核心利空</strong></td>
+              <td>次要（需求破坏叙事）</td>
+              <td><strong>压制工业金属风险偏好</strong></td>
+            </tr>
+            <tr>
+              <td>库存</td>
+              <td>非典型指标</td>
+              <td><strong>全球库存快速去化</strong>（EIA）</td>
+              <td><strong>交易所库存高企</strong>（ICSG）与价格背离</td>
+            </tr>
+            <tr>
+              <td>当前短期主导</td>
+              <td>实际利率 + 美元</td>
+              <td>地缘 + 库存</td>
+              <td>宏观 + 中国需求 + 叙事资金</td>
+            </tr>
+            <tr>
+              <td>当前长期主导</td>
+              <td>央行购金 + 地缘</td>
+              <td>资本开支 + 需求破坏后的再平衡</td>
+              <td>新能源需求 vs 精炼过剩</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="mt-4 text-slate-600">
+          <strong>资料索引</strong>：
+          <a class="text-blue-600 underline" href="https://fred.stlouisfed.org/series/DFII10" target="_blank" rel="noopener">FRED（利率与美元）</a> ·
+          <a class="text-blue-600 underline" href="https://www.eia.gov/outlooks/steo/" target="_blank" rel="noopener">EIA STEO</a> ·
+          <a class="text-blue-600 underline" href="https://www.gold.org/goldhub/research/gold-demand-trends/gold-demand-trends-q1-2026" target="_blank" rel="noopener">World Gold Council</a> ·
+          <a class="text-blue-600 underline" href="https://icsg.org/" target="_blank" rel="noopener">ICSG</a> ·
+          <a class="text-blue-600 underline" href="https://news.metal.com/" target="_blank" rel="noopener">SMM（上海有色网，转引 ICSG 月报）</a>
+        </p>
+      </div>
+    </section>
+
+    <footer class="rounded-2xl border border-slate-200 bg-slate-100 p-5 text-sm leading-6 text-slate-600">
+      <p class="font-semibold text-slate-800">免责声明</p>
+      <p class="mt-2">本文为个人学习用的分析框架整理，不构成任何投资建议。大宗商品杠杆高、波动大，请独立判断并控制仓位。</p>
+      <p class="mt-3">相关页面：
+        <a class="text-blue-600 underline" href="stock-pricing-patterns.html">股票定价模式</a> ·
+        <a class="text-blue-600 underline" href="h200-industry-chain.html">H200 产业链拆解</a>
+      </p>
+    </footer>
+  </main>
+</body>
+</html>

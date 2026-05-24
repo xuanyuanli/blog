@@ -164,6 +164,18 @@ bash build.sh --with-archive
 - 修改 `blog-ops/` 后，运行 `npm run build`。
 - 修改 Nginx 配置后，部署前应执行 `nginx -t`，`blog-ops` 的同步流程会在远程验证后再 reload。
 
+## DOCX 文档（Word）
+
+处理 `tmp/` 或其它目录下的 `.docx` 时，使用仓库封装工具（依赖 Claude docx skill 的 `scripts/office`）：
+
+```bash
+python scripts/docx/docx.py setup
+python scripts/docx/docx.py read path/to/file.docx
+python scripts/docx/docx.py unpack path/to/file.docx path/to/unpacked/
+```
+
+需已安装 **pandoc**（`winget install JohnMacFarlane.Pandoc`）与 Python 包（`setup` 子命令）。详见 `scripts/docx/README.md`。
+
 ## 常见任务入口
 
 - 修改首页展示、个人信息、AI 编程观点：优先查看 `astro/src/content/site.ts` 和 `astro/src/components/`。
