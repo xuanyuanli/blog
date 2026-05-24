@@ -1,6 +1,6 @@
 # 单股分析报告模板
 
-基于 [stock-pricing-patterns.html](../../stock/stock-pricing-patterns.html) 的「三层、两时钟、四范式」框架。将 `{占位符}` 替换为抓取数据与研判结论。
+基于 [stock-pricing-patterns.html](../../stock/public/stock-pricing-patterns.html) 的「三层、两时钟、四范式」框架。将 `{占位符}` 替换为抓取数据与研判结论。
 
 ---
 
@@ -17,7 +17,7 @@ disclaimer: 框架研究结论，非个性化投顾服务；据此操作风险�
 
 # {名称}（{代码}）定价分析
 
-> 数据截至 **{数据抓取时间}** · 框架：[股票定价模式入门](../../stock/stock-pricing-patterns.html)
+> 数据截至 **{数据抓取时间}** · 框架：[股票定价模式入门](../../stock-pricing-patterns.html)
 
 ## 摘要
 
@@ -219,10 +219,33 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码} --market-co
 
 ## 文件命名
 
-| 市场 | 文件名示例 |
-|------|------------|
-| A 股 | `stock/data/600519-贵州茅台.md` |
-| 港股 | `stock/data/00700-腾讯控股.md` |
-| 美股 | `stock/data/AAPL-Apple.md` |
+| 市场 | 报告路径示例 | 在线 URL |
+|------|-------------|----------|
+| A 股 | `stock/data/600519-贵州茅台/2026-05-24.md` | `/stock/data/600519-贵州茅台/2026-05-24.html` |
+| 港股 | `stock/data/00700-腾讯控股/2026-05-24.md` | `/stock/data/00700-腾讯控股/2026-05-24.html` |
+| 美股 | `stock/data/AAPL-Apple/2026-05-24.md` | `/stock/data/AAPL-Apple/2026-05-24.html` |
 
-格式：`{代码}-{简称}.md`，简称取自行情 `name` 字段，去掉非法文件名字符。
+- 股票目录：`{代码}-{简称}/`（简称取自行情 `name`，去掉非法文件名字符）
+- 报告文件：`{YYYY-MM-DD}.md`（日期取自 `data_fetched_at` 本地日期）
+- 同股同日重复分析：**覆盖**当日文件；禁止覆盖或删除历史日期文件
+
+## 股票 index.md 模板
+
+写入 `stock/data/{代码}-{简称}/index.md`，每次生成报告后同步更新：
+
+```markdown
+# {名称}（{代码}）
+
+> 最新评级：**{评级}** · {最新日期}
+
+{摘要一句话}
+
+## 历史报告
+
+| 日期 | 评级 | 链接 |
+|------|------|------|
+| {YYYY-MM-DD} | {评级} | [查看](./{YYYY-MM-DD}) |
+| ... | ... | ... |
+```
+
+历史报告按日期降序排列，最新一行在最上。

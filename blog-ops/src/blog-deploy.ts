@@ -20,7 +20,7 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
  * 博客项目列表
  * astro: 新博客（必选）
  * vuepress: 旧博客（可选，部署到 /archive/ 子路径）
- * stock: 股票静态页（可选，部署到主站 /stock/ 路径）
+ * stock: 股票 VitePress 站点（可选，部署到主站 /stock/ 路径）
  */
 const BLOG_PROJECTS: BlogProject[] = [
   {
@@ -39,7 +39,7 @@ const BLOG_PROJECTS: BlogProject[] = [
     name: 'stock',
     dir: 'stock',
     optional: true,
-    build: false,
+    build: true,
   },
 ];
 
@@ -104,7 +104,7 @@ function getDistDir(project: BlogProject, projectDir: string): string {
     case 'vuepress':
       return path.join(projectDir, 'docs', '.vuepress', 'dist');
     case 'stock':
-      return projectDir;
+      return path.join(projectDir, '.vitepress', 'dist');
   }
 }
 
@@ -190,7 +190,7 @@ export async function blogDeploy(
         throw new Error(`[${project.name}] 本地项目目录不存在: ${projectDir}`);
       }
 
-      // 确定构建产物目录；stock 是纯静态目录，不需要构建
+      // 确定构建产物目录
       const distDir = getDistDir(project, projectDir);
 
       // 构建（除非跳过）

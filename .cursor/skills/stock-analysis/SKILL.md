@@ -1,11 +1,11 @@
 ---
 name: stock-analysis
-description: 按 stock-pricing-patterns 框架分析 A/H/美股，抓取实时数据，输出含投资评级与操作建议的报告到 stock/data/{代码}-{简称}.md。触发词：分析股票、公司名、估值、买入卖出、688120 等。
+description: 按 stock-pricing-patterns 框架分析 A/H/美股，抓取实时数据，输出含投资评级与操作建议的报告到 stock/data/{代码}-{简称}/{YYYY-MM-DD}.md。触发词：分析股票、公司名、估值、买入卖出、688120 等。
 ---
 
 # 股票定价框架分析
 
-基于仓库内 [stock/stock-pricing-patterns.html](../../stock/stock-pricing-patterns.html) 的「宏观 → 公司 → 市场」三层框架与四种定价范式，对单只或多只股票生成结构化 Markdown 报告。
+基于仓库内 [stock/stock-pricing-patterns.html](../../stock/public/stock-pricing-patterns.html) 的「宏观 → 公司 → 市场」三层框架与四种定价范式，对单只或多只股票生成结构化 Markdown 报告。
 
 ## 前置条件
 
@@ -22,8 +22,10 @@ Task Progress:
 - [ ] 1. 抓取实时数据（必须运行脚本，禁止凭记忆填数）
 - [ ] 2. 检查 data_quality.warnings，必要时搜索补事件/校验
 - [ ] 5. **撰写「投资建议」专节**（评级、仓位、买卖点、监控指标）
-- [ ] 6. 写入 stock/data/{代码}-{简称}.md
-- [ ] 7. 多股时重复 1–6，每股一文件
+- [ ] 6. 写入 stock/data/{代码}-{简称}/{YYYY-MM-DD}.md（同股同日覆盖）
+- [ ] 7. 更新 stock/data/{代码}-{简称}/index.md（最新摘要 + 历史列表）
+- [ ] 8. 新股票时更新 stock/data/index.md 总览表
+- [ ] 9. 多股时重复 1–8
 ```
 
 ### 1. 抓取数据
@@ -94,7 +96,20 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名}
 
 ### 3. 输出路径
 
-`stock/data/{代码}-{简称}.md`（简称取自 `quote.name`）
+| 文件 | 路径 | 规则 |
+|------|------|------|
+| 报告 | `stock/data/{代码}-{简称}/{YYYY-MM-DD}.md` | 日期取自 `data_fetched_at` 本地日期，与 frontmatter `date` 一致 |
+| 股票概览 | `stock/data/{代码}-{简称}/index.md` | 每次写报告后同步更新 |
+| 全站总览 | `stock/data/index.md` | 新股票首次分析时更新 |
+
+简称取自 `quote.name`，去掉非法文件名字符。**同股同日重复分析覆盖当日文件**；禁止覆盖或删除历史日期文件。
+
+部署后在线 URL：
+
+- 概览页：`/stock/data/{代码}-{简称}/`
+- 某期报告：`/stock/data/{代码}-{简称}/{YYYY-MM-DD}.html`
+
+本地预览：`cd stock && npm run dev` → `http://localhost:5173/stock/`
 
 ### 4. 多股批量
 
@@ -109,7 +124,8 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py 600519 华海清科 
 - [ ] 过期数据未当实时依据
 - [ ] 含**投资评级**与操作建议
 - [ ] 含免责声明
+- [ ] 已更新股票 `index.md`（及必要时 `data/index.md`）
 
 ## 附加资源
 
-- [reference.md](reference.md) · [stock-pricing-patterns.html](../../stock/stock-pricing-patterns.html) · [fetch_stock.py](scripts/fetch_stock.py)
+- [reference.md](reference.md) · [stock-pricing-patterns.html](../../stock/public/stock-pricing-patterns.html) · [fetch_stock.py](scripts/fetch_stock.py)

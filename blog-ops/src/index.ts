@@ -19,7 +19,7 @@ const MENU_ITEMS: MenuItem[] = [
   { name: '配置服务器连接信息', value: 'config' },
   { name: '发布新博客（bops new）', value: 'new' },
   { name: '发布旧博客（bops old）', value: 'old' },
-  { name: '发布股票静态页（bops stock）', value: 'stock' },
+  { name: '发布股票站点（bops stock）', value: 'stock' },
   { name: '发布新旧博客（Astro + VuePress）', value: 'all' },
   { name: '同步 Nginx 配置（bops nginx）', value: 'nginx' },
   { name: '查看版本历史（bops versions）', value: 'versions' },
@@ -160,9 +160,10 @@ async function main(): Promise<void> {
 
   program
     .command('stock')
-    .description('发布股票静态页（Stock）到 /stock/')
-    .action(async () => {
-      await runProjectDeploy(['stock'], true);
+    .description('构建并发布股票站点（VitePress）到 /stock/')
+    .option('-s, --skip-build', '跳过构建，直接部署已有产物')
+    .action(async (opts) => {
+      await runProjectDeploy(['stock'], opts.skipBuild ?? false);
     });
 
   program
@@ -267,7 +268,7 @@ async function main(): Promise<void> {
         case 'stock':
           await blogDeploy(currentConfig, {
             projects: ['stock'],
-            skipBuild: true,
+            skipBuild: false,
             skipConfirm: false,
           });
           break;

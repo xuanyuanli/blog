@@ -29,7 +29,7 @@ node bin/bops.js
 ❯ 配置服务器连接信息
   发布新博客（bops new）
   发布旧博客（bops old）
-  发布股票静态页（bops stock）
+  发布股票站点（bops stock）
   发布新旧博客（Astro + VuePress）
   同步 Nginx 配置（bops nginx）
   查看版本历史（bops versions）
@@ -45,12 +45,13 @@ node bin/bops.js new
 # 发布旧博客（VuePress）到 /archive/
 node bin/bops.js old
 
-# 发布股票静态页（Stock）到 /stock/
+# 发布股票站点（VitePress）到 /stock/
 node bin/bops.js stock
 
-# 跳过构建，直接部署已有产物（new / old 可用）
+# 跳过构建，直接部署已有产物（new / old / stock 可用）
 node bin/bops.js new -s
 node bin/bops.js old --skip-build
+node bin/bops.js stock -s
 
 # 同步 Nginx 配置
 node bin/bops.js nginx
@@ -75,7 +76,7 @@ node bin/bops.js versions
 
 以 `bops new` 为例，完整流程：
 
-1. **本地构建** — 在 `astro/` 或 `vuepress/` 目录执行 `npm run build`，`stock/` 为纯静态目录不构建
+1. **本地构建** — 在 `astro/`、`vuepress/` 或 `stock/` 目录执行 `npm run build`
 2. **压缩产物** — 将构建输出目录打包为 zip
 3. **SSH 上传** — 通过 SFTP 上传 zip 到服务器 `/tmp/`
 4. **归档旧版本** — 将服务器当前版本备份到 `/data/deploy/blog-archives/<项目>/<tag>/`
@@ -88,7 +89,7 @@ node bin/bops.js versions
 |------|----------|----------|----------|
 | astro | `astro/` | `/var/www/blog/` | `astro/dist/` |
 | vuepress | `vuepress/` | `/var/www/blog-archive/` | `vuepress/docs/.vuepress/dist/` |
-| stock | `stock/` | `/var/www/stock/` | `stock/` |
+| stock | `stock/` | `/var/www/stock/` | `stock/.vitepress/dist/` |
 
 ## Nginx 同步
 
