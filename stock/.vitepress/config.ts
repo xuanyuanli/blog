@@ -33,7 +33,7 @@ function dataSidebar() {
 }
 
 export default defineConfig({
-  base: '/stock/',
+  base: '/',
   lang: 'zh-CN',
   title: '股票定价研究',
   description: '基于 stock-pricing-patterns 框架的个股定价分析与研究报告',

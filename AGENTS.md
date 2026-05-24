@@ -10,7 +10,7 @@
 .
 ├── astro/           # 新站，Astro + React + Tailwind CSS
 ├── vuepress/        # 旧博客，VuePress + vdoing 主题，历史技术文章归档
-├── stock/           # 股票研究 VitePress 站点，部署到 /stock/
+├── stock/           # 股票研究 VitePress 站点，部署到 stock.xuanyuanli.cn
 ├── nginx/           # Nginx 配置
 ├── blog-ops/        # 博客运维 CLI
 └── build.sh         # 服务器侧构建部署脚本
@@ -132,7 +132,7 @@ npm run preview
 - `data/{代码}-{简称}/`：个股报告目录，含 `index.md` 概览页与 `{YYYY-MM-DD}.md` 各期报告。
 - `data/index.md`：全站报告总览表。
 - `public/`：框架 HTML（stock-pricing-patterns、h200-industry-chain 等）。
-- `.vitepress/config.ts`：站点配置，`base: '/stock/'`。
+- `.vitepress/config.ts`：站点配置，`base: '/'`（独立子域名 stock.xuanyuanli.cn）。
 
 内容约定：
 
@@ -140,7 +140,7 @@ npm run preview
 - 同股同日重复分析覆盖当日文件；禁止覆盖历史日期文件。
 - 每次写报告后同步更新该股的 `index.md`。
 
-部署：`node bin/bops.js stock`（远程 `/var/www/stock/`）。
+部署：`node bin/bops.js stock`（远程 `/var/www/stock/`，线上 https://stock.xuanyuanli.cn）。
 
 ## blog-ops 运维工具
 

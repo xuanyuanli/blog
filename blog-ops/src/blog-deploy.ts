@@ -20,7 +20,7 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
  * 博客项目列表
  * astro: 新博客（必选）
  * vuepress: 旧博客（可选，部署到 /archive/ 子路径）
- * stock: 股票 VitePress 站点（可选，部署到主站 /stock/ 路径）
+ * stock: 股票 VitePress 站点（可选，部署到 stock.xuanyuanli.cn）
  */
 const BLOG_PROJECTS: BlogProject[] = [
   {

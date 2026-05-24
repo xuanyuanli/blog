@@ -106,10 +106,10 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名}
 
 部署后在线 URL：
 
-- 概览页：`/stock/data/{代码}-{简称}/`
-- 某期报告：`/stock/data/{代码}-{简称}/{YYYY-MM-DD}.html`
+- 概览页：`https://stock.xuanyuanli.cn/data/{代码}-{简称}/`
+- 某期报告：`https://stock.xuanyuanli.cn/data/{代码}-{简称}/{YYYY-MM-DD}.html`
 
-本地预览：`cd stock && npm run dev` → `http://localhost:5173/stock/`
+本地预览：`cd stock && npm run dev` → `http://localhost:5173/`
 
 ### 4. 多股批量
 

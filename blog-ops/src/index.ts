@@ -160,7 +160,7 @@ async function main(): Promise<void> {
 
   program
     .command('stock')
-    .description('构建并发布股票站点（VitePress）到 /stock/')
+    .description('构建并发布股票站点（VitePress）到 stock.xuanyuanli.cn')
     .option('-s, --skip-build', '跳过构建，直接部署已有产物')
     .action(async (opts) => {
       await runProjectDeploy(['stock'], opts.skipBuild ?? false);

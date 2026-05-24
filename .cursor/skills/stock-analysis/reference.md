@@ -221,9 +221,9 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码} --market-co
 
 | 市场 | 报告路径示例 | 在线 URL |
 |------|-------------|----------|
-| A 股 | `stock/data/600519-贵州茅台/2026-05-24.md` | `/stock/data/600519-贵州茅台/2026-05-24.html` |
-| 港股 | `stock/data/00700-腾讯控股/2026-05-24.md` | `/stock/data/00700-腾讯控股/2026-05-24.html` |
-| 美股 | `stock/data/AAPL-Apple/2026-05-24.md` | `/stock/data/AAPL-Apple/2026-05-24.html` |
+| A 股 | `stock/data/600519-贵州茅台/2026-05-24.md` | `https://stock.xuanyuanli.cn/data/600519-贵州茅台/2026-05-24.html` |
+| 港股 | `stock/data/00700-腾讯控股/2026-05-24.md` | `https://stock.xuanyuanli.cn/data/00700-腾讯控股/2026-05-24.html` |
+| 美股 | `stock/data/AAPL-Apple/2026-05-24.md` | `https://stock.xuanyuanli.cn/data/AAPL-Apple/2026-05-24.html` |
 
 - 股票目录：`{代码}-{简称}/`（简称取自行情 `name`，去掉非法文件名字符）
 - 报告文件：`{YYYY-MM-DD}.md`（日期取自 `data_fetched_at` 本地日期）

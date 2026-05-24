@@ -45,7 +45,7 @@ node bin/bops.js new
 # 发布旧博客（VuePress）到 /archive/
 node bin/bops.js old
 
-# 发布股票站点（VitePress）到 /stock/
+# 发布股票站点（VitePress）到 stock.xuanyuanli.cn
 node bin/bops.js stock
 
 # 跳过构建，直接部署已有产物（new / old / stock 可用）
@@ -89,7 +89,7 @@ node bin/bops.js versions
 |------|----------|----------|----------|
 | astro | `astro/` | `/var/www/blog/` | `astro/dist/` |
 | vuepress | `vuepress/` | `/var/www/blog-archive/` | `vuepress/docs/.vuepress/dist/` |
-| stock | `stock/` | `/var/www/stock/` | `stock/.vitepress/dist/` |
+| stock | `stock/` | `/var/www/stock/`（stock.xuanyuanli.cn） | `stock/.vitepress/dist/` |
 
 ## Nginx 同步
 
