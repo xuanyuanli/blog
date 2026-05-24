@@ -1,0 +1,37 @@
+{
+  "name": "stock-cli",
+  "version": "0.1.0",
+  "description": "A-share trailing stop-loss CLI — threshold, stop line, execution discipline",
+  "bin": {
+    "stock": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "node -e \"try{require('fs').chmodSync('dist/cli.js',0o755)}catch(e){}\"",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "stock",
+    "a-share",
+    "trailing-stop",
+    "cli"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "stock-api": "^2.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

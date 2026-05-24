@@ -11,6 +11,7 @@
 ├── astro/           # 新站，Astro + React + Tailwind CSS
 ├── vuepress/        # 旧博客，VuePress + vdoing 主题，历史技术文章归档
 ├── stock/           # 股票研究 VitePress 站点，部署到 stock.xuanyuanli.cn
+├── stock-cli/       # A 股尾随止损 CLI（波动分级、止损线）
 ├── nginx/           # Nginx 配置
 ├── blog-ops/        # 博客运维 CLI
 └── build.sh         # 服务器侧构建部署脚本
@@ -139,8 +140,27 @@ npm run preview
 - 报告由 `.cursor/skills/stock-analysis/` skill 生成，输出到 `data/{代码}-{简称}/{YYYY-MM-DD}.md`。
 - 同股同日重复分析覆盖当日文件；禁止覆盖历史日期文件。
 - 每次写报告后同步更新该股的 `index.md`。
+- A 股报告生成时会调用根目录 `stock-cli/`（`node stock-cli/dist/cli.js {代码} --json`），将尾随止损判断写入报告 10.5 节。
 
 部署：`node bin/bops.js stock`（远程 `/var/www/stock/`，线上 https://stock.xuanyuanli.cn）。
+
+## stock-cli 尾随止损工具
+
+目录：`stock-cli/`
+
+用途：A 股尾随止损 CLI — 根据近 6 月波动给出建议回撤阈值、当前止损线、触发状态与执行纪律。仅支持沪深北 A 股。
+
+常用命令：
+
+```bash
+cd stock-cli
+npm install
+npm run build
+node dist/cli.js 688120 --json
+npm test
+```
+
+与 stock-analysis 集成：生成 A 股报告前运行 `node stock-cli/dist/cli.js {代码} --json`，将 JSON 中的止损线、波动分级等写入报告。
 
 ## blog-ops 运维工具
 
@@ -198,6 +218,7 @@ bash build.sh --with-archive
 - 修改 `astro/` 后，至少运行 `npm run build`。
 - 修改 `vuepress/` 后，至少运行 `npm run build`。
 - 修改 `stock/` 后，至少运行 `npm run build`。
+- 修改 `stock-cli/` 后，运行 `npm run build` 与 `npm test`。
 - 修改 `blog-ops/` 后，运行 `npm run build`。
 - 修改 Nginx 配置后，部署前应执行 `nginx -t`，`blog-ops` 的同步流程会在远程验证后再 reload。
 

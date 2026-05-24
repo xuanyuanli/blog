@@ -11,17 +11,21 @@ description: 按 stock-pricing-patterns 框架分析 A/H/美股，抓取实时�
 
 ```bash
 pip install -r .cursor/skills/stock-analysis/requirements.txt
+cd stock-cli && npm install && npm run build
 ```
 
 依赖：`akshare`（财务/北向/宏观）、`requests`、`yfinance`（美股）。脚本会自动禁用失效的系统代理。
+
+`stock-cli`：A 股尾随止损 CLI（波动分级、建议回撤阈值、止损线、触发状态）。生成 A 股报告前须先构建 `stock-cli/dist/`。
 
 ## 工作流
 
 ```
 Task Progress:
 - [ ] 1. 抓取实时数据（必须运行脚本，禁止凭记忆填数）
+- [ ] 1b. A 股运行 stock-cli（--json），记录尾随止损判断
 - [ ] 2. 检查 data_quality.warnings，必要时搜索补事件/校验
-- [ ] 5. **撰写「投资建议」专节**（评级、仓位、买卖点、监控指标）
+- [ ] 5. **撰写「投资建议」专节**（评级、仓位、买卖点、监控指标、尾随止损）
 - [ ] 6. 写入 stock/data/{代码}-{简称}/{YYYY-MM-DD}.md（同股同日覆盖）
 - [ ] 7. 更新 stock/data/{代码}-{简称}/index.md（最新摘要 + 历史列表）
 - [ ] 8. 新股票时更新 stock/data/index.md 总览表
@@ -79,9 +83,40 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名}
 
 流程：脚本抓取 → 读 `data_quality.warnings` → 有 stale/missing 则搜索 `{公司名} 最新公告/北向/财报` → 仅补充事件日历与证伪条件 → **禁止**用搜索 snippets 替代价格/PE 数字。
 
+### 1b. 尾随止损判断（A 股）
+
+在步骤 1 拿到 `quote.code` 后，对 **A 股** 运行：
+
+```bash
+node stock-cli/dist/cli.js {代码} --json
+```
+
+| 市场 | 处理 |
+|------|------|
+| A 股 | 必须运行上述命令，解析 JSON |
+| 港股 / 美股 | 跳过；报告中标注「尾随止损 CLI 不适用（仅 A 股）」 |
+
+**须写入报告的 JSON 字段**（禁止凭记忆填数）：
+
+| 字段 | 含义 |
+|------|------|
+| `trailing.triggered` | 是否已触发止损 |
+| `trailing.stopLossLine` | 当前止损线（元） |
+| `trailing.stageHighClose` | 阶段最高收盘价 |
+| `trailing.appliedThresholdPct` | 采用回撤阈值 % |
+| `trailing.distanceToStopPct` | 距止损线 % |
+| `recommend.tierLabel` | 波动分级 |
+| `recommend.suggestedPct` | 建议回撤阈值 % |
+| `recommend.rangeMinPct` / `rangeMaxPct` | 建议区间 |
+| `volatility.maxDailyDrawdownPct` 等 | 近 6 月波动依据 |
+| `execution` | 触发时含完整执行规则；未触发时含纪律摘要 |
+| `klineWarning` | K 线不足等警告，须反映到报告 |
+
+CLI 失败（网络/代码错误）时：在报告 10.5 节写明失败原因，不阻塞其余分析。
+
 ### 2. 撰写分析与投资建议
 
-读取 [reference.md](reference.md)，将 JSON 映射到各节。**必须包含第 10 节「投资建议」**，给出明确评级（买入/增持/持有/观望/减仓/回避）、仓位区间、关注/止损价位。
+读取 [reference.md](reference.md)，将 JSON 映射到各节。**必须包含第 10 节「投资建议」**（含 **10.5 尾随止损判断**，A 股），给出明确评级（买入/增持/持有/观望/减仓/回避）、仓位区间、关注/止损价位。10.3「减仓/退出」须引用 CLI 的 `stopLossLine` 作为技术止损参考，与框架证伪条件并列。
 
 **评级参考（综合基本面 40% + 估值 30% + 趋势 20% + 宏观 10%）**
 
@@ -100,7 +135,7 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名}
 |------|------|------|
 | 报告 | `stock/data/{代码}-{简称}/{YYYY-MM-DD}.md` | 日期取自 `data_fetched_at` 本地日期，与 frontmatter `date` 一致 |
 | 股票概览 | `stock/data/{代码}-{简称}/index.md` | 每次写报告后同步更新 |
-| 全站总览 | `stock/data/index.md` | 新股票首次分析时更新 |
+| 全站总览 | `stock/data/index.md` | 新股票首次分析时更新；期数=1 时「查看」直达报告，期数>1 时链至概览页 |
 
 简称取自 `quote.name`，去掉非法文件名字符。**同股同日重复分析覆盖当日文件**；禁止覆盖或删除历史日期文件。
 
@@ -123,9 +158,11 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py 600519 华海清科 
 - [ ] `data_quality.warnings` 已反映到报告
 - [ ] 过期数据未当实时依据
 - [ ] 含**投资评级**与操作建议
+- [ ] A 股报告含 **stock-cli 尾随止损判断**（止损线等数值与 CLI JSON 一致）
+- [ ] 已触发止损时，报告含执行纪律（触发即卖等）
 - [ ] 含免责声明
 - [ ] 已更新股票 `index.md`（及必要时 `data/index.md`）
 
 ## 附加资源
 
-- [reference.md](reference.md) · [stock-pricing-patterns.html](../../stock/public/stock-pricing-patterns.html) · [fetch_stock.py](scripts/fetch_stock.py)
+- [reference.md](reference.md) · [stock-pricing-patterns.html](../../stock/public/stock-pricing-patterns.html) · [fetch_stock.py](scripts/fetch_stock.py) · [stock-cli](../../stock-cli/)
