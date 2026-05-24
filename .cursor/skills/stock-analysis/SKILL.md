@@ -1,6 +1,6 @@
 ---
 name: stock-analysis
-description: 按 stock-pricing-patterns 三层两时钟框架分析 A 股/港股/美股，抓取实时行情与财务数据并输出到 stock/data/{代码}-{简称}.md。在用户提到分析股票、个股定价、估值框架、公司名（如贵州茅台）、股票代码，或引用 stock-pricing-patterns.html 时使用。
+description: 按 stock-pricing-patterns 框架分析 A/H/美股，抓取实时数据，输出含投资评级与操作建议的报告到 stock/data/{代码}-{简称}.md。触发词：分析股票、公司名、估值、买入卖出、688120 等。
 ---
 
 # 股票定价框架分析
@@ -17,14 +17,13 @@ pip install -r .cursor/skills/stock-analysis/requirements.txt
 
 ## 工作流
 
-对每只请求的股票，**按顺序**执行：
-
 ```
 Task Progress:
 - [ ] 1. 抓取实时数据（必须运行脚本，禁止凭记忆填数）
-- [ ] 2. 按 reference.md 模板撰写分析
-- [ ] 3. 写入 stock/data/{代码}-{简称}.md
-- [ ] 4. 多股时重复 1–3，每股一文件
+- [ ] 2. 检查 data_quality.warnings，必要时搜索补事件/校验
+- [ ] 5. **撰写「投资建议」专节**（评级、仓位、买卖点、监控指标）
+- [ ] 6. 写入 stock/data/{代码}-{简称}.md
+- [ ] 7. 多股时重复 1–6，每股一文件
 ```
 
 ### 1. 抓取数据
@@ -38,84 +37,79 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名}
 | 类型 | 示例 |
 |------|------|
 | A 股代码 | `600519`、`000001` |
-| A 股公司名 | `贵州茅台`、`比亚迪`、`宁德时代` |
+| A 股公司名 | `贵州茅台`、`比亚迪`、`华海清科` |
 | 港股代码/名称 | `00700`、`腾讯控股` |
 | 美股代码/名称 | `AAPL`、`Apple`、`微软` |
-
-公司名通过东方财富搜索 API 解析为代码。**名称歧义**时（如「平安」可能对应平安银行、中国平安等），脚本会报错并列出候选；可加 `--best-match` 自动选取最相关的一条（A 股主板优先）。
-
-```bash
-# 公司名
-python .cursor/skills/stock-analysis/scripts/fetch_stock.py 贵州茅台 --market-context --pretty
-
-# 歧义名称：先看候选，或强制取最佳匹配
-python .cursor/skills/stock-analysis/scripts/fetch_stock.py 平安 --best-match --pretty
-```
-
-**代码格式（与上表等价）**
 
 **数据源（实时优先，自动降级）**
 
 | 数据 | 主源 | 备用 |
 |------|------|------|
 | A 股行情 | 新浪财经 | 东方财富 |
+| 估值 PE/PB | 东方财富 | 腾讯财经 → 财报推算 |
 | K 线 / 区间收益 | 东方财富 | 腾讯财经 |
 | 财务指标 | 新浪财经（AKShare） | — |
-| 北向持股 | 东方财富（AKShare） | — |
-| 宏观（10Y 国债、上证） | AKShare | — |
+| 北向持股 | AKShare | —（过期则标 stale） |
+| 宏观（10Y 国债、上证） | AKShare | 新浪指数 |
+| 公司概况 | 东方财富 | F10 页面 API |
 | 美股 | Yahoo Finance | — |
 
-若某字段抓取失败，在报告中标注「数据不可用」及原因，**不得编造**。
+脚本输出含 **`data_quality`**（`fields` 新鲜度 + `warnings`），撰写报告时必须逐条检查。
 
-### 2. 撰写分析
+#### 数据质量与降级
 
-读取 [reference.md](reference.md) 中的报告模板，将 JSON 数据映射到各节：
+| 现象 | 根因 | 脚本处理 |
+|------|------|----------|
+| `eastmoney: Connection aborted` | 代理干扰 + push2 不稳定 | 新浪行情 + 腾讯估值 + 财报推算 |
+| 北向停在 2024 年 | AKShare 源未更新 | `freshness: stale`，勿当实时资金 |
+| 腾讯 K 线无换手 | 备用源字段不全 | 换手率写 null，勿写 0% |
+| profile 失败 | 东财超时 | 改走 F10 API |
 
-- **第 1–2 节**：四范式快照（内在价值 / 相对估值 / 供需资金 / 行为情绪）
-- **第 3 节**：宏观层 — 用 `market_context` 的利率、上证、成交额
-- **第 4–5 节**：基本面 + 相对估值 — 用 `financials`、`quote` 的 P/E、P/B
-- **第 6 节**：市场结构 — 用 `kline.stats`、北向、换手率
-- **第 7 节**：判定风格类型（价值/成长/周期/防御），套用权重矩阵
-- **第 8 节**：检查清单 + 证伪条件
-- **第 9 节**：风险与误区
+#### 搜索工具二次校验（推荐）
 
-**分析原则**（来自框架原文）：
+**可行，但分工要明确：**
 
-1. 基本面定**价值锚**，估值倍数定**贵不贵**，资金与情绪定**短期偏离**
-2. 先**定时钟**（日～周 vs 季～年），再**定类型**，选对 P/E 或 P/B 或景气指标
-3. DCF/绝对估值只给**区间**，不追求精确小数
-4. 结尾必须含**免责声明**（非投资建议）
+| 适合搜索 | 不适合搜索 |
+|----------|------------|
+| 公告、业绩预告、政策 | 实时股价、涨跌幅 |
+| 行业景气、订单新闻 | 精确 P/E、北向日持股 |
+| 宏观近期表态 | 财务原始数值 |
+
+流程：脚本抓取 → 读 `data_quality.warnings` → 有 stale/missing 则搜索 `{公司名} 最新公告/北向/财报` → 仅补充事件日历与证伪条件 → **禁止**用搜索 snippets 替代价格/PE 数字。
+
+### 2. 撰写分析与投资建议
+
+读取 [reference.md](reference.md)，将 JSON 映射到各节。**必须包含第 10 节「投资建议」**，给出明确评级（买入/增持/持有/观望/减仓/回避）、仓位区间、关注/止损价位。
+
+**评级参考（综合基本面 40% + 估值 30% + 趋势 20% + 宏观 10%）**
+
+| 评级 | 典型条件 |
+|------|----------|
+| 买入/增持 | 好生意 + 估值合理或便宜 + 趋势/政策顺风 |
+| 持有 | 基本面尚可，估值略贵但逻辑未破坏 |
+| 观望 | 故事好但估值贵/趋势过热，或数据待验证 |
+| 减仓/回避 | 估值极端 + 盈利恶化，或逻辑证伪 |
+
+分析原则：基本面定价值锚、倍数定贵否、资金定短期偏离；必须含免责声明（非个性化投顾）。
 
 ### 3. 输出路径
 
-```
-stock/data/{代码}-{简称}.md
-```
-
-- 简称取自 `quote.name`，去除 `/\:*?"<>|` 等非法字符
-- 示例：`stock/data/600519-贵州茅台.md`
-- 若 `stock/data/` 不存在则创建
+`stock/data/{代码}-{简称}.md`（简称取自 `quote.name`）
 
 ### 4. 多股批量
 
 ```bash
-python .cursor/skills/stock-analysis/scripts/fetch_stock.py 600519 000858 00700 AAPL --market-context --pretty
+python .cursor/skills/stock-analysis/scripts/fetch_stock.py 600519 华海清科 AAPL --market-context --pretty
 ```
-
-一次抓取、分别写文件。可在摘要中交叉对比同行业股票，但**每股独立成文**。
 
 ## 质量检查
 
-交付前确认：
-
-- [ ] 报告中的价格、涨跌幅、PE、ROE 等与 JSON 一致
-- [ ] `data_fetched_at` 与脚本输出时间一致
-- [ ] 缺失数据已标明，无臆测数值
-- [ ] 含框架链接与免责声明
-- [ ] 文件位于 `stock/data/` 且命名正确
+- [ ] 价格、PE、ROE 与 JSON 一致
+- [ ] `data_quality.warnings` 已反映到报告
+- [ ] 过期数据未当实时依据
+- [ ] 含**投资评级**与操作建议
+- [ ] 含免责声明
 
 ## 附加资源
 
-- 报告模板：[reference.md](reference.md)
-- 定价框架原文：[stock/stock-pricing-patterns.html](../../stock/stock-pricing-patterns.html)
-- 数据脚本：[scripts/fetch_stock.py](scripts/fetch_stock.py)
+- [reference.md](reference.md) · [stock-pricing-patterns.html](../../stock/stock-pricing-patterns.html) · [fetch_stock.py](scripts/fetch_stock.py)

@@ -185,7 +185,147 @@ def resolve_input(raw: str, *, best_match: bool = False) -> dict[str, Any]:
     return {**c, "input": text, "resolved_from": "name_best", "query": text, "alternatives": [x for x in candidates if x != c][:5]}
 
 
+def parse_date(s: str) -> datetime | None:
+    s = str(s).strip()[:10]
+    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%Y%m%d"):
+        try:
+            return datetime.strptime(s, fmt).replace(tzinfo=CN_TZ)
+        except ValueError:
+            continue
+    return None
+
+
+def days_since(date_str: str) -> int | None:
+    dt = parse_date(date_str)
+    if not dt:
+        return None
+    return (datetime.now(CN_TZ).date() - dt.date()).days
+
+
+def freshness_label(days: int | None, *, fresh: int = 7, stale: int = 30) -> str:
+    if days is None:
+        return "unknown"
+    if days <= fresh:
+        return "fresh"
+    if days <= stale:
+        return "aging"
+    return "stale"
+
+
+def fetch_tencent_quote(market: str, code: str) -> dict[str, Any]:
+    sym = tencent_symbol(market, code)
+    url = f"https://qt.gtimg.cn/q={sym}"
+    r = http_get(url, extra_headers={"Referer": "https://gu.qq.com/"})
+    text = r.content.decode("gbk", errors="replace")
+    m = re.search(r'="([^"]+)"', text)
+    if not m:
+        raise RuntimeError("Tencent 行情解析失败")
+    parts = m.group(1).split("~")
+    if len(parts) < 47 or not parts[3]:
+        raise RuntimeError("Tencent 行情字段不足")
+    return {
+        "source": "tencent_realtime",
+        "pe_ttm": _num(parts[39]) if len(parts) > 39 else None,
+        "pb": _num(parts[46]) if len(parts) > 46 else None,
+        "turnover_rate": _num(parts[38]) if len(parts) > 38 else None,
+        "high_52w": _num(parts[67]) if len(parts) > 67 else None,
+        "low_52w": _num(parts[68]) if len(parts) > 68 else None,
+        "quote_time": parts[30] if len(parts) > 30 else None,
+    }
+
+
+def fetch_profile_f10(market: str, code: str) -> dict[str, Any]:
+    code_param = {"SH": f"SH{code}", "SZ": f"SZ{code}", "BJ": f"BJ{code}"}.get(market)
+    if not code_param:
+        raise ValueError(f"F10 不支持市场: {market}")
+    url = "https://emweb.securities.eastmoney.com/PC_HSF10/CompanySurvey/PageAjax"
+    r = http_get(url, params={"code": code_param}, extra_headers={"Referer": "https://emweb.securities.eastmoney.com/"})
+    payload = r.json()
+    jbzl = (payload.get("jbzl") or [{}])[0]
+    return {
+        "source": "eastmoney_f10",
+        "industry": jbzl.get("INDUSTRYCSRC1") or jbzl.get("EM2016"),
+        "listing_date": jbzl.get("LISTING_DATE") or jbzl.get("FOUND_DATE"),
+        "total_shares": jbzl.get("TOTAL_SHARES") or jbzl.get("REG_CAPITAL"),
+        "org_name": jbzl.get("ORG_NAME"),
+    }
+
+
+def fetch_sh_index_sina() -> dict[str, Any]:
+    r = http_get("https://hq.sinajs.cn/list=s_sh000001", extra_headers={"Referer": "https://finance.sina.com.cn"})
+    text = r.content.decode("gbk", errors="replace")
+    m = re.search(r'="([^"]+)"', text)
+    if not m:
+        raise RuntimeError("Sina 指数解析失败")
+    parts = m.group(1).split(",")
+    return {
+        "source": "sina_index",
+        "name": parts[0],
+        "price": float(parts[1]),
+        "change": float(parts[2]),
+        "change_pct": float(parts[3]),
+        "volume": int(float(parts[4])) if parts[4] else None,
+        "amount": float(parts[5]) if len(parts) > 5 and parts[5] else None,
+    }
+
+
+def compute_valuation_from_financials(price: float | None, financials: dict[str, Any] | None) -> dict[str, Any]:
+    if not price or not financials:
+        return {}
+    records = financials.get("records") or []
+    if not records:
+        return {}
+    eps_ttm = sum(r.get("eps") or 0 for r in records[-4:])
+    latest = financials.get("latest") or {}
+    bps = latest.get("bps")
+    out: dict[str, Any] = {"valuation_source": "computed_from_financials"}
+    if eps_ttm and eps_ttm > 0:
+        out["pe_ttm"] = round(price / eps_ttm, 2)
+        out["eps_ttm"] = round(eps_ttm, 4)
+    annual = financials.get("latest_annual") or {}
+    if annual.get("eps") and annual.get("eps") > 0:
+        out["pe_annual"] = round(price / annual["eps"], 2)
+    if bps and bps > 0:
+        out["pb"] = round(price / bps, 2)
+    return out
+
+
+def enrich_quote_valuation(quote: dict[str, Any], market: str, code: str, financials: dict[str, Any] | None = None) -> dict[str, Any]:
+    if quote.get("pe_ttm") and quote.get("pb"):
+        quote["valuation_source"] = quote.get("valuation_source") or "primary"
+        return quote
+    try:
+        tq = fetch_tencent_quote(market, code)
+        for k in ("pe_ttm", "pb", "turnover_rate", "high_52w", "low_52w"):
+            if quote.get(k) is None and tq.get(k) is not None:
+                quote[k] = tq[k]
+        quote["valuation_source"] = "tencent"
+        if tq.get("quote_time"):
+            quote["quote_time"] = tq["quote_time"]
+    except Exception as e:
+        quote.setdefault("valuation_fallback_errors", []).append(f"tencent: {e}")
+    if (quote.get("pe_ttm") is None or quote.get("pb") is None) and financials:
+        computed = compute_valuation_from_financials(quote.get("price"), financials)
+        for k, v in computed.items():
+            if k == "valuation_source":
+                quote["valuation_source"] = v if quote.get("pe_ttm") is None else quote.get("valuation_source", v)
+            elif quote.get(k) is None:
+                quote[k] = v
+    if quote.get("pe_ttm") is None and quote.get("pb") is None:
+        quote["valuation_source"] = quote.get("valuation_source") or "unavailable"
+    return quote
+
+
 def em_secid(market: str, code: str) -> str:
+    if market == "SH":
+        return f"1.{code}"
+    if market == "SZ":
+        return f"0.{code}"
+    if market == "BJ":
+        return f"0.{code}"
+    if market == "HK":
+        return f"116.{code}"
+    raise ValueError(f"East Money secid 不支持市场: {market}")
     if market == "SH":
         return f"1.{code}"
     if market == "SZ":
@@ -268,7 +408,7 @@ def fetch_em_quote(market: str, code: str) -> dict[str, Any]:
             quote["circ_mv"] = payload.get("f117")
             quote["valuation_source"] = "eastmoney"
         except Exception as e:
-            quote["valuation_source"] = f"eastmoney_unavailable: {e}"
+            quote["valuation_fallback_errors"] = [f"eastmoney: {e}"]
         return quote
     secid = em_secid(market, code)
     fields = "f43,f44,f45,f46,f47,f48,f57,f58,f60,f116,f117,f162,f167,f168,f169,f170"
@@ -349,7 +489,11 @@ def _kline_stats(rows: list[dict[str, Any]]) -> dict[str, Any]:
             "return_3m_pct": ret(60),
             "return_6m_pct": ret(120),
             "return_1y_pct": ret(252) if len(closes) > 252 else ret(len(closes) - 1),
-            "avg_turnover_rate_20d": round(sum(x.get("turnover_rate") or 0 for x in rows[-20:]) / min(20, len(rows)), 2),
+            "avg_turnover_rate_20d": (
+                round(sum(x.get("turnover_rate") or 0 for x in rows[-20:]) / min(20, len(rows)), 2)
+                if any(x.get("turnover_rate") for x in rows[-20:])
+                else None
+            ),
         },
     }
 
@@ -449,28 +593,37 @@ def fetch_financials_cn(code: str) -> dict[str, Any]:
     return {"source": "sina_financial", "records": records, "latest": latest, "latest_annual": prev_year}
 
 
-def fetch_profile_cn(code: str) -> dict[str, Any]:
-    df = ak.stock_individual_info_em(symbol=code)
-    info = {str(row.iloc[0]).strip(): str(row.iloc[1]).strip() for _, row in df.iterrows()}
-    return {
-        "source": "eastmoney_profile",
-        "industry": info.get("行业") or info.get("所属行业"),
-        "listing_date": info.get("上市时间"),
-        "total_shares": info.get("总股本"),
-        "float_shares": info.get("流通股"),
-    }
+def fetch_profile_cn(code: str, market: str = "SH") -> dict[str, Any]:
+    try:
+        df = ak.stock_individual_info_em(symbol=code)
+        info = {str(row.iloc[0]).strip(): str(row.iloc[1]).strip() for _, row in df.iterrows()}
+        return {
+            "source": "eastmoney_profile",
+            "industry": info.get("行业") or info.get("所属行业"),
+            "listing_date": info.get("上市时间"),
+            "total_shares": info.get("总股本"),
+            "float_shares": info.get("流通股"),
+        }
+    except Exception:
+        return fetch_profile_f10(market, code)
 
 
 def fetch_northbound_cn(code: str) -> dict[str, Any]:
     df = ak.stock_hsgt_individual_em(symbol=code)
     if df is None or df.empty:
-        return {"source": "eastmoney_northbound", "latest": None}
+        return {"source": "eastmoney_northbound", "latest": None, "freshness": "missing"}
     tail = df.tail(5)
     latest = tail.iloc[-1]
-    return {
+    as_of = str(latest.iloc[0])
+    age_days = days_since(as_of)
+    freshness = freshness_label(age_days, fresh=5, stale=30)
+    result: dict[str, Any] = {
         "source": "eastmoney_northbound",
+        "as_of": as_of,
+        "age_days": age_days,
+        "freshness": freshness,
         "latest": {
-            "date": str(latest.iloc[0]),
+            "date": as_of,
             "holding_shares": _num(latest.iloc[3]),
             "holding_mv": _num(latest.iloc[4]),
             "holding_pct": _num(latest.iloc[5]),
@@ -478,6 +631,9 @@ def fetch_northbound_cn(code: str) -> dict[str, Any]:
             "daily_change_amount": _num(latest.iloc[7]),
         },
     }
+    if freshness == "stale":
+        result["warning"] = f"北向持股数据截至 {as_of}，已过期 {age_days} 天，AKShare 源可能未更新，勿用于短期资金判断"
+    return result
 
 
 def fetch_market_context_cn() -> dict[str, Any]:
@@ -495,6 +651,10 @@ def fetch_market_context_cn() -> dict[str, Any]:
             }
     except Exception as e:
         ctx["sh_index_error"] = str(e)
+        try:
+            ctx["sh_index"] = fetch_sh_index_sina()
+        except Exception as e2:
+            ctx["sh_index_sina_error"] = str(e2)
     try:
         spot = ak.bond_zh_us_rate()
         if spot is not None and not spot.empty:
@@ -529,6 +689,52 @@ def _num(v: Any) -> float | None:
         return None
 
 
+def build_data_quality(result: dict[str, Any]) -> dict[str, Any]:
+    warnings: list[str] = []
+    fields: dict[str, str] = {}
+    quote = result.get("quote") or {}
+    kline = result.get("kline") or {}
+    nb = result.get("northbound") or {}
+
+    if quote.get("source") == "sina_realtime":
+        fields["price"] = "fresh"
+    if quote.get("valuation_source") == "computed_from_financials":
+        warnings.append("P/E、P/B 由财报 EPS/BPS 推算，非行情 TTM 口径")
+    elif quote.get("valuation_source") == "tencent":
+        fields["pe_pb"] = "fresh"
+    elif not quote.get("pe_ttm"):
+        warnings.append("P/E 不可用")
+        fields["pe_pb"] = "missing"
+
+    kline_date = (kline.get("latest") or {}).get("date")
+    if kline_date:
+        kd = days_since(kline_date)
+        fields["kline"] = freshness_label(kd, fresh=3, stale=10)
+        if kd and kd > 3:
+            warnings.append(f"K 线最新交易日为 {kline_date}（{kd} 天前），非交易时段属正常")
+
+    fin_latest = (result.get("financials") or {}).get("latest") or {}
+    if fin_latest.get("date"):
+        fd = days_since(str(fin_latest["date"]))
+        fields["financials"] = freshness_label(fd, fresh=120, stale=365)
+        if fd and fd > 120:
+            warnings.append(f"财务数据最新报告期 {fin_latest['date']}，分析盈利需结合最新公告")
+
+    if nb.get("freshness") == "stale":
+        warnings.append(nb.get("warning") or "北向持股数据过期")
+        fields["northbound"] = "stale"
+    elif nb.get("freshness") == "missing":
+        fields["northbound"] = "missing"
+    elif nb.get("freshness"):
+        fields["northbound"] = nb["freshness"]
+
+    if result.get("profile", {}).get("error"):
+        warnings.append("公司概况抓取失败，行业信息可能缺失")
+        fields["profile"] = "missing"
+
+    return {"fields": fields, "warnings": warnings}
+
+
 def fetch_one(raw: str, *, best_match: bool = False) -> dict[str, Any]:
     parsed = resolve_input(raw, best_match=best_match)
     market, code = parsed["market"], parsed["code"]
@@ -552,18 +758,20 @@ def fetch_one(raw: str, *, best_match: bool = False) -> dict[str, Any]:
         for key, fn in (
             ("kline", lambda: fetch_kline_cn(code, market)),
             ("financials", lambda: fetch_financials_cn(code)),
-            ("profile", lambda: fetch_profile_cn(code)),
+            ("profile", lambda: fetch_profile_cn(code, market)),
             ("northbound", lambda: fetch_northbound_cn(code)),
         ):
             try:
                 result[key] = fn()
             except Exception as e:
                 result[key] = {"error": str(e)}
+        result["quote"] = enrich_quote_valuation(result["quote"], market, code, result.get("financials"))
     elif market == "HK":
         try:
             result["kline"] = fetch_kline_cn(code, "HK")
         except Exception as e:
             result["kline"] = {"error": str(e)}
+    result["data_quality"] = build_data_quality(result)
     return result
 
 
