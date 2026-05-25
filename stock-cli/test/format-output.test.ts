@@ -11,6 +11,7 @@ function mockResult(triggered: boolean): AnalyzeResult {
     yesterday: 1670,
     percent: 0.01,
     bars: [],
+    klineSource: "eastmoney",
     volatility: {
       maxDailyDrawdown: 0.068,
       maxWeeklyDrawdown: 0.112,

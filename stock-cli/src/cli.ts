@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 
+import { disableSystemProxy } from "./lib/http-env";
 import { analyzeStock } from "./lib/analyze";
+
+disableSystemProxy();
 import { formatHuman, formatJson } from "./lib/format-output";
 import { CodeNormalizeError } from "./lib/normalize-code";
 

@@ -4,6 +4,7 @@ import {
   normalizeCode,
   toEastmoneySecid,
   toStockApiCode,
+  toTencentSymbol,
   CodeNormalizeError,
 } from "../src/lib/normalize-code";
 
@@ -36,5 +37,11 @@ describe("normalizeCode", () => {
 
   it("maps BJ to eastmoney secid 0.xxx", () => {
     assert.equal(toEastmoneySecid("920186"), "0.920186");
+  });
+
+  it("maps to tencent symbols", () => {
+    assert.equal(toTencentSymbol("600519"), "sh600519");
+    assert.equal(toTencentSymbol("301269"), "sz301269");
+    assert.equal(toTencentSymbol("920186"), "bj920186");
   });
 });

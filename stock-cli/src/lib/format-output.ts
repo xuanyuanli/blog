@@ -76,6 +76,7 @@ export function formatJson(result: AnalyzeResult, options: FormatOptions): strin
       distanceToStopPct: +trailing.distanceToStopPct.toFixed(2),
     },
     execution: buildExecutionPayload(showFull),
+    klineSource: result.klineSource,
     klineWarning: result.klineWarning,
   };
 

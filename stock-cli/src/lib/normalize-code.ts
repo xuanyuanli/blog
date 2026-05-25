@@ -89,3 +89,16 @@ export function toEastmoneySecid(code: string): string {
   }
   return `0.${normalized.slice(2)}`;
 }
+
+/** 腾讯财经行情/K 线代码，如 sh600519、sz301269、bj920186 */
+export function toTencentSymbol(code: string): string {
+  const normalized = normalizeCode(code);
+  const digits = normalized.slice(2);
+  if (normalized.startsWith("SH")) {
+    return `sh${digits}`;
+  }
+  if (normalized.startsWith("BJ")) {
+    return `bj${digits}`;
+  }
+  return `sz${digits}`;
+}
