@@ -25,6 +25,10 @@ features:
     details: H200 整机成本产业链拆解与 A 股映射。
     link: /h200-industry-chain.html
     target: _self
+  - title: Rubin 产业链
+    details: 摩根士丹利 Rubin VR200 机架 BOM 拆解与 A 股映射。
+    link: /rubin-industry-chain.html
+    target: _self
   - title: 大宗商品定价
     details: 大宗商品定价逻辑框架。
     link: /commodity-pricing-framework.html

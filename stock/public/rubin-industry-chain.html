@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NVIDIA Vera Rubin VR200 机架成本拆解（摩根士丹利研报）</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #dbeafe; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #2563eb; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #2563eb; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .cost { display: inline-block; border-radius: 999px; background: #e0f2fe; color: #075985; padding: .12rem .55rem; font-size: .78rem; font-weight: 700; vertical-align: middle; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .why { color: #475569; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .prosperity-up { background: #dcfce7; color: #166534; font-weight: 700; }
+    .prosperity-flat { background: #fef3c7; color: #92400e; font-weight: 700; }
+    a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-violet-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-violet-400/20 px-3 py-1 text-sm text-violet-100">NVIDIA Vera Rubin VR200 NVL72</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">信源：摩根士丹利 Howard Kao 团队 · 2026-05-21</span>
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">研报 BOM 估算，非官方披露 · 非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">Vera Rubin 机架成本产业链拆解</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        本页基于摩根士丹利（Morgan Stanley）2026 年 5 月 21 日对 NVIDIA（英伟达）下一代 <strong>Vera Rubin VR200 NVL72</strong> 机架的 bottom-up BOM（物料清单）拆解，梳理单机架约 <strong>780 万美元</strong> 的成本结构、相对 GB300 的代际变化，以及 PCB（印制电路板）、MLCC（多层陶瓷电容）、ABF（味之素堆积膜）载板、内存、液冷等环节的投资映射。
+      </p>
+      <div class="mt-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm leading-6 text-slate-100">
+        <p class="font-semibold">四锚点摘要</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li><strong>行业</strong>：AI 数据中心机架级加速计算（Rubin 代际，2026H2 起量）</li>
+          <li><strong>论文/研报</strong>：Morgan Stanley《Rubin VR200 BOM Teardown》（Howard Kao 团队，2026-05-21）</li>
+          <li><strong>热点</strong>：GPU 不再「独吞」BOM；内存占比升至 26%；PCB/MLCC 价值翻数倍</li>
+          <li><strong>产业链</strong>：72×Rubin GPU + 36×Vera CPU + HBM4/LPDDR5X/3D NAND + 全液冷 Oberon 机箱</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">ODM 采购价（大摩估算）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 780 万美元/柜</p>
+        <p class="mt-2 text-sm text-slate-600">GB300 约 399 万美元，代际增幅约 +95%。经 OEM 采购更高；云厂自采内存可降至约 670 万美元。</p>
+      </div>
+      <div class="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">最大成本池变化</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">GPU 仍第一，内存跃升第二</p>
+        <p class="mt-2 text-sm text-slate-600">GPU 约 396 万（51%），较 GB300 +57%；内存约 200 万（26%），+435%。</p>
+      </div>
+      <div class="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">Rubin 平台规格（公开口径）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">20.7TB HBM4 + 54TB LPDDR5X</p>
+        <p class="mt-2 text-sm text-slate-600">72 GPU × 288GB HBM4；36 CPU × 1.5TB LPDDR5X；首次大规模集成 3D NAND。</p>
+      </div>
+      <div class="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">零部件涨幅冠军</p>
+        <p class="mt-2 text-2xl font-bold text-red-600">PCB +233%</p>
+        <p class="mt-2 text-sm text-slate-600">MLCC +182%、ABF +82%、NVLink 芯片 +122%；液冷仅 +12% 但变为全液冷必选。</p>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-950">
+      <p class="font-semibold">阅读口径</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>大摩数据来自 ODM 侧 bottom-up BOM 估算，<strong>不等于</strong> NVIDIA 官方 BOM 或终端客户成交价。</li>
+        <li>「机架价值占比」按 hyperscaler 从 ODM 采购一台 VR200 NVL72 理解；GPU/内存单价含平台溢价与供需因素。</li>
+        <li>若云厂商绕过 NVIDIA 直接采购 SOCAMM/LPDDR5X 与 HBM，机架价可少约 110 万美元——这会重塑利润分配。</li>
+        <li>A 股映射按产业链高相关 + 公开披露交叉验证；无权威证据的不写「确定供货 Rubin」。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">研报核心结论：算力价值从「GPU 独大」向全链扩散</h2>
+      <p class="mt-2 text-sm text-slate-500">Morgan Stanley · Howard Kao · 2026-05-21 · 二手摘要交叉自公开财经媒体与社区转述</p>
+      <ul class="mt-4 list-disc pl-6 leading-7">
+        <li><strong>设计哲学</strong>：Rubin 强调「内存优先」——用海量 HBM4、LPDDR5X 与 3D NAND 喂饱算力，降低 GPU 等数据瓶颈。</li>
+        <li><strong>结构巨变</strong>：GPU BOM 占比从 GB200 约 65% 降至 VR200 约 51%，但 GPU 绝对值仍从约 252 万增至约 396 万美元。</li>
+        <li><strong>ODM 悖论</strong>：市场担心 Rubin 托盘「标准化」压缩 ODM 附加值；大摩测算 ODM value-add 从约 10.8 万增至约 15.0 万美元（+35%～40%），但毛利率从 2.7% 降至约 1.9%。</li>
+        <li><strong>寄售模式</strong>：鸿海 2025Q4、广达 2026Q1 法说提及 consignment——客户自采核心料、ODM 只组装，减轻营运资金压力，亦可能压缩 ODM 营收规模。</li>
+        <li><strong>量产节奏</strong>：Vera Rubin 预计 2026Q3 首批出货，Q4 放量；Rubin Ultra 计划 2027H2，将大规模采用 800V DC 供电。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">GB300 → VR200 成本对比（大摩估算）</h2>
+      <table class="data w-full min-w-[640px] text-sm">
+        <thead>
+          <tr>
+            <th>成本项</th>
+            <th>GB300 约值</th>
+            <th>VR200 约值</th>
+            <th>占比变化</th>
+            <th>代际增幅</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>机架总 BOM</td><td>~399 万美元</td><td>~780 万美元</td><td>100%</td><td><strong>+95%</strong></td></tr>
+          <tr><td>GPU（72×Rubin）</td><td>~252 万（65%）</td><td>~396 万（51%）</td><td>↓14ppt</td><td>+57%</td></tr>
+          <tr><td>内存（HBM4+LPDDR5X+NAND）</td><td>~37 万（9%）</td><td>~200 万（26%）</td><td>↑17ppt</td><td><strong>+435%</strong></td></tr>
+          <tr><td>PCB</td><td>~3.5 万</td><td>~11.7 万</td><td>—</td><td><strong>+233%</strong></td></tr>
+          <tr><td>MLCC</td><td>~0.15 万</td><td>~0.43 万</td><td>—</td><td>+182%</td></tr>
+          <tr><td>ABF 载板</td><td>~1.1 万</td><td>~2.0 万</td><td>—</td><td>+82%</td></tr>
+          <tr><td>NVLink Switch 等</td><td>~6.5 万</td><td>~14.4 万</td><td>—</td><td>+122%</td></tr>
+          <tr><td>电源</td><td>~5.8 万</td><td>~7.6 万</td><td>—</td><td>+32%</td></tr>
+          <tr><td>液冷（不含 sidecar CDU）</td><td>~6.5 万</td><td>~7.2 万</td><td>—</td><td>+12%</td></tr>
+          <tr><td>Vera CPU（36 颗）</td><td>~18 万</td><td>~18 万</td><td>—</td><td>持平</td></tr>
+          <tr><td>ODM Value-Add</td><td>~10.8 万</td><td>~15.0 万</td><td>—</td><td>+35%～40%</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">景气度研判</h2>
+      <table class="data w-full min-w-[640px] text-sm">
+        <thead>
+          <tr><th>时间尺度</th><th>方向</th><th>置信度</th><th>核心驱动</th><th>关键风险</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>短期 0-12M</td>
+            <td class="prosperity-up">上行</td>
+            <td>高</td>
+            <td>Rubin 2026H2 量产前备货；HBM4/LPDDR5X 涨价；MLCC/PCB ODM 囤货</td>
+            <td>NVDA 股价波动、云 Capex 节奏、出口管制</td>
+          </tr>
+          <tr>
+            <td>中期 1-3Y</td>
+            <td class="prosperity-up">上行</td>
+            <td>中高</td>
+            <td>机架级 AI 渗透率提升；全液冷/HVDC 标配化；零部件 value content 持续提升</td>
+            <td>内存产能释放、寄售模式压缩 ODM 营收、竞争加剧</td>
+          </tr>
+          <tr>
+            <td>长期 3-5Y+</td>
+            <td class="prosperity-flat">震荡偏上</td>
+            <td>中</td>
+            <td>Rubin Ultra / 800V 架构迭代；系统复杂度维持供应链壁垒</td>
+            <td>定制 ASIC 分流、单位算力成本下降侵蚀溢价</td>
+          </tr>
+          <tr>
+            <td><strong>1-5 年综合</strong></td>
+            <td class="prosperity-up">上行</td>
+            <td>中高</td>
+            <td>「GPU+内存+互连+板级+散热」全链价值扩张，瓶颈环节定价权最强</td>
+            <td>地缘政治、技术路线突变、估值透支</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="tree mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">产业链与成本树</h2>
+      <ul class="list-disc space-y-3 pl-5">
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">0. 成本总览 <span class="cost">机架 100% ≈ 780 万美元</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">GPU 加速子系统</span> <span class="cost">约 51% / ~396 万美元</span>：72 颗 Rubin GPU，单颗约 5.5 万美元；含 CoWoS、HBM4 堆叠、Rubin 模组与 NVLink 域。</li>
+              <li><span class="font-semibold">内存与存储</span> <span class="cost">约 26% / ~200 万美元</span>：HBM4 ~40-50 万 + LPDDR5X ~44-54 万 + 3D NAND ~100 万（GB300 近零）。</li>
+              <li><span class="font-semibold">板级与被动元件</span> <span class="cost">约 2% / ~14 万美元</span>：PCB ~11.7 万 + MLCC ~0.43 万 + ABF ~2.0 万；代际弹性最大集群。</li>
+              <li><span class="font-semibold">互连与网络芯片</span> <span class="cost">约 2% / ~14 万美元+</span>：NVLink Switch 18→36 颗，ConnectX 36→72 颗；网络芯片价值约 +121%。</li>
+              <li><span class="font-semibold">电源与液冷</span> <span class="cost">约 2% / ~15 万美元</span>：110kW 电源标配；全液冷无风扇，~7.2 万/柜。</li>
+              <li><span class="font-semibold">CPU、机架集成与其余</span> <span class="cost">约 17% / ~130 万美元+</span>：Vera CPU ~18 万（持平）；ODM 组装测试 value-add ~15 万；含 Oberon 机箱、线缆、光模块等。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">1. 内存：从配角到第二成本项 <span class="cost">+435% · ~200 万美元</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">HBM4（高带宽存储器第四代）</span> <span class="cost">约 40-50 万美元</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">SK hynix（SK 海力士）</span>：HBM 龙头，HBM4 产能与认证进度领先。<span class="why">供应极紧，掌握定价权；Micron 已宣布 HBM4 36GB 12H 于 2026Q1 量产并面向 Vera Rubin。</span></li>
+                  <li><span class="font-semibold">Micron（美光科技）</span> <span class="evidence evidence-confirmed">官方公告</span>：HBM4 量产出货 Rubin 平台。<span class="why">美股最直接受益标的之一。</span></li>
+                  <li><span class="font-semibold">Samsung（三星电子）</span>：HBM 追赶者，供给多元化变量。</li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">LPDDR5X</span> <span class="cost">约 44-54 万美元 · 54TB</span>：SemiAnalysis 口径约 $8/GB 起，涨价至 $10/GB 则成本更高。<span class="why">容量为 GB200 的 3 倍以上，SOCAMM 模组形态。</span></li>
+              <li><span class="font-semibold">3D NAND</span> <span class="cost">约 100 万美元</span>：Rubin 首次大规模集成，用于模型加载与 checkpoint。<span class="why">纯增量环节，GB300 几乎为零。</span></li>
+              <li><span class="font-semibold">关键变量</span>：云厂 direct source 内存 → 机架价可降至 ~670 万美元，NVIDIA 内存加价环节受冲击。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">2. PCB：增幅最大的下游环节 <span class="cost">+233% · ~11.7 万美元</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">纯增量 PCB（GB300 不存在）</span> <span class="cost">~4.6 万美元</span>
+                <ul class="list-disc">
+                  <li>ConnectX 模组 PCB：72 块 × ~270 美元 ≈ 1.94 万</li>
+                  <li>中板 PCB：18 块 × ~1500 美元 ≈ 2.7 万</li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">升级项</span>：计算板 22→26 层 HDI，CCL M7→M8；交换机托盘 24→32 层；新增 44 层中板。</li>
+              <li><span class="font-semibold">Unimicron 欣兴</span> <span class="evidence evidence-indirect">大摩五大组件</span>：台系 AI 服务器 PCB/载板龙头。</li>
+              <li><span class="font-semibold">ZDT 臻鼎</span> <span class="evidence evidence-indirect">大摩五大组件</span>：高端 PCB 与模组板受益。</li>
+              <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">高置信</span> <span class="font-semibold">胜宏科技</span>：AI 服务器 PCB 核心供应商口径。<span class="why">Rubin 层数与模组增加直接推高 value content。</span></li>
+              <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-private">客户保密</span> <span class="font-semibold">沪电股份</span>：高速运算服务器 PCB，具体客户不披露。</li>
+              <li><span class="ashare">A股</span> <span class="evidence evidence-confirmed">互动平台</span> <span class="font-semibold">景旺电子</span>：NVIDIA 合格供应商名单内批量供货。</li>
+              <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">产业链</span> <span class="font-semibold">生益科技</span>：高速 CCL（覆铜板）材料升级 M7→M8 受益。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">3. MLCC + ABF：「隐形」与高门槛底座 <span class="cost">MLCC +182% · ABF +82%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">MLCC</span> <span class="cost">~43 万美元/柜 · ~60 万颗</span>：计算板 25→90 美元/板；交换机板 20→45 美元/板；BlueField DPU + ConnectX 新模组增量。<span class="why">大摩称 ODM 正积极囤货；需求「异常旺盛」。</span></li>
+              <li><span class="font-semibold">Murata（村田）</span>、<span class="font-semibold">TDK</span>、<span class="font-semibold">Samsung Electro-Mechanics</span>：全球高端 MLCC 主力。</li>
+              <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">结构性受益</span> <span class="font-semibold">三环集团</span>、<span class="font-semibold">风华高科</span>：国内 MLCC 龙头，AI 服务器增量逻辑，但高端仍以日韩为主。</li>
+              <li><span class="font-semibold">ABF 载板</span> <span class="cost">~2.0 万美元</span>：Rubin GPU 载板单价 ~200 美元 vs Blackwell ~100 美元；NVSwitch/ConnectX 数量翻倍。</li>
+              <li><span class="font-semibold">Ibiden（揖斐电）</span>、<span class="font-semibold">Shinko（新光电气）</span>、<span class="font-semibold">Unimicron 欣兴</span>：高端 ABF 载板主力。</li>
+              <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">国产替代</span> <span class="font-semibold">兴森科技</span>、<span class="font-semibold">深南电路</span>：ABF/封装基板长期窗口，Rubin 直接占比待验证。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">4. GPU、互连与平台 <span class="cost">GPU ~396 万 · NVLink +122%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">NVIDIA（英伟达）</span>：Rubin GPU、NVLink Switch、ConnectX、BlueField、CUDA 生态平台方。<span class="why">仍捕获最大价值池，但 BOM 占比下降。</span></li>
+              <li><span class="font-semibold">TSMC（台积电）</span>：Rubin 逻辑代工 + CoWoS 先进封装。<span class="why">产能与交期仍是硬瓶颈。</span></li>
+              <li><span class="font-semibold">NVLink Switch</span> <span class="cost">~6.5 万 → ~14.4 万</span>：芯片数量 18→36 颗。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">5. 电源、液冷与 ODM 集成 <span class="cost">电源 +32% · 液冷 +12%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">电源 ~7.6 万美元</span>：标配 110kW 电源机架；至少一家美国云厂已采用 HVDC 独立电源机架；2027H2 Rubin Ultra 大规模 800V DC。</li>
+              <li><span class="font-semibold">Delta 台达电</span> <span class="evidence evidence-indirect">大摩/供应链</span>：与至少 3 家美国 hyperscaler 推进 HVDC，2026H2 小批量。</li>
+              <li><span class="font-semibold">液冷 ~7.2 万美元</span>：Vera Rubin 全液冷、无风扇；增量来自 tray 歧管、QD（快速接头）与冷板优化。</li>
+              <li><span class="font-semibold">Auras 奇鋐</span> <span class="evidence evidence-indirect">大摩五大组件</span>：散热模组龙头。</li>
+              <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">液冷链</span> <span class="font-semibold">英维克</span>、<span class="font-semibold">高澜股份</span>：全液冷标配化受益，具体 Rubin 份额待披露。</li>
+              <li><span class="font-semibold">ODM 集成</span> <span class="cost">value-add ~15 万美元 · 毛利率 ~1.9%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Wiwynn 纬颖</span> <span class="evidence evidence-indirect">大摩首选</span>： hyperscale ODM 龙头。</li>
+                  <li><span class="font-semibold">Wistron 纬创</span>、<span class="font-semibold">Quanta 广达</span>、<span class="font-semibold">Foxconn 鸿海</span>：AI 服务器 ODM 主力；寄售模式先行者。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">NVIDIA/Foxconn</span> <span class="font-semibold">工业富联</span>：Foxconn 体系 AI 服务器制造与高速连接。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">核心上市公司多维度对比</h2>
+      <table class="data w-full min-w-[960px] text-sm">
+        <thead>
+          <tr>
+            <th>公司</th><th>市场</th><th>环节</th><th>护城河</th><th>技术壁垒</th><th>订单/能见度</th><th>业绩拐点</th><th>戴维斯双击</th><th>风险</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>NVIDIA</strong></td><td>美股</td><td>GPU 平台</td><td>CUDA 生态、全栈标准</td><td>架构+互连+软件</td><td>Rubin 2026H2 起量；黄仁勋称全周期供应吃紧</td><td>Rubin 放量驱动收入</td><td>EPS↑ + AI 叙事 PE 仍高</td><td>估值、监管、客户自采内存</td>
+          </tr>
+          <tr>
+            <td><strong>SK hynix / Micron</strong></td><td>韩/美</td><td>HBM4</td><td>产能、客户认证</td><td>TSA 堆叠、良率</td><td>HBM4 供不应求至 2027</td><td>HBM 占比提升→毛利率</td><td>双紧供给：量+价</td><td>产能过度投资、周期反转</td>
+          </tr>
+          <tr>
+            <td><strong>胜宏科技</strong></td><td>A股</td><td>AI PCB</td><td>大客户绑定、产能</td><td>26-44 层 HDI、M8 CCL</td><td>AI PCB 订单高能见度（媒体/招股口径）</td><td>Rubin 层数升级→ASP↑</td><td>盈利增速+AI PCB 估值</td><td>客户集中、扩产折旧</td>
+          </tr>
+          <tr>
+            <td><strong>沪电股份</strong></td><td>A股</td><td>高速 PCB</td><td>长期服务器客户</td><td>高层数、低损耗</td><td>企业通讯板景气（年报口径）</td><td>AI 板占比持续提升</td><td>单腿：EPS 驱动为主</td><td>客户匿名、竞争</td>
+          </tr>
+          <tr>
+            <td><strong>工业富联</strong></td><td>A股</td><td>ODM 制造</td><td>Foxconn 规模、全球交付</td><td>机架级集成、测试</td><td>Blackwell/Rubin AI 工厂合作（官网）</td><td>AI 服务器 revenue mix↑</td><td>绝对利润增但毛利率薄</td><td>寄售模式、低毛利</td>
+          </tr>
+          <tr>
+            <td><strong>台达电 Delta</strong></td><td>台股</td><td>电源/HVDC</td><td>大客户电源份额</td><td>800V/HVDC 方案</td><td>3 家美国云厂 HVDC 试点 2026H2</td><td>Rubin Ultra 800V 2027H2</td><td>电源升级周期</td><td>价格竞争、客户自研</td>
+          </tr>
+          <tr>
+            <td><strong>纬颖 Wiwynn</strong></td><td>台股</td><td>ODM</td><td>hyperscale 定制</td><td>机架级 JDM</td><td>大摩 ODM 首选；Rubin 柜 value-add↑</td><td>2026H2 Rubin 量产</td><td>美元绝对利润↑</td><td>毛利率下滑、寄售</td>
+          </tr>
+          <tr>
+            <td><strong>英维克</strong></td><td>A股</td><td>液冷</td><td>国内液冷品牌、工程能力</td><td>全链条液冷方案</td><td>数据中心液冷渗透率提升</td><td>全液冷 Rubin 标配化</td><td>赛道β+订单催化</td><td>竞争加剧、验证周期长</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">投资机会与跟踪优先级</h2>
+      <ol class="mt-4 list-decimal pl-6 leading-7 space-y-3">
+        <li><strong>第一优先级 · 内存/HBM4</strong>：BOM +435%，供给最紧。SK hynix、Micron、Samsung；国内看 HBM 封装材料与设备窗口。</li>
+        <li><strong>第一优先级 · PCB/CCL</strong>：+233% 为零部件涨幅冠军，且纯增量模组明确。胜宏、沪电、景旺、生益；台系欣兴、臻鼎。</li>
+        <li><strong>第二优先级 · MLCC/ABF</strong>：用量与单价齐升；MLCC 看村田/TDK 与国产结构性机会；ABF 看 Ibiden/欣兴。</li>
+        <li><strong>第二优先级 · 液冷+HVDC</strong>：Rubin 全液冷 + 110kW/800V 电源升级。台达电、奇鋐；A 股英维克、高澜。</li>
+        <li><strong>预期差 · ODM</strong>：市场担心标准化压缩附加值，大摩认为 dollar value-add +35%～40%——关注纬颖、工业富联的<strong>绝对利润</strong>而非毛利率 alone。</li>
+        <li><strong>谨慎</strong>：寄售模式扩散→ODM 营收规模与 NVIDIA 内存渠道利润；GPU BOM 占比下降≠ NVIDIA 失去定价权。</li>
+      </ol>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm text-sm leading-7">
+      <h2 class="text-xl font-bold">主要来源</h2>
+      <ul class="mt-3 list-disc pl-6">
+        <li>Morgan Stanley：Howard Kao 团队 Rubin VR200 NVL72 BOM 拆解报告（2026-05-21）</li>
+        <li>公开转述：东方财富财富号、BigGo 财经、Bitget News、Futunn、Wccftech、Leo in AI Substack 等交叉验证</li>
+        <li>Micron 官方：HBM4 36GB 12H 量产并面向 Vera Rubin（2026Q1）</li>
+        <li>NVIDIA 公开口径：Vera Rubin 平台、Oberon 机箱、2026H2 出货指引</li>
+        <li>鸿海/广达法说：consignment 寄售模式表述</li>
+        <li>关联阅读：<a href="h200-industry-chain.html">H200 整机成本产业链拆解</a> · <a href="stock-pricing-patterns.html">股票定价框架</a></li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本文整理自摩根士丹利研报的公开摘要与二手报道，用于产业链研究，不构成投资建议。</li>
+        <li>BOM 比例为卖方 bottom-up 估算，非 NVIDIA/OEM 官方 BOM；实际成交价因渠道、配置、服务而异。</li>
+        <li>「A股重点」表示 Rubin 产业链高相关、值得跟踪，不等同于确认 Rubin 直接订单或收入占比。</li>
+        <li>论文/研报观点不等于已被产业完全验证；产能、政策、需求波动可能导致结论失效。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+        while (li.firstChild && li.firstChild !== childList) summary.appendChild(li.firstChild);
+        details.appendChild(summary);
+        details.appendChild(childList);
+        while (li.firstChild) details.appendChild(li.firstChild);
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>

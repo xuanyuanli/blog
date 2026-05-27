@@ -2,6 +2,7 @@
 export const PUBLIC_HTML_PATHS = new Set([
   '/stock-pricing-patterns.html',
   '/h200-industry-chain.html',
+  '/rubin-industry-chain.html',
   '/commodity-pricing-framework.html',
 ])
 
