@@ -37,6 +37,10 @@ features:
     details: HBM / DRAM / NAND / SSD 三层架构、超级周期与 A 股映射。
     link: /ai-storage-industry-chain.html
     target: _self
+  - title: AI 算力有色
+    details: 铜铝及锡镓锗铟稀土 — AI 数据中心与电网金属需求重塑。
+    link: /ai-compute-nonferrous-metals-industry-chain.html
+    target: _self
   - title: 大宗商品定价
     details: 大宗商品定价逻辑框架。
     link: /commodity-pricing-framework.html

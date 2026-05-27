@@ -47,6 +47,7 @@ export default defineConfig({
       { text: 'Rubin 产业链', link: '/rubin-industry-chain.html', target: '_self' },
       { text: '韬定律产业链', link: '/huawei-tau-scaling-industry-chain.html', target: '_self' },
       { text: 'AI 存储', link: '/ai-storage-industry-chain.html', target: '_self' },
+      { text: '算力有色', link: '/ai-compute-nonferrous-metals-industry-chain.html', target: '_self' },
       { text: '大宗商品', link: '/commodity-pricing-framework.html', target: '_self' },
     ],
     sidebar: {

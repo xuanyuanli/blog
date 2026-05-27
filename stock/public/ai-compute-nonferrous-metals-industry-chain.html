@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 算力有色金属产业链深度研究</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #fcd34d; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #d97706; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #d97706; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .tree details details > summary { font-weight: 700; }
+    .cost { display: inline-block; border-radius: 999px; background: #fef3c7; color: #92400e; padding: .12rem .55rem; font-size: .78rem; font-weight: 700; vertical-align: middle; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #ffedd5; color: #c2410c; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .why { color: #475569; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .prosperity-up { background: #dcfce7; color: #166534; font-weight: 700; }
+    .prosperity-flat { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .prosperity-down { background: #fee2e2; color: #991b1b; font-weight: 700; }
+    a { color: #d97706; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-amber-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">有色金属 · AI 算力基础设施</span>
+        <span class="rounded-full bg-blue-400/20 px-3 py-1 text-sm text-blue-100">更新口径：2026-05-27 UTC+8</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">公开资料估算/研究结论，非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">AI 算力有色金属产业链深度研究</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        本页聚焦 AI 数据中心与配套电力基础设施对<strong>铜、铝及算力相关小金属</strong>（锡、镓、锗、铟、稀土等）的需求重塑。AI 算力不是「多买几台服务器」，而是吉瓦级园区、液冷配电、电网扩容与高速互连的物理工程；有色金属从周期性商品，正在部分品种上被重新定价为「算力时代的工业血液」。
+      </p>
+      <div class="mt-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm leading-6 text-slate-100">
+        <p class="font-semibold">四锚点摘要</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li><strong>行业</strong>：有色金属（铜、铝为主；锡、镓、锗、铟、稀土为辅），兼具周期属性与战略资源属性</li>
+          <li><strong>论文/研究</strong>：IEA《Energy and AI》（2025）· 数据中心电力需求与能源系统约束；FP Analytics《AI and Critical Minerals》（2025）· 小金属需求量化</li>
+          <li><strong>热点</strong>：吉瓦级算力园区、液冷渗透率提升、铜结构性缺口、铝「能源争夺」、镓锗出口管制、美国 Project Vault 战略储备</li>
+          <li><strong>产业链</strong>：矿产采选 → 冶炼精炼 → 电力/液冷/互连/光模块/PCB → 数据中心园区集成</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">AI 数据中心电力规模（IEA Base Case）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 945 TWh（2030E）</p>
+        <p class="mt-2 text-sm text-slate-600">2024 约 415 TWh（占全球用电约 1.5%），2030 接近日本全国用电量；AI 是增速主因。</p>
+      </div>
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">铜需求强度（AI vs 传统 DC）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 40–70 吨/MW</p>
+        <p class="mt-2 text-sm text-slate-600">传统云数据中心约 20–30 吨/MW；高密度液冷 AI 工厂接近翻倍，含配电冗余与液冷管路。</p>
+      </div>
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">2026 数据中心铜需求（行业区间）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 30–48 万吨/年</p>
+        <p class="mt-2 text-sm text-slate-600">JPMorgan 估算 2026 增量约 11 万吨；含园区外电网配套后总量更高（Goldman 口径超 60% 增量在 T&amp;D）。</p>
+      </div>
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">1-3 年景气（铜/铝）</p>
+        <p class="mt-2 text-2xl font-bold text-amber-700">上行 · 置信度中</p>
+        <p class="mt-2 text-sm text-slate-600">AI Capex + 电网升级支撑；小金属受出口管制与精炼集中度扰动，波动更大。</p>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-950">
+      <p class="font-semibold">阅读口径</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>「园区金属 CAPEX 占比」按<strong>AI 优化数据中心 + 配套并网工程</strong>的物理建设成本理解，不等同于 IT 设备 BOM 或 LME 现货均价。</li>
+        <li>铜在机柜内配电/液冷/高速铜缆中不可替代；铝在特高压架空线、机架结构、部分散热件中占主导——二者是<strong>互补而非简单替代</strong>关系。</li>
+        <li>锡、镓、锗、铟、稀土多通过<strong>半导体、PCB、光模块、永磁电机</strong>间接进入算力链，不强行摊入单机园区 CAPEX 分项，而在细分链条单独估算。</li>
+        <li>常见建模错误：只统计「数据中心四墙内」用铜，忽略电网 interconnection 与变压器（交期 24–26 个月）——这部分往往才是铜需求大头。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">研究要点与产业映射</h2>
+      <p class="mt-2 text-sm text-slate-500">研究：IEA《Energy and AI》· International Energy Agency · 2025 · <a href="https://www.iea.org/reports/energy-and-ai" target="_blank" rel="noopener">iea.org/reports/energy-and-ai</a></p>
+      <p class="mt-1 text-sm text-slate-500">补充：FP Analytics《Artificial Intelligence and the Critical Minerals Crunch》· 2025-07 · 小金属需求弹性量化</p>
+      <ul class="mt-4 list-disc pl-6 leading-7">
+        <li><strong>核心结论（IEA）</strong>：全球数据中心用电量 2024→2030 从约 415 TWh 倍增至约 945 TWh（Base Case）；美国 2030 年前数据中心贡献近一半新增用电，且已超过铝、钢、水泥等全部高耗能工业之和——算力本质是<strong>能源密集型物理基础设施</strong>。</li>
+        <li><strong>方法与数据</strong>：IEA 分 Base / Lift-Off / High Efficiency 情景；SemiAnalysis 等口径显示全球 DC IT 负载 2023 约 49 GW → 2026 约 96 GW，90% 增量来自 AI。</li>
+        <li><strong>成本/效率启示</strong>：电力→铜（配电/液冷/互连）与铝（输电/结构）需求与装机 MW 强相关；AI 专用设施 rack 功率从 5–10 kW 升至 40–100 kW+，单位 MW 金属强度结构性上移。</li>
+        <li><strong>产业验证状态</strong>：<span class="evidence evidence-confirmed">已验证（宏观趋势）</span> — hyperscaler 数百亿美元 Capex、液冷渗透率提升、变压器交期拉长均已发生；<span class="evidence evidence-private">待验证</span> — 各机构 2030 铜增量绝对量区间分歧大（140–230 万吨 vs 512 千吨仅 DC 口径）。</li>
+        <li><strong>投资映射</strong>：利好铜矿/冶炼、高端电解铝（绿电）、锡冶炼、镓锗回收；利空仅依赖传统地产铜消费的下游；铝冶炼需区分「算力抢电」与「电网建设拉铝」两条相反力量。</li>
+      </ul>
+      <p class="mt-4 text-sm text-slate-500"><strong>用户论文锚点</strong>：本次未指定学术论文，以上以 IEA 官方研究与 FP Analytics 产业报告替代；若后续有液冷/铜强度相关论文可补入专节。</p>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">热点与政策时间线</h2>
+      <ul class="mt-4 space-y-3 text-sm leading-7">
+        <li><strong>2026-04 · 中国移动算力网</strong>：移动云大会提出「吉瓦级数据园区」「万亿级词元服务包」，算力基建进入高能耗工业化阶段，铜铝需求逻辑从周期切向成长叙事。<span class="evidence evidence-indirect">行业报道</span></li>
+        <li><strong>2025–2026 · Hyperscaler Capex</strong>：Microsoft、Google、Amazon、Meta 等 2028 年前合计数据中心 Capex 承诺超 3500 亿美元（多方研报交叉）；转化为变压器、线缆、母线、液冷系统采购订单。<span class="evidence evidence-indirect">产业研究</span></li>
+        <li><strong>2025 · IEA《Energy and AI》</strong>：官方确认 AI 为数据中心用电主驱动；美国占 2030 增量最大份额，中国约 25%。<span class="evidence evidence-confirmed">IEA 官方</span></li>
+        <li><strong>2023-08 ~ 2024-12 · 镓锗管制</strong>：中国对镓、锗实施出口许可；2024-12 对美国全面禁运（后 2025-11 暂停）。零售级镓价涨约 10 倍，工业基准亦翻倍。<span class="evidence evidence-confirmed">监管文件</span></li>
+        <li><strong>2026-02 · 美国 Project Vault</strong>：约 120 亿美元基金建设 60 天战略关键矿产储备，含镓、锗、稀土等；反映 AI 硬件对材料安全的焦虑。<span class="evidence evidence-indirect">政策报道</span></li>
+        <li><strong>2026 · 变压器/铜交期</strong>：含铜绕组变压器交期超 24–26 个月，成为 AI 园区并网瓶颈；铜现货与库存低位共振。<span class="evidence evidence-indirect">产业研究</span></li>
+        <li><strong>2026 · 电解铝供给</strong>：国内产能触顶；欧美部分铝厂受 AI 数据中心抢电与高电价挤压；中东地缘扰动加剧全球铝供应链收紧预期。<span class="evidence evidence-indirect">行业分析</span></li>
+        <li><strong>2026 · AI 服务器 PCB  boom</strong>：GPU/ASIC 服务器 PCB 市场 2025 约 400 亿 RMB → 2026 超 900 亿 RMB；层数 28–36 层，拉动铜箔、低损耗 CCL 与<strong>锡基焊料</strong>用量。<span class="evidence evidence-indirect">券商/产业口径</span></li>
+      </ul>
+    </section>
+
+    <section class="tree mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">成本总览 · AI 算力有色金属产业链树</h2>
+      <ul class="list-disc space-y-3 pl-5">
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">0. 100 MW AI 优化园区 · 金属相关物理 CAPEX 总览 <span class="cost">金属视角 100%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">铜（Cu）合计</span> <span class="cost">约 45%-65% / 约 1.8-4.5 万吨（100MW 全栈估算）</span>：园区配电（母线、电缆、开关柜）、液冷 CDU/冷板/管路、UPS/变压器铜绕组、机柜级高速铜缆（NVLink 等）。按 40–70 吨/MW × 100 MW = 4,000–7,000 吨仅园区；若含 50% 电网配套分摊，总量更高。<strong>Goldman 口径：2030 年前增量铜需求超 60% 来自电网 T&amp;D 而非机柜本身。</strong></li>
+              <li><span class="font-semibold">铝（Al）合计</span> <span class="cost">约 25%-40% / 约 0.8-2.5 万吨</span>：特高压/高压架空导线、GIS 外壳、服务器机架与散热片、电缆铝护套；中国「西电东送」特高压以铝代铜减重。电解铝本身高耗电，与 AI 抢电形成供给端博弈。</li>
+              <li><span class="font-semibold">锡（Sn，间接）</span> <span class="cost">占金属 spend 约 1%-3%</span>：AI 服务器高多层 PCB 与 SMT 贴装消耗 SAC305 等无铅焊料；单台 AI 服务器 PCB 层数与面积上升 → 锡单耗随 PCB 产值倍增，非线性受益。</li>
+              <li><span class="font-semibold">镓（Ga）/ 锗（Ge）/ 铟（In）</span> <span class="cost">占 IT 硬件 BOM 约 0.1%-1%（金额小、战略大）</span>：GaN 功率器件（PSU/VRM）、Ge 光纤与 Ge-on-Si 光芯片、InP/In 化合物用于 800G/1.6T 光模块。FP Analytics：至 2033 年 Ge 需求 +37%、Ga +85%（含 AI 贡献）。</li>
+              <li><span class="font-semibold">稀土（REE）</span> <span class="cost">占金属 spend 约 1%-2%</span>：NdFeB 永磁用于服务器风扇、泵、硬盘电机；Ce 等用于抛光液。IEA 口径：DC 建设至 2030 年拉动全球 REE 需求约 +3%。</li>
+              <li><span class="font-semibold">银（Ag）/ 镍（Ni）等</span> <span class="cost">约 2%-5%</span>：触点、镀层、不锈钢液冷接头；单耗低于铜铝，价格高波动。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">1. 铜产业链 · 算力「能量动脉」 <span class="cost">需求弹性最高</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">铜矿 / 资源端</span> <span class="cost">毛利约 40%-60%（景气期）</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Freeport-McMoRan</span> <span class="evidence evidence-confirmed">年报</span> <span class="why">美国最大铜生产商之一；Grasberg 等世界级矿山，直接受益铜价与 AI 叙事。</span></li>
+                  <li><span class="font-semibold">BHP / Rio Tinto</span> <span class="why">多元化矿业巨头，铜产量规模大，ESG 与并购整合能力强。</span></li>
+                  <li><span class="font-semibold">Southern Copper / Antofagasta</span> <span class="why">拉美低成本铜矿，供给弹性受社区与许可约束。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">年报</span> <span class="font-semibold">紫金矿业（601899）</span> <span class="why">全球化铜金资源龙头，2024 ROE 约 23%；铜产量持续增长，最纯的 A 股 AI-铜 β 标的之一。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">洛阳钼业（603993）</span> <span class="why">TFM/KFM 铜钴矿放量；铜产量跻身全球前列，兼钴资源。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">冶炼 / 加工</span> <span class="cost">冶炼费 TC/RC 周期波动</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Glencore / Jiangxi Copper（江西铜业）</span> <span class="why">矿冶一体化；冶炼产能全球领先。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">江西铜业（600362）</span> <span class="why">国内铜冶炼龙头，阴极铜产量全国第一；受益铜价与加工费双变量。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">云南铜业（000878）</span> <span class="why">中铝体系铜平台，区域电解铜供应。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">铜加工 · 算力直接应用</span> <span class="cost">高附加值环节</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Wieland / KME</span> <span class="why">高精度铜带、散热铜箔，用于冷板与母线。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">产业链相关</span> <span class="font-semibold">楚江新材（002171）</span> <span class="why">铜板带龙头；高端铜箔/散热材料受益液冷渗透率提升，需跟踪 AI 客户占比披露。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">PCB 铜箔</span> <span class="font-semibold">嘉元科技 / 诺德股份</span> <span class="why">电解铜箔供给 AI 服务器高多层 PCB；间接算力链，非园区配电。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">2. 铝产业链 · 输电 + 结构 + 能源博弈 <span class="cost">供给约束与需求增量并存</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">铝土矿 / 氧化铝</span> <span class="cost">约电解铝成本 30%-40%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Alcoa / Rio Tinto Aluminium</span> <span class="why">海外一体化铝业；受能源成本驱动。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">中国铝业（601600）/ 天山铝业（002532）</span> <span class="why">国内氧化铝-电解铝一体化；中国铝业为行业龙头平台。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">电解铝</span> <span class="cost">吨铝约 1.35 万 kWh 电</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Norsk Hydro / Emirates Global Aluminium</span> <span class="why">水电/天然气铝，低碳铝溢价。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">年报</span> <span class="font-semibold">云铝股份（000807）</span> <span class="why">水电铝龙头，绿电成本优势；PE TTM 约 7，估值低于周期高点，受益铝价与电力套利。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">中国铝业（601600）</span> <span class="why">全产业链龙头；电解铝+氧化铝双轮，央企资源调配能力。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">铝加工 · 算力应用</span> <span class="cost">机架/散热/线缆</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Novelis / Constellium</span> <span class="why">高端铝合金板带，汽车+工业。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">散热链</span> <span class="font-semibold">明泰铝业（601677）/ 亚太科技</span> <span class="why">铝挤压材用于散热与结构件；间接受益服务器出货量，非直接 NVIDIA 订单。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">3. 算力小金属 · 锡 / 镓 / 锗 / 铟 / 稀土 <span class="cost">量小价敏 · 管制敏感</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">锡（Sn）</span> <span class="cost">全球约 38 万吨/年供给</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Minsur / Yunnan Tin / MSC</span> <span class="why">全球锡矿冶炼龙头； solder 需求占消费约 50%。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">年报</span> <span class="font-semibold">锡业股份（000960）</span> <span class="why">全球锡行业龙头之一，锡金属产销量国内第一；AI PCB  boom 拉动焊料需求，锡价弹性大。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">兴业银锡（000426）</span> <span class="why">银锡多金属矿，锡资源储量丰富，高 beta。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">镓（Ga）/ 锗（Ge）</span> <span class="cost">中国精炼占全球 90%+</span>
+                <ul class="list-disc">
+                  <li><span class="evidence evidence-confirmed">产业地位</span> <span class="font-semibold">中国铝业副产镓 / 锌冶炼副产锗</span> <span class="why">镓主要从氧化铝生产副产提取；锗从锌矿综合回收。无单一 A 股纯镓上市公司，关注有副产回收能力的冶炼龙头。</span></li>
+                  <li><span class="font-semibold">AXT / NLM</span> <span class="why">海外 GaAs/InP 衬底；受中国出口许可影响。</span></li>
+                  <li><span class="evidence evidence-private">战略储备</span> <span class="font-semibold">美国 Project Vault / DOE 回收项目</span> <span class="why">2027 前非中国产能难以规模化，管制溢价持续。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">铟（In）/ 光模块链</span> <span class="cost">InP 衬底 · 氧化铟 ITO</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Sumitomo Electric / Coherent</span> <span class="why">InP 晶圆与光芯片；800G/1.6T 放量拉动铟需求。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">光模块链</span> <span class="font-semibold">中际旭创 / 新易盛</span> <span class="why">不直接产铟，但光模块出货量决定 InP 需求；材料瓶颈向上传导。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">稀土（REE）</span> <span class="cost">轻稀土 vs 重稀土分化</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">MP Materials / Lynas</span> <span class="why">美国/澳洲稀土矿山与分离；国防与 AI 供应链本土化。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">北方稀土（600111）/ 中国稀土（000831）</span> <span class="why">国内稀土分离与磁材原料龙头；重稀土出口管制 2025 收紧，价格弹性高。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">金力永磁（300748）</span> <span class="why">高性能 NdFeB 磁材；人形机器人+工业电机双叙事，算力链为次要增量。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">4. 下游集成 · 电力 / 液冷 / 互连 <span class="cost">金属需求「放大器」</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">电力设备</span> <span class="cost">变压器/开关柜铜用量大</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Schneider Electric / ABB / Eaton</span> <span class="why">数据中心配电与 UPS；铜铝价格直接传导 BOM。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">电网链</span> <span class="font-semibold">特变电工 / 许继电气</span> <span class="why">变压器、特高压设备；AI 园区并网订单能见度提升，需区分电网投资 vs 算力主题。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">液冷系统</span> <span class="cost">铜冷板 + 铝散热器</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Vertiv / CoolIT / Boyd</span> <span class="why">CDU、冷板、快接头；液冷渗透率从 ~25% AI 设施升至 2035 年 60%+（WEF 口径）。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">液冷链</span> <span class="font-semibold">英维克 / 高澜股份</span> <span class="why">数据中心液冷解决方案；金属成本占设备 BOM 一部分，非矿企逻辑。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">高速铜互连</span> <span class="cost">DAC/AEC 铜缆</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Amphenol / Molex / TE Connectivity</span> <span class="why">机柜内铜缆与连接器；NVLink 等短距铜互连仍为主流。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">间接链</span> <span class="font-semibold">沃尔核材</span> <span class="why">高速通信线面向国际连接器厂，间接参与铜连接链。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">景气度研判</h2>
+      <table class="data w-full min-w-[720px] text-sm">
+        <thead>
+          <tr>
+            <th>时间尺度</th>
+            <th>方向</th>
+            <th>置信度</th>
+            <th>核心驱动</th>
+            <th>关键风险</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>短期 0-12M</td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>Hyperscaler Capex 落地、液冷订单、铜库存偏低、锡/小金属管制溢价</td>
+            <td>美联储/美元、中国地产铜需求拖累、铜价过高触发铝替代</td>
+          </tr>
+          <tr>
+            <td>中期 1-3Y</td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>AI DC 装机 MW 爬坡、电网 T&amp;D 投资、国内电解铝产能天花板、PCB 层数升级拉锡</td>
+            <td>铜矿新项目延迟不及预期缓解缺口、铝厂复产、技术路线变更（光互连替代铜缆）</td>
+          </tr>
+          <tr>
+            <td>长期 3-5Y+</td>
+            <td class="prosperity-flat">震荡分化</td>
+            <td>低</td>
+            <td>铜铝需求结构 permanently 抬升；小金属回收与替代技术成熟</td>
+            <td>铜矿供给大周期释放、固态配电/新材料散热、地缘缓和管制退出</td>
+          </tr>
+          <tr>
+            <td><strong>1-5 年综合</strong></td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>铜：AI+电网双轮驱动结构性偏紧；铝：供给刚性+电网需求 vs 冶炼抢电；小金属：战略溢价>数量溢价</td>
+            <td>宏观衰退、AI Capex 下修、单一品种估值透支</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">核心上市公司多维度对比</h2>
+      <p class="mb-3 text-sm text-slate-500">估值数据：2026-05-27 抓数 · A 股重点公司 ≤5 只</p>
+      <table class="data w-full min-w-[960px] text-sm">
+        <thead>
+          <tr>
+            <th>公司</th>
+            <th>市场</th>
+            <th>环节</th>
+            <th>护城河</th>
+            <th>技术壁垒</th>
+            <th>订单能见度</th>
+            <th>业绩拐点</th>
+            <th>戴维斯双击</th>
+            <th>估值语境（2026-05-27）</th>
+            <th>主要风险</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Freeport-McMoRan</strong></td>
+            <td>美股</td>
+            <td>铜矿</td>
+            <td>Grasberg 等 Tier-1 资产</td>
+            <td>开采成本曲线前 25%</td>
+            <td><span class="evidence evidence-indirect">LME 长单</span></td>
+            <td>铜价中枢上移 → 自由现金流</td>
+            <td>EPS↑ + 资源 PE 扩张（双驱动）</td>
+            <td>美股铜矿 Beta</td>
+            <td>印尼许可、铜价回调、CapEx 超支</td>
+          </tr>
+          <tr>
+            <td><strong>紫金矿业</strong><br><span class="ashare ashare-key">601899</span></td>
+            <td>A股</td>
+            <td>铜金资源</td>
+            <td>全球化并购、低成本矿山组合</td>
+            <td>深部开采、海外运营</td>
+            <td><span class="evidence evidence-confirmed">产量指引</span></td>
+            <td>铜产量年增 + 金价高位</td>
+            <td>EPS↑ 确定；PE 已部分反映（单腿）</td>
+            <td>PE TTM 约 13.8 · PB 约 4.3 · 1Y +85% · ROE 2024 约 23%</td>
+            <td>海外政治、铜价波动、估值不低</td>
+          </tr>
+          <tr>
+            <td><strong>江西铜业</strong><br><span class="ashare ashare-key">600362</span></td>
+            <td>A股</td>
+            <td>铜冶炼</td>
+            <td>国内阴极铜龙头、矿冶一体</td>
+            <td>冶炼规模、资源自给率提升</td>
+            <td><span class="evidence evidence-indirect">冶炼长单</span></td>
+            <td>铜价+加工费回升</td>
+            <td>盈利 Beta 强；PE 扩张有限</td>
+            <td>PE TTM 约 19.3 · PB 约 1.8 · 1Y +25%（6M）· ROE 待年报</td>
+            <td>TC/RC 下行、环保、周期反转</td>
+          </tr>
+          <tr>
+            <td><strong>云铝股份</strong><br><span class="ashare ashare-key">000807</span></td>
+            <td>A股</td>
+            <td>水电电解铝</td>
+            <td>云南水电成本、绿铝溢价</td>
+            <td>能源锁定、产能指标</td>
+            <td><span class="evidence evidence-indirect">铝锭长单</span></td>
+            <td>铝价上行 + 成本端稳定</td>
+            <td>低 PE 修复 + 铝价（双驱动潜在）</td>
+            <td>PE TTM 约 7.2 · PB 约 2.9 · 1Y 待计 · 市值约 1040 亿</td>
+            <td>限电、铝价下跌、产能天花板</td>
+          </tr>
+          <tr>
+            <td><strong>中国铝业</strong><br><span class="ashare">601600</span></td>
+            <td>A股</td>
+            <td>铝全产业链</td>
+            <td>央企平台、铝土矿资源</td>
+            <td>氧化铝-电解铝一体化</td>
+            <td><span class="evidence evidence-confirmed">年报</span></td>
+            <td>铝价景气 + 成本管控</td>
+            <td>EPS↑；估值相对温和</td>
+            <td>PE TTM 约 13.9 · PB 约 2.5 · 1Y 区间待计</td>
+            <td>铝价周期、电力成本、宏观</td>
+          </tr>
+          <tr>
+            <td><strong>锡业股份</strong><br><span class="ashare ashare-key">000960</span></td>
+            <td>A股</td>
+            <td>锡矿冶炼</td>
+            <td>全球锡龙头、资源自给</td>
+            <td>锡矿采选冶炼一体化</td>
+            <td><span class="evidence evidence-indirect">锡价联动</span></td>
+            <td>锡价上涨 + AI PCB 拉焊料</td>
+            <td>高 beta：EPS↑ + 小金属 PE（双驱动）</td>
+            <td>PE TTM 约 27.8 · PB 约 3.2 · 1M +4.6% · 1W +8.1%</td>
+            <td>锡价高波动、缅甸矿扰动、估值偏高</td>
+          </tr>
+          <tr>
+            <td><strong>北方稀土</strong><br><span class="ashare">600111</span></td>
+            <td>A股</td>
+            <td>稀土分离</td>
+            <td>轻稀土配额龙头</td>
+            <td>分离工艺、配额管控</td>
+            <td><span class="evidence evidence-confirmed">配额制</span></td>
+            <td>重稀土管制 → 结构涨价</td>
+            <td>价格驱动为主；PE 波动大</td>
+            <td>待抓数 · 稀土价格敏感</td>
+            <td>政策变动、下游磁材需求、环保</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">投资机会与跟踪优先级</h2>
+      <ol class="mt-4 list-decimal pl-6 leading-7 space-y-3">
+        <li><strong>第一优先级 · 铜资源/冶炼</strong>：AI 算力对铜的需求已体现在 interconnection 队列与变压器交期，且 60%+ 增量在电网环节 — 跟踪<strong>紫金矿业、江西铜业、洛阳钼业</strong>及海外 Freeport/BHP。验证指标：LME 库存、美国 utility interconnection GW、铜 TC/RC。</li>
+        <li><strong>第一优先级 · 水电铝 / 绿铝</strong>：供给端产能天花板 + 算力抢电 + 电网建设拉铝 — <strong>云铝股份</strong>（低 PE 绿电铝）、<strong>中国铝业</strong>（平台龙头）。验证：云南限电政策、LME 铝库存、特高压招标量。</li>
+        <li><strong>弹性标的 · 锡</strong>：<strong>锡业股份</strong>受益 AI 服务器 PCB 产值倍增 → 焊料用量增；锡供给集中、扰动多，价格高 beta（高波动风险）。</li>
+        <li><strong>弹性标的 · 稀土/小金属</strong>：镓锗管制与 Project Vault 反映战略溢价；<strong>北方稀土、中国稀土</strong>政策驱动强，与算力增量相关但非主因。</li>
+        <li><strong>预期差</strong>：市场仍部分将铜当作「地产周期商品」定价，未充分计入 AI+电网结构性增量；铝市场则过度关注「AI 抢电减产」，低估特高压/grid upgrade 铝需求。</li>
+        <li><strong>谨慎/回避</strong>：纯地产建筑铜加工（需求拖累）；无资源自给、加工费敏感的中下游；镓锗纯概念无产能标的；铜价高位后铝替代加速的细分电缆场景。</li>
+      </ol>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">主要来源</h2>
+      <ul class="mt-4 list-disc pl-6 text-sm leading-7 text-slate-700">
+        <li><a href="https://www.iea.org/reports/energy-and-ai" target="_blank" rel="noopener">IEA — Energy and AI (2025)</a>：数据中心电力需求官方 forecast。</li>
+        <li><a href="https://fpanalytics.foreignpolicy.com/2025/07/18/artificial-intelligence-critical-minerals-supply-chains/" target="_blank" rel="noopener">FP Analytics — AI and Critical Minerals (2025)</a>：铜/镓/稀土 DC 需求弹性。</li>
+        <li><a href="https://www.weforum.org/stories/2025/12/securing-data-centre-materials/" target="_blank" rel="noopener">World Economic Forum — Securing Data Centre Materials (2025)</a>：材料强度与地缘风险。</li>
+        <li>Skillings Mining Review / CommodityNode / JPMorgan / Goldman Sachs / S&amp;P Global：铜强度 40–70 t/MW、电网占比、2026 需求区间（交叉验证，非单一信源）。</li>
+        <li>SemiAnalysis / 华泰证券 / 长江有色金属网：AI 数据中心 IT 负载 GW 预测与国内产业叙事。</li>
+        <li>上市公司年报、交易所互动平台；A 股估值 2026-05-27 本地抓数。</li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本文用于产业链与行业研究，不构成投资建议。</li>
+        <li>成本比例为公开资料交叉估算，非官方 BOM；各机构铜/铝需求绝对量预测存在数量级分歧，须独立判断。</li>
+        <li>「A股重点」表示值得优先跟踪，不等同于确认 AI 算力订单或金属销售占比。</li>
+        <li>论文/研究观点不代表已被产业完全验证；出口管制与政策时点可能变化。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+        while (li.firstChild && li.firstChild !== childList) {
+          summary.appendChild(li.firstChild);
+        }
+        details.appendChild(summary);
+        details.appendChild(childList);
+        while (li.firstChild) {
+          details.appendChild(li.firstChild);
+        }
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>
