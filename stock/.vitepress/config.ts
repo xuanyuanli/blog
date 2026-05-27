@@ -45,6 +45,8 @@ export default defineConfig({
       { text: '定价框架', link: '/stock-pricing-patterns.html', target: '_self' },
       { text: 'H200 产业链', link: '/h200-industry-chain.html', target: '_self' },
       { text: 'Rubin 产业链', link: '/rubin-industry-chain.html', target: '_self' },
+      { text: '韬定律产业链', link: '/huawei-tau-scaling-industry-chain.html', target: '_self' },
+      { text: 'AI 存储', link: '/ai-storage-industry-chain.html', target: '_self' },
       { text: '大宗商品', link: '/commodity-pricing-framework.html', target: '_self' },
     ],
     sidebar: {

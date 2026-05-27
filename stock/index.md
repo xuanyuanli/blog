@@ -29,6 +29,14 @@ features:
     details: 摩根士丹利 Rubin VR200 机架 BOM 拆解与 A 股映射。
     link: /rubin-industry-chain.html
     target: _self
+  - title: 韬定律产业链
+    details: 华为 τ 缩放与逻辑折叠产业链、成本拆解与 A 股映射。
+    link: /huawei-tau-scaling-industry-chain.html
+    target: _self
+  - title: AI 算力存储
+    details: HBM / DRAM / NAND / SSD 三层架构、超级周期与 A 股映射。
+    link: /ai-storage-industry-chain.html
+    target: _self
   - title: 大宗商品定价
     details: 大宗商品定价逻辑框架。
     link: /commodity-pricing-framework.html

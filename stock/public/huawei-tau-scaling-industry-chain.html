@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>华为韬（τ）定律产业链深度研究</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #dbeafe; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #2563eb; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #2563eb; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .tree details details > summary { font-weight: 700; }
+    .cost { display: inline-block; border-radius: 999px; background: #e0f2fe; color: #075985; padding: .12rem .55rem; font-size: .78rem; font-weight: 700; vertical-align: middle; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .why { color: #475569; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .prosperity-up { background: #dcfce7; color: #166534; font-weight: 700; }
+    .prosperity-flat { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .prosperity-down { background: #fee2e2; color: #991b1b; font-weight: 700; }
+    a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-red-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-red-400/20 px-3 py-1 text-sm text-red-100">半导体 · 时间缩放 · 逻辑折叠</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">更新口径：2026-05-27 UTC+8</span>
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">公开资料估算 · 研究结论 · 非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">华为韬（τ）定律产业链深度研究</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        2026 年 5 月 25 日，华为在 IEEE ISCAS 2026（国际电路与系统研讨会）上正式发布<strong>韬（τ）定律</strong>——以「时间（τ）缩微」替代「几何缩微」，通过<strong>逻辑折叠（Logic Folding）</strong>、统一总线（UB）、Hi-ONE 光互连等全栈协同，在<strong>固定工艺节点</strong>下持续提升晶体管密度与系统性能。本页从论文要点、成本拆解、产业链卡位与 A 股映射，梳理 τ 缩放对先进封装、EDA、成熟制程代工与设备材料的价值重估逻辑。
+      </p>
+      <div class="mt-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm leading-6 text-slate-100">
+        <p class="font-semibold">四锚点摘要</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li><strong>行业</strong>：后摩尔时代半导体演进——从几何缩放（Dennard/Moore）转向时间缩放（τ Scaling），覆盖移动 SoC、AI 加速器与系统级互联</li>
+          <li><strong>论文</strong>：何庭波《A Time Scaling Theory for Multi-Layer Electronic Systems》（中科院科技论文预发布平台，2026-05-25）</li>
+          <li><strong>热点</strong>：ISCAS 2026 首发；麒麟 2026 秋季商用逻辑折叠；381 颗芯片量产验证；2031 年等效 1.4nm 密度目标</li>
+          <li><strong>产业链</strong>：混合键合（Hybrid Bonding）→ TSV（硅通孔）→ 3D/2.5D 封装 → 成熟制程晶圆 → EDA/设计工具 → 检测设备</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">麒麟 2026 量产验证（论文/官网）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">密度 +55% · 能效 +41%</p>
+        <p class="mt-2 text-sm text-slate-600">155→238 MTr/mm²；CPU 大核 3.1GHz（+13%）；保守版局部折叠，键合间距 1.5μm。</p>
+      </div>
+      <div class="rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">最大新增成本池</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">先进封装 + 混合键合</p>
+        <p class="mt-2 text-sm text-slate-600">固定节点下，3D 互连与键合工艺占 SoC 增量成本约 20%-35%，替代部分 EUV 迁移 Capex。</p>
+      </div>
+      <div class="rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">2031 路线图（华为口径）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">等效 1.4nm 密度</p>
+        <p class="mt-2 text-sm text-slate-600">2026-2035 年目标 400+ MTr/mm²；昇腾 990（约 2030）引入逻辑折叠；AI 集成度 +100×。</p>
+      </div>
+      <div class="rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">A 股映射主线</p>
+        <p class="mt-2 text-2xl font-bold text-red-600">封装 &gt; 设备 &gt; 代工</p>
+        <p class="mt-2 text-sm text-slate-600">逻辑折叠抬升混合键合/CMP/TSV 价值量；成熟制程产能受益国产替代；华为链订单多未披露。</p>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-950">
+      <p class="font-semibold">阅读口径</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>τ 定律是<strong>方法论与路线图</strong>，不等于全行业已量产；麒麟 2026 为「保守版」局部折叠，全芯片多层折叠仍在演进中。</li>
+        <li>成本比例为公开资料交叉估算，涵盖 SoC 设计-流片-封装全流程 TCO（总拥有成本），非华为官方 BOM。</li>
+        <li>华为海思芯片设计、部分制造与封装高度内化；A 股公司按<strong>环节高相关</strong>映射，除官网/论文明确信息外，不写「确认供货华为」。</li>
+        <li>论文中 381 颗量产芯片、麒麟/昇腾路线图来自华为演讲与预印本；第三方解读须与原文交叉验证。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">论文要点与产业映射</h2>
+      <p class="mt-2 text-sm text-slate-500">论文：A Time Scaling Theory for Multi-Layer Electronic Systems · 何庭波 / 华为 · 2026-05-25（中科院预发布平台）</p>
+      <ul class="mt-4 list-disc pl-6 leading-7">
+        <li><strong>一句话贡献</strong>：提出 τ 缩放（时间缩放）作为摩尔几何缩放的后继原理——以全栈统一的时间常数 τ 为优化目标，覆盖晶体管（皮秒）到数据中心负载（秒）共 12 个数量级。</li>
+        <li><strong>方法与数据</strong>：2020.05–2026.05 量产 381 颗芯片验证；移动 SoC 逻辑折叠在固定节点下密度 155→238 MTr/mm²（+53%），能效 +41%，主频 +13%；AI 侧统一总线将远程访问延迟从数十 μs 降至约 100ns。</li>
+        <li><strong>成本/效率启示</strong>：规避 2nm 级单芯片 &gt;10 亿美元设计成本与 EUV 折旧；增量成本转向混合键合（1.5μm 间距）、TSV、多层 EDA 与封测；单代性能提升可等效几何缩放约 3 年进度。</li>
+        <li><strong>产业验证状态</strong>：<span class="evidence evidence-confirmed">量产</span> 麒麟 2026 保守版逻辑折叠（2026 秋）；<span class="evidence evidence-indirect">路线图</span> 昇腾 990 约 2030 年导入；<span class="evidence evidence-private">待验证</span> 2035 年 400 MTr/mm² 与 4GHz+ 移动 CPU。</li>
+        <li><strong>投资映射</strong>：利好混合键合/OSAT/3D EDA/CMP 设备/成熟制程代工；对纯 EUV 设备商、先进制程「唯节点论」估值框架形成长期分流（非即时替代）。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">热点与政策时间线</h2>
+      <table class="data mt-4 w-full text-sm">
+        <thead>
+          <tr><th>时间</th><th>事件</th><th>产业链含义</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2026-05-25</td>
+            <td><span class="evidence evidence-confirmed">华为官网</span> 何庭波 ISCAS 2026 主旨演讲发布韬（τ）定律；论文上传中科院预发布平台</td>
+            <td>逻辑折叠从华为内部方法论走向公开产业叙事；先进封装板块情绪催化</td>
+          </tr>
+          <tr>
+            <td>2026 秋（预期）</td>
+            <td><span class="evidence evidence-confirmed">华为口径</span> 麒麟新芯片完整采用逻辑折叠，CPU 大核 3.1GHz</td>
+            <td>混合键合 1.5μm 间距量产标杆；手机 SoC 竞争维度从制程节点转向 3D 架构</td>
+          </tr>
+          <tr>
+            <td>2026-04</td>
+            <td><span class="evidence evidence-confirmed">发改委等</span> 2026 年集成电路税收优惠清单申报启动，含先进封装测试企业</td>
+            <td>国产 OSAT、材料、设备享受持续政策红利</td>
+          </tr>
+          <tr>
+            <td>2026</td>
+            <td><span class="evidence evidence-indirect">SEMI/产业研究</span> 混合键合 W2W 1μm 量产；HBM4 全面导入混合键合</td>
+            <td>全球封装互连技术共振；国产键合/ CMP / 刻蚀设备需求上行</td>
+          </tr>
+          <tr>
+            <td>2026-05-27</td>
+            <td><span class="evidence evidence-indirect">市场</span> 长鑫科技科创板 IPO 上会；长江存储辅导备案</td>
+            <td>存储国产化 + τ 定律「逻辑-存储深度融合」叙事共振</td>
+          </tr>
+          <tr>
+            <td>2026–2030</td>
+            <td><span class="evidence evidence-indirect">论文路线图</span> 昇腾 910C→950→990；990 导入逻辑折叠</td>
+            <td>AI 加速器从 2.5D 扇出迈向 3D 折叠；Hi-ONE 光 IO 与统一总线配套</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="tree rounded-3xl border border-slate-200 bg-white p-6 shadow-sm mb-8">
+      <h2 class="text-2xl font-bold mb-4">成本总览 · 逻辑折叠 SoC 产业链树</h2>
+      <ul class="list-disc space-y-3 pl-5">
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">0. 总体 TCO 分布 <span class="cost">100%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">芯片设计（含 EDA + IP + 人力）</span> <span class="cost">约 25%-40%</span>：τ 缩放降低「换节点」频率，但 3D 设计复杂度上升；2nm 级新节点流片可 &gt;10 亿美元，逻辑折叠路径可节约部分节点迁移 Capex。<span class="why">固定节点下设计迭代周期缩短，EDA 向 3D 协同优化收费。</span></li>
+              <li><span class="font-semibold">晶圆制造（成熟/特色节点）</span> <span class="cost">约 30%-45%</span>：双层有源层需多次流片 + 晶圆间工艺匹配；中芯国际等成熟制程代工承担主体。<span class="why">不依赖 EUV 新节点，但层数增加带来 wafer 成本线性上升。</span></li>
+              <li><span class="font-semibold">先进封装（混合键合 + TSV + 测试）</span> <span class="cost">约 20%-35%</span>：逻辑折叠核心增量；键合间距 1.5μm、套刻 &lt;0.5μm、TSV CD/KZ &lt;1.5μm。<span class="why">占比随多层折叠从局部→全芯片而持续抬升。</span></li>
+              <li><span class="font-semibold">系统级（UB 总线 + 光互连，AI 场景）</span> <span class="cost">约 5%-15%</span>：Hi-ONE 8Tb/s 模块、统一总线芯片与集群配套；手机 SoC 占比较低。<span class="why">AI 超节点为主要增量，2030 后权重显著上升。</span></li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">1. 设计 &amp; EDA 链 <span class="cost">约 25%-40%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">国际 EDA 龙头</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Synopsys（新思科技）</span> <span class="evidence evidence-indirect">3D-IC 工具</span>：Fusion Compiler、3DIC Compiler 支持多 die 协同。<span class="why">全球 3D 设计标准工具；华为自研工具链部分替代。</span></li>
+                  <li><span class="font-semibold">Cadence（楷登电子）</span>：Integrity 3D-IC Platform、Digital 全流程。<span class="why">与 TSMC CoWoS/InFO 生态深度绑定。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">国产 EDA</span>
+                <ul class="list-disc">
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">环节相关</span> <span class="font-semibold">华大九天（301269）</span>：模拟/平板/部分数字 EDA；3D 全流程仍处补齐阶段。<span class="why">τ 缩放强调自研工具链，国产 EDA 在 3D 签核、跨层时序收敛存在替代空间，但短期华为链订单未披露。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">环节相关</span> <span class="font-semibold">概伦电子</span>：器件建模与 EDA 点工具。<span class="why">混合键合界面寄生参数建模需求上升。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">芯片设计（Fabless）</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">华为海思</span> <span class="evidence evidence-confirmed">官网/论文</span>：381 颗芯片量产；麒麟/昇腾/鲲鹏全栈。<span class="why">τ 定律提出者与首要实践者；高度垂直整合。</span></li>
+                  <li><span class="font-semibold">Qualcomm（高通）</span>、<span class="font-semibold">MediaTek（联发科）</span>：移动 SoC 竞争对手。<span class="why">若逻辑折叠被行业跟进，设计范式与封装依赖将重构。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">2. 晶圆制造链 <span class="cost">约 30%-45%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">先进制程（几何缩放路线）</span> <span class="cost">非 τ 定律主路径</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">TSMC（台积电）</span>：N2/N3 与 SoIC 混合键合。<span class="why">全球几何缩放 + 3D 封装双轨；与华为路径竞争又趋同于混合键合。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">成熟制程 / 特色工艺（τ 定律主路径）</span>
+                <ul class="list-disc">
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">产业链相关</span> <span class="font-semibold">中芯国际（688981）</span>：28nm 及以上成熟制程产能扩张；国内晶圆代工龙头。<span class="why">逻辑折叠在固定节点量产，成熟代工需求受益国产自给；未确认直接供应华为海思当前手机芯片。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">产业链相关</span> <span class="font-semibold">华虹半导体</span>：特色工艺、嵌入式存储。<span class="why">双层有源层中 analog/存储层潜在代工需求。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">3. 先进封装 &amp; 混合键合 <span class="cost">约 20%-35% · 核心瓶颈</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">混合键合（Hybrid Bonding）</span> <span class="cost">键合间距 1.5μm（麒麟 2026）→ 目标 &lt;1μm</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">TSMC SoIC</span> <span class="evidence evidence-confirmed">官网</span>：W2W 1μm 量产，2027 目标 0.5μm。<span class="why">全球混合键合标杆；与华为 1.5μm 保守方案同技术谱系。</span></li>
+                  <li><span class="font-semibold">Intel EMIB-T / Foveros</span>：1μm 级 W2W 验证量产。<span class="why">x86 + AI 平台 3D 封装竞争。</span></li>
+                  <li><span class="font-semibold">XMC（长江存储关联封装能力）</span> <span class="evidence evidence-indirect">产业推断</span>：存储 + 逻辑堆叠。<span class="why">论文强调逻辑-存储深度融合。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">OSAT 封测</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">ASE（日月光）</span>、<span class="font-semibold">Amkor</span>：全球 OSAT 龙头，混合键合产能。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">环节高相关</span> <span class="font-semibold">长电科技（600584）</span>：XDFOI  Chiplet 平台、2.5D/3D 封装；国内 OSAT 龙头。<span class="why">逻辑折叠抬升 3D 封装价值量；华为直接订单未披露，受益行业 β。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">环节高相关</span> <span class="font-semibold">通富微电（002156）</span>：AMD 等先进封装合作；国内 2.5D/3D 布局。<span class="why">混合键合产线建设受益 τ 缩放行业趋势。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">环节高相关</span> <span class="font-semibold">华天科技</span>：3D Matrix 等先进封装平台。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">4. 设备 &amp; 材料链 <span class="cost">占封装增量 Capex 约 50%-70%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">CMP（化学机械抛光）</span> <span class="cost">混合键合前置关键</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Applied Materials（应用材料）</span>：混合键合设备全球龙头。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">环节高相关</span> <span class="font-semibold">华海清科（688120）</span>：国产 CMP 龙头；先进封装铜抛光需求。<span class="why">键合界面平坦度决定间距能否缩小至 1.5μm 以下。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">刻蚀 / 薄膜沉积 / 键合设备</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Tokyo Electron（TEL）</span>、<span class="font-semibold">Lam Research（泛林）</span>：TSV 刻蚀、介质沉积。</li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">环节高相关</span> <span class="font-semibold">北方华创</span>：刻蚀/沉积平台型设备商。</li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">环节高相关</span> <span class="font-semibold">拓荆科技</span>：薄膜沉积；混合键合相关设备布局。</li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">TSV 与载板材料</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">SK hynix / Samsung</span>：HBM 混合键合量产带动设备/materials 生态。</li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">环节高相关</span> <span class="font-semibold">华海诚科</span>：封装载板材料；<span class="font-semibold">飞凯材料</span>：临时键合材料等。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">5. AI 系统层（2030+ 增量） <span class="cost">集群 TCO 5%-15%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">统一总线 UB + 超节点</span>：华为灵衢总线架构；远程内存访问延迟 ~100ns。<span class="why">系统 τ 缩减约 500×；配套芯片与软件栈内化。</span></li>
+              <li><span class="font-semibold">Hi-ONE 光互连</span>：单模块 8Tb/s；芯片内 SerDes 距离 100cm→5cm。<span class="why">2030 年后 AI 逻辑折叠 + 光 IO 协同；A 股光模块链间接受益（非确认华为订单）。</span></li>
+              <li><span class="font-semibold">昇腾 AI 加速器</span> <span class="evidence evidence-indirect">论文路线图</span>：910C（2025）→ 950（2026）→ 990（~2030，逻辑折叠）。<span class="why">国内 AI 算力自主可控主线。</span></li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-x-auto">
+      <h2 class="text-2xl font-bold">景气度研判</h2>
+      <table class="data mt-4 w-full text-sm">
+        <thead>
+          <tr><th>时间尺度</th><th>方向</th><th>置信度</th><th>核心驱动</th><th>关键风险</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>短期 0-12M</td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>麒麟 2026 发布催化；混合键合/HBM4 量产共振；先进封装板块资金偏好</td>
+            <td>主题炒作退潮；华为链订单透明度低；估值已部分透支</td>
+          </tr>
+          <tr>
+            <td>中期 1-3Y</td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>逻辑折叠从局部→多层；国产 OSAT 资本开支上行；成熟制程产能国产化</td>
+            <td>混合键合良率/成本不及预期；美国出口管制升级；EDA 工具受限</td>
+          </tr>
+          <tr>
+            <td>长期 3-5Y+</td>
+            <td class="prosperity-flat">震荡</td>
+            <td>低</td>
+            <td>τ 缩放 vs 几何缩放双轨并存；2031 等效 1.4nm 目标验证；AI 3D 折叠落地</td>
+            <td>技术路线被新范式替代；全球龙头同步跟进削弱差异化；能耗约束</td>
+          </tr>
+          <tr>
+            <td><strong>1-5 年综合</strong></td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>先进封装价值量占比提升；国产设备/materials 渗透率提高；政策 + 国产替代</td>
+            <td>论文路线图执行偏差；以 PE 计的主题股业绩兑现不及预期</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-x-auto">
+      <h2 class="text-2xl font-bold">核心上市公司多维度对比</h2>
+      <p class="mt-2 text-sm text-slate-500">A 股估值数据抓取于 2026-05-27；华为直接供货关系未披露者标注「环节相关」。</p>
+      <table class="data mt-4 w-full text-sm">
+        <thead>
+          <tr>
+            <th>公司</th><th>市场</th><th>环节</th><th>护城河</th><th>技术壁垒</th>
+            <th>订单能见度</th><th>业绩拐点</th><th>戴维斯双击</th><th>估值语境</th><th>风险</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>TSMC</strong></td><td>美股</td><td>代工+SoIC 键合</td>
+            <td>先进制程 + 封装生态垄断</td><td>1μm W2W 量产；CoWoS 产能</td>
+            <td><span class="evidence evidence-confirmed">Backlog 饱满</span></td>
+            <td>CoWoS 产能 2026-2027 持续扩张</td>
+            <td>EPS↑ + AI Capex 周期 PE 扩张</td>
+            <td>全球封装/代工定价锚</td>
+            <td>地缘风险；海外建厂成本</td>
+          </tr>
+          <tr>
+            <td><strong>华为海思</strong></td><td>未上市</td><td>设计 + 系统</td>
+            <td>全栈垂直整合；381 颗芯片积累</td><td>逻辑折叠 + UB + 自研 EDA</td>
+            <td><span class="evidence evidence-confirmed">麒麟 2026 秋发布</span></td>
+            <td>手机芯片回归 + 昇腾 950 放量</td>
+            <td>不适用</td>
+            <td>—</td>
+            <td>制裁；生态封闭度</td>
+          </tr>
+          <tr>
+            <td><span class="ashare">A股</span> <span class="ashare-key">重点</span> <strong>长电科技</strong><br><small>600584</small></td><td>A股</td><td>OSAT 先进封装</td>
+            <td>国内规模第一；XDFOI 平台</td><td>2.5D/3D、Chiplet 量产经验</td>
+            <td><span class="evidence evidence-private">行业 β，华为订单未披露</span></td>
+            <td>先进封装 revenue 占比提升；周期复苏</td>
+            <td>EPS 驱动为主；PE 已部分反映（1M +102%）</td>
+            <td>PE-TTM ~98 · PB ~5.7 · ROE ~1%（2026Q1）</td>
+            <td>估值高位；客户集中；竞争加剧</td>
+          </tr>
+          <tr>
+            <td><span class="ashare">A股</span> <span class="ashare-key">重点</span> <strong>通富微电</strong><br><small>002156</small></td><td>A股</td><td>OSAT 先进封装</td>
+            <td>AMD 等大客户深度绑定</td><td>2.5D/3D、混合键合产线</td>
+            <td><span class="evidence evidence-indirect">AMD 链确认；华为间接</span></td>
+            <td>南通/苏州新产能爬坡</td>
+            <td>单腿 — 盈利改善但 PE 已扩张</td>
+            <td>PE-TTM ~78 · PB ~7.2 · 1M +54%</td>
+            <td>海外客户依赖；CapEx 压力</td>
+          </tr>
+          <tr>
+            <td><span class="ashare">A股</span> <span class="ashare-key">重点</span> <strong>华海清科</strong><br><small>688120</small></td><td>A股</td><td>CMP 设备</td>
+            <td>国产 CMP 龙头；客户粘性强</td><td>铜/钨抛光；先进封装适配</td>
+            <td><span class="evidence evidence-indirect">fab/OSAT 扩产间接</span></td>
+            <td>先进封装 CMP 新品放量</td>
+            <td>EPS↑（ROE 14.5%）+ 国产替代 PE</td>
+            <td>PE-TTM ~93 · PB ~13 · ROE ~14.5%（2025）</td>
+            <td>竞争；客户 cap 支出波动</td>
+          </tr>
+          <tr>
+            <td><span class="ashare">A股</span> <span class="ashare-key">重点</span> <strong>中芯国际</strong><br><small>688981</small></td><td>A股</td><td>成熟制程代工</td>
+            <td>国内代工龙头；产能规模</td><td>28nm+ 量产；特色工艺</td>
+            <td><span class="evidence evidence-indirect">国产 fab 扩产</span></td>
+            <td>产能利用率回升；28nm 供需偏紧</td>
+            <td>单腿 — EPS 慢，估值已抬升</td>
+            <td>PE-TTM ~237 · PB ~8 · 1M +34%</td>
+            <td>先进制程受限；高 PE</td>
+          </tr>
+          <tr>
+            <td><span class="ashare">A股</span> <strong>华大九天</strong><br><small>301269</small></td><td>A股</td><td>EDA</td>
+            <td>国产 EDA 龙头；政策扶持</td><td>3D-IC 全流程仍在补齐</td>
+            <td><span class="evidence evidence-private">3D 工具链待突破</span></td>
+            <td>全流程整合 + 3D 新品</td>
+            <td>主题驱动为主；盈利波动</td>
+            <td>PE 失真 · PB ~13 · 1M +46%</td>
+            <td>研发不及预期；竞争</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold">投资机会与跟踪优先级</h2>
+      <ol class="mt-4 list-decimal pl-6 leading-7 space-y-3">
+        <li><strong>第一优先级 · 混合键合 / 先进封装 OSAT</strong>：逻辑折叠的物理底座是 1.5μm→1μm 混合键合 + TSV；全球 HBM4 量产与华为逻辑折叠形成需求共振。<strong>长电科技、通富微电</strong>（环节 β）+ 全球对标 TSMC SoIC / ASE。<span class="why">瓶颈环节 + 验证度相对高（行业层面）。</span></li>
+        <li><strong>第二优先级 · CMP / 键合 / TSV 设备</strong>：混合键合界面平坦度与套刻精度是间距缩小的硬约束。<strong>华海清科</strong> + 北方华创 / 拓荆科技（薄膜、刻蚀）。<span class="why">国产替代 + 封装 Capex 上行。</span></li>
+        <li><strong>弹性标的 · 材料 &amp; 中小 OSAT</strong>：华海诚科（载板）、飞凯材料（临时键合）、华天科技 — 小市值、高 β，但客户与产能验证透明度低（<strong>高波动风险</strong>）。</li>
+        <li><strong>预期差</strong>：市场短期按「华为概念」炒作封测；中期真正兑现取决于<strong>混合键合产能利用率、良率与 ASP</strong> 能否像 HBM 链一样被财报验证。若仅停留在主题，OSAT 高 PE 难持续。</li>
+        <li><strong>谨慎 / 回避</strong>：① 纯 EUV 逻辑（短期不受 τ 定律直接利好）；② 已大幅上涨的封测龙头（1M 涨幅 &gt;50%-100%，业绩 lag）；③ 把论文 2031 路线图当作已兑现订单的标的。</li>
+      </ol>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">主要来源</h2>
+      <ul class="mt-4 list-disc pl-6 leading-7 text-sm">
+        <li><a href="https://www.huawei.com/cn/news/2026/5/ieee-iscas-tau-scaling" target="_blank" rel="noopener">华为官网</a>：ISCAS 2026 韬（τ）定律主旨演讲新闻稿（2026-05-25）</li>
+        <li>何庭波《A Time Scaling Theory for Multi-Layer Electronic Systems》：中科院科技论文预发布平台（2026-05-25）；网易订阅等刊载机翻全文</li>
+        <li>与非网、TrendForce 等：2026 混合键合 W2W 1μm 量产、HBM4 键合路线</li>
+        <li>国家发展改革委：2026 年集成电路税收优惠清单制定通知</li>
+        <li>国盛证券等研报：韬定律与先进封装产业解读（2026-05-26）</li>
+        <li>A 股行情：stock-analysis fetch（2026-05-27）— 688981、600584、688120、301269、002156</li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本文用于产业链与行业研究，不构成投资建议。</li>
+        <li>成本比例为公开资料交叉估算，非官方 BOM 或华为内部数据。</li>
+        <li>「A股重点」表示值得优先跟踪，不等同于确认华为订单或收入占比。</li>
+        <li>论文与演讲中的路线图、性能数据代表华为研究与规划，须结合后续产品披露独立验证。</li>
+        <li>τ 定律是全球半导体演进方向之一，不意味着几何缩放路线终止；双轨并存是更可能的常态。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+        while (li.firstChild && li.firstChild !== childList) {
+          summary.appendChild(li.firstChild);
+        }
+        details.appendChild(summary);
+        details.appendChild(childList);
+        while (li.firstChild) {
+          details.appendChild(li.firstChild);
+        }
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>

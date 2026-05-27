@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 算力存储产业链深度研究</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #a7f3d0; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #059669; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #059669; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .tree details details > summary { font-weight: 700; }
+    .cost { display: inline-block; border-radius: 999px; background: #d1fae5; color: #065f46; padding: .12rem .55rem; font-size: .78rem; font-weight: 700; vertical-align: middle; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .why { color: #475569; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .prosperity-up { background: #dcfce7; color: #166534; font-weight: 700; }
+    .prosperity-flat { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .prosperity-down { background: #fee2e2; color: #991b1b; font-weight: 700; }
+    a { color: #059669; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">AI 算力存储 · HBM / DRAM / NAND / SSD</span>
+        <span class="rounded-full bg-blue-400/20 px-3 py-1 text-sm text-blue-100">更新口径：2026-05-27 UTC+8</span>
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">公开资料估算/研究结论，非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">AI 算力存储产业链深度研究</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        本页聚焦 AI 数据中心「三层存储架构」——HBM（高带宽存储器）工作内存、DDR5/SOCAMM（小型可插拔内存模块）扩展内存、NVMe SSD（非易失性内存主机控制器接口规范固态硬盘）持久存储——从成本结构、产能错配、技术路线与国内外上市公司映射，拆解 AI 算力浪潮下的存储超级周期。
+      </p>
+      <div class="mt-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm leading-6 text-slate-100">
+        <p class="font-semibold">四锚点摘要</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li><strong>行业</strong>：半导体存储（DRAM/HBM/NAND/SSD），周期属性强，AI 算力驱动结构性供需错配</li>
+          <li><strong>论文</strong>：Microsoft Research《Managed-Retention Memory: A New Class of Memory for the AI Era》（arXiv:2501.09605 / HotOS'25）</li>
+          <li><strong>热点</strong>：HBM4 量产、存储超级周期、原厂产能向 HBM 倾斜、国产替代窗口、Rubin 机架内存占比跃升</li>
+          <li><strong>产业链</strong>：晶圆制造 → HBM 封装（TSV/CoWoS）→ 模组/控制器 → 企业级 SSD → 数据中心集成</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">AI 存储市场规模（HBM）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 92 亿美元（2026E）</p>
+        <p class="mt-2 text-sm text-slate-600">2025 约 73 亿美元，YoY +26%；2035 远期约 698 亿美元（Precedence Research 区间估算，交叉验证）。</p>
+      </div>
+      <div class="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">最大成本池（Rubin 机架）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">内存合计约 26%</p>
+        <p class="mt-2 text-sm text-slate-600">摩根士丹利 VR200 NVL72 估算：GPU 仍第一（约 51%），但内存从 GB300 约 5% 跃升至约 26%（约 200 万美元/柜）。</p>
+      </div>
+      <div class="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">当前瓶颈</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">HBM 产能售罄</p>
+        <p class="mt-2 text-sm text-slate-600">三星/SK 海力士/美光 HBM 产能预订至 2026；HBM 与 DDR5 晶圆置换比约 3:1，挤压通用 DRAM 与 NAND 供给。</p>
+      </div>
+      <div class="rounded-2xl border border-emerald-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">1-3 年景气</p>
+        <p class="mt-2 text-2xl font-bold text-emerald-700">上行 · 置信度中</p>
+        <p class="mt-2 text-sm text-slate-600">涨价周期 + AI Capex 高增支撑；2027 后新产能释放或引发分化，HBM 与利基型存储走势可能背离。</p>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-950">
+      <p class="font-semibold">阅读口径</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>「AI 服务器存储 TCO（总拥有成本）占比」按单台/单机架硬件采购价值理解，不等同于存储原厂制造成本或 bit 均价。</li>
+        <li>HBM 占 GPU 模组 BOM 约 40%-60%（随代际与容量变化），但整机视角下 GPU 子系统仍占 75%-85%；Rubin 代际内存独立占比显著上升。</li>
+        <li>设备、材料、EDA（电子设计自动化）成本通过晶圆与封装价格间接进入存储 BOM，不强行塞进单机存储占比。</li>
+        <li>A 股映射区分「原厂/模组/控制器/分销/封测」；未上市龙头（长鑫、长江）以产业地位描述，不臆测 IPO 后估值。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">论文要点与产业映射</h2>
+      <p class="mt-2 text-sm text-slate-500">论文：Managed-Retention Memory (MRM) · Microsoft Research（Legtchenko 等）· arXiv:2501.09605 · 2025-01 · HotOS'25</p>
+      <ul class="mt-4 list-disc pl-6 leading-7">
+        <li><strong>核心结论</strong>：LLM（大语言模型）推理中 HBM 约一半存模型权重、一半存 KV Cache（键值缓存）；HBM 在<strong>写性能与小随机访问</strong>上过度配置，在<strong>密度、读带宽、能效</strong>上不足。作者提出 MRM（Managed-Retention Memory，托管保持内存）新存储类别——放宽长期数据保持要求（小时级即可），换取更高读吞吐、更好能效与单位容量成本。</li>
+        <li><strong>方法与数据</strong>：基于 Foundation Model 推理 workload 的 IO 模式分析；对比 HBM、DRAM、SCM（Storage Class Memory，存储级内存）各指标 trade-off；MRM 可让 STT-MRAM、ReRAM、PCM 等原 SCM 技术重新具备 AI 推理场景可行性。</li>
+        <li><strong>成本/效率启示</strong>：若 MRM 落地，AI 推理集群可在 HBM 旁引入第二内存层，降低 HBM bit 需求与单 token 推理能耗；利好新型非易失内存材料、CXL（Compute Express Link，计算快速链路）扩展与内存控制器创新；对 HBM 原厂短期是互补而非替代。</li>
+        <li><strong>产业验证状态</strong>：<span class="evidence evidence-private">实验室/架构提案</span> — HotOS'25 论文级，尚无大规模商用部署；Intel Optane 已停产，MRM 路线需 3-5 年验证。</li>
+        <li><strong>投资映射</strong>：中长期关注 CXL 内存扩展（澜起科技等）、PIM/NMP（Processing/Near-Memory Processing，存内/近存计算）；短期 HBM 仍是唯一可量产方案，MRM 不改变 2026-2027 供需格局。</li>
+      </ul>
+      <p class="mt-4 text-sm text-slate-500">补充参考：Stratum 系统（Mono3D DRAM + NMP，arXiv:2510.05245）提出 MoE（Mixture of Experts，混合专家）模型 serving 的 HBM 替代架构 — <span class="evidence evidence-private">学术阶段</span>，与 Rubin 量产 HBM4 路径并行存在。</p>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">热点与政策时间线</h2>
+      <ul class="mt-4 space-y-3 text-sm leading-7">
+        <li><strong>2026-03 · NVIDIA GTC</strong>：美光宣布 HBM4 36GB 12H 量产、192GB SOCAMM2 量产、9650 PCIe Gen6 企业级 SSD 量产，面向 Vera Rubin 与 BlueField-4 STX 架构。<span class="evidence evidence-confirmed">官方发布</span></li>
+        <li><strong>2026-Q1 · 合约价暴涨</strong>：TrendForce/行业口径交叉显示 DRAM 合约价 QoQ 约 +53%-95%、NAND 约 +33%-80%；AI 服务器出货量 YoY 约 +45%，存储产量增速领跑工业门类（工信部口径存储芯片产量 YoY +40%+）。</li>
+        <li><strong>2026-05 · 产能结构性收缩</strong>：三星 NAND 晶圆投片从 2025 约 490 万片降至约 468 万片；SK 海力士 NAND 从约 190 万降至约 170 万；两大厂合计减产约 6.2%，进一步收紧通用 NAND 供给。</li>
+        <li><strong>2026-05 · 国产龙头 IPO 进程</strong>：长江存储控股完成 IPO 辅导备案；长鑫科技 IPO 预期带动设备/材料/封测链资本关注。<span class="evidence evidence-confirmed">公开备案</span></li>
+        <li><strong>政策 · 国产替代</strong>：大基金三期、地方存储产业集群（武汉「世界存储之都」等）；行业目标 2027 存储自给率从约 15% 提升至约 40%（多方研报口径，<span class="evidence evidence-indirect">政策导向</span>）。</li>
+        <li><strong>出口管制</strong>：美国 BIS 对先进节点/HBM 设备与技术的限制，受控市场先进存储成本溢价约 25%-35%（Nomura 等机构估算区间）。</li>
+      </ul>
+    </section>
+
+    <section class="tree mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">成本总览 · AI 数据中心存储产业链树</h2>
+      <ul class="list-disc space-y-3 pl-5">
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">0. AI 加速系统存储 TCO 总览 <span class="cost">三层架构 100%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">Tier-1 · HBM 工作内存</span> <span class="cost">GPU 模组约 40%-60%；Rubin 机架约 15%-18%</span>：模型权重 + KV Cache 驻留；带宽决定推理吞吐上限。H200 单卡 141GB HBM3e / 4.8TB/s；Rubin 单卡 288GB HBM4。ASP（平均销售价格）远高于 DDR5，毛利率原厂可达 50%+（景气上行期）。</li>
+              <li><span class="font-semibold">Tier-2 · 主机内存（DDR5 / SOCAMM / LPDDR5X）</span> <span class="cost">8 卡服务器约 2%-4%；Rubin 机架约 8%-10%</span>：CPU 侧数据缓冲、分布式训练参数同步、Rubin 平台 SOCAMM2 低功耗高容量扩展（192GB-256GB/模块）。DGX H200 标配约 2TB DDR5；VR200 约 54TB LPDDR5X（36 CPU × 1.5TB）。</li>
+              <li><span class="font-semibold">Tier-3 · 企业级 NVMe SSD</span> <span class="cost">单机约 1%-3%；集群数据湖 TCO 显著放大</span>：训练数据集、Checkpoint（检查点）、向量库、日志与冷数据。DGX H200 约 30TB NVMe；Gen6 SSD（美光 9650）顺序读约 28GB/s、随机读约 550 万 IOPS。QLC（四层单元）大容量 SSD 替代 HDD（硬盘驱动器）趋势加速。</li>
+              <li><span class="font-semibold">Tier-4 · 网络存储 / 数据湖</span> <span class="cost">集群 TCO 约 10%-20%（随规模）</span>：60TB+ 大容量 NVMe、分布式文件系统；训练数据预取与 checkpoint 恢复瓶颈常出现在存储 IO 而非算力。</li>
+              <li><span class="font-semibold">间接成本摊入</span> <span class="cost">通过晶圆/封装传导</span>：TSV（Through-Silicon Via，硅通孔）设备、CoWoS（2.5D 封装）产能、ABF 载板、DRAM/NAND 刻蚀与沉积设备 — 影响 HBM 与 SSD 交付周期，不单独出现在终端 BOM 分项。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">1. HBM 产业链 <span class="cost">AI 存储价值最高环节</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">DRAM 晶圆</span> <span class="cost">HBM 成本约 50%-65%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">SK hynix（SK 海力士）</span> <span class="evidence evidence-confirmed">法说会/公告</span> <span class="why">HBM 市占约 50%+，HBM3E/HBM4 领先；2026 产能基本售罄，LTA（长期协议）锁定大客户。</span></li>
+                  <li><span class="font-semibold">Samsung（三星电子）</span> <span class="evidence evidence-confirmed">官方</span> <span class="why">HBM3E Qual 进度曾落后，2026 加速 HBM4 追赶；存储综合龙头，DRAM+NAND+HBM 产能调配灵活。</span></li>
+                  <li><span class="font-semibold">Micron（美光科技）</span> <span class="evidence evidence-confirmed">GTC 2026</span> <span class="why">HBM4 36GB 12H 2026Q1 量产；Rubin 平台 SOCAMM2 + Gen6 SSD 全栈绑定 NVIDIA。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">HBM 封装（TSV + 堆叠 + CoWoS）</span> <span class="cost">HBM 成本约 25%-35%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">TSMC（台积电）</span> <span class="evidence evidence-confirmed">CoWoS 产能</span> <span class="why">GPU + HBM 2.5D 封装核心；CoWoS 产能是 HBM 交付瓶颈之一。</span></li>
+                  <li><span class="font-semibold">Amkor / SPIL</span> <span class="evidence evidence-indirect">产业研究</span> <span class="why">OSAT（外包封测）分担部分 HBM 封装产能。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">封测链</span> <span class="font-semibold">通富微电 / 长电科技</span> <span class="why">先进封装产能扩张，HBM 封测国产化推进中；尚未确认进入 NVIDIA HBM 核心供应链。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">国产 HBM</span> <span class="cost">待验证</span>
+                <ul class="list-disc">
+                  <li><span class="evidence evidence-private">研发阶段</span> <span class="font-semibold">长鑫存储 / 武汉新芯等</span> <span class="why">HBM2/HBM3 研发与验证中，良率约 60% vs 国际 90%+；2027 前难规模供货国际 AI 平台。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">2. DRAM / 利基型存储 <span class="cost">产能错配受益环节</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">通用 DDR5 / 利基 DRAM</span> <span class="cost">模组毛利率弹性高</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">SK hynix / Samsung / Micron</span> <span class="why">主动缩减 DDR4/利基产能，资源向 HBM 与高端 DDR5 倾斜。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">长鑫绑定</span> <span class="font-semibold">兆易创新（603986）</span> <span class="why">Nor Flash + 利基 DRAM 设计；与长鑫协同填补海外退出留下的利基供给空洞。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">分销</span> <span class="font-semibold">香农芯创（300475）</span> <span class="why">存储分销龙头，涨价周期中库存收益与周转弹性大；Q1 利润高增（年报口径）。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">内存接口 / CXL</span> <span class="cost">服务器 CPU 配套</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Rambus</span> <span class="why">DDR5 RCD/DB 专利授权与芯片。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">年报</span> <span class="font-semibold">澜起科技（688008）</span> <span class="why">DDR5 寄存时钟驱动器（RCD）全球领先；PCIe Retimer 与 CXL 内存扩展芯片受益 AI 服务器内存墙。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">3. NAND Flash / 企业级 SSD <span class="cost">AI 数据湖与 Checkpoint</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">NAND 晶圆原厂</span> <span class="cost">SSD BOM 约 60%-75%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Samsung / SK hynix / Kioxia / Micron / Solidigm</span> <span class="why">2026 主动减产 NAND 晶圆；QLC 高堆叠（200 层+）竞争加剧。</span></li>
+                  <li><span class="evidence evidence-indirect">产业地位</span> <span class="font-semibold">长江存储（未上市）</span> <span class="why">294 层 3D NAND 量产，全球份额约 16%；IPO 筹备中，三期扩产。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">SSD 主控 / 模组</span> <span class="cost">SSD BOM 约 10%-20%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Phison（群联）/ Silicon Motion（慧荣）</span> <span class="why">企业级 PCIe Gen5/Gen6 主控；AI SSD 需高 DWPD（每日全盘写入次数）耐久。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">模组</span> <span class="font-semibold">佰维存储（688525）</span> <span class="why">嵌入式 + 企业级 SSD 模组；AI 端侧与数据中心双线布局。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">模组</span> <span class="font-semibold">江波龙（301308）</span> <span class="why">FORESEE 企业级 SSD + Lexar 品牌；收购 ZST 强化企业级存储。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">4. 设备 / 材料（间接层） <span class="cost">CAPEX 周期受益</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">刻蚀 / 沉积 / 检测</span>：Lam Research、Applied Materials、KLA、TEL（东京电子）、ASML（DUV/EUV 部分 DRAM 层）</li>
+              <li><span class="ashare">A股</span> <span class="font-semibold">中微公司 / 北方华创 / 拓荆科技</span> <span class="why">国产 DRAM/NAND 产线扩产带动设备订单；存储 CAPEX 回升周期受益。</span></li>
+              <li><span class="ashare">A股</span> <span class="font-semibold">鼎龙股份 / 安集科技</span> <span class="why">CMP（化学机械抛光）材料、光刻胶等存储产线耗材。</span></li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">景气度研判</h2>
+      <table class="data w-full min-w-[720px] text-sm">
+        <thead>
+          <tr>
+            <th>时间尺度</th>
+            <th>方向</th>
+            <th>置信度</th>
+            <th>核心驱动</th>
+            <th>关键风险</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>短期 0-12M</td>
+            <td class="prosperity-up">上行</td>
+            <td>高</td>
+            <td>合约价上涨、HBM4 量产、AI Capex 高增、库存低位</td>
+            <td>宏观需求突变、渠道囤货导致假供需</td>
+          </tr>
+          <tr>
+            <td>中期 1-3Y</td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>Rubin 放量拉内存 BOM、国产替代、企业级 SSD Gen6 渗透</td>
+            <td>2027 新 fab 投产、HBM 产能释放后普通 DRAM 价格回落</td>
+          </tr>
+          <tr>
+            <td>长期 3-5Y+</td>
+            <td class="prosperity-flat">震荡分化</td>
+            <td>低</td>
+            <td>HBM 技术迭代（12H→16H）、MRM/CXL 新架构、QLC 替代 HDD</td>
+            <td>技术路线颠覆、中国产能全球份额冲击、周期反转</td>
+          </tr>
+          <tr>
+            <td><strong>1-5 年综合</strong></td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>AI 存储从「配套」升级为「算力瓶颈」；HBM 结构性短缺 vs 利基 DRAM/NAND 周期波动</td>
+            <td>2028+ 产能过剩、HBM 竞争加剧压缩毛利</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">核心上市公司多维度对比</h2>
+      <p class="mb-3 text-sm text-slate-500">估值数据：2026-05-27 抓数 · A 股重点公司 ≤5 只</p>
+      <table class="data w-full min-w-[960px] text-sm">
+        <thead>
+          <tr>
+            <th>公司</th>
+            <th>市场</th>
+            <th>环节</th>
+            <th>护城河</th>
+            <th>技术壁垒</th>
+            <th>订单能见度</th>
+            <th>业绩拐点</th>
+            <th>戴维斯双击</th>
+            <th>估值语境（2026-05-27）</th>
+            <th>主要风险</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SK hynix</strong></td>
+            <td>韩股</td>
+            <td>HBM 龙头</td>
+            <td>HBM 份额第一、LTA 绑定 NVIDIA</td>
+            <td>HBM4 12H/16H、TSV 良率</td>
+            <td><span class="evidence evidence-confirmed">2026 售罄</span></td>
+            <td>HBM4 占比提升 → 毛利率高位</td>
+            <td>EPS↑ + PE 仍有望扩张（AI 主线）</td>
+            <td>韩股 DRAM 龙头溢价</td>
+            <td>三星追赶、CapEx 过度、周期反转</td>
+          </tr>
+          <tr>
+            <td><strong>Micron</strong></td>
+            <td>美股</td>
+            <td>HBM + SSD 全栈</td>
+            <td>Rubin 平台 SOCAMM2/Gen6 SSD 绑定</td>
+            <td>HBM4 量产、PCIe Gen6 首发</td>
+            <td><span class="evidence evidence-confirmed">GTC 2026</span></td>
+            <td>HBM 营收占比持续提升</td>
+            <td>双驱动：盈利 + AI 存储叙事</td>
+            <td>美股存储周期 Beta</td>
+            <td>HBM 份额低于 SK、对华限制</td>
+          </tr>
+          <tr>
+            <td><strong>澜起科技</strong><br><span class="ashare">688008</span></td>
+            <td>A股</td>
+            <td>DDR5 RCD / CXL</td>
+            <td>服务器内存接口芯片龙头</td>
+            <td>RCD/DB 专利、PCIe Retimer</td>
+            <td><span class="evidence evidence-indirect">AI 服务器放量</span></td>
+            <td>DDR5 渗透率 + CXL 新产品</td>
+            <td>EPS↑ 较确定；PE 已高（单腿）</td>
+            <td>PE TTM 约 131 · PB 约 16 · 1Y +250% · ROE TTM 约 4%</td>
+            <td>客户集中、技术迭代、估值透支</td>
+          </tr>
+          <tr>
+            <td><strong>兆易创新</strong><br><span class="ashare ashare-key">603986</span></td>
+            <td>A股</td>
+            <td>Nor + 利基 DRAM</td>
+            <td>国内 Nor Flash 龙头 + 长鑫协同</td>
+            <td>利基 DRAM 设计、MCU 生态</td>
+            <td><span class="evidence evidence-indirect">涨价周期</span></td>
+            <td>Q1 2026 净利率跃升至约 35%</td>
+            <td>EPS↑ + 国产替代 PE 扩张</td>
+            <td>PE TTM 约 127 · PB 约 14.8 · 1Y +320% · ROE Q1 约 5.8%</td>
+            <td>估值极高、无 HBM、周期下行</td>
+          </tr>
+          <tr>
+            <td><strong>佰维存储</strong><br><span class="ashare ashare-key">688525</span></td>
+            <td>A股</td>
+            <td>NAND 模组 / 企业级 SSD</td>
+            <td>嵌入式存储 + 先进封测一体化</td>
+            <td>16nm 闪存良率、企业级验证</td>
+            <td><span class="evidence evidence-private">行业推断</span></td>
+            <td>2026 扭亏为高毛利（Q1 ROE 约 34%）</td>
+            <td>盈利拐点 + 存储 Beta（双驱动）</td>
+            <td>PE TTM 约 40 · PB 约 18 · 1Y +426% · 止损线约 250（25% 回撤）</td>
+            <td>无 NAND 原厂、竞争加剧、高波动</td>
+          </tr>
+          <tr>
+            <td><strong>江波龙</strong><br><span class="ashare ashare-key">301308</span></td>
+            <td>A股</td>
+            <td>存储模组 / 品牌</td>
+            <td>FORESEE 企业级 + Lexar 消费品牌</td>
+            <td>企业级 SSD 主控与固件</td>
+            <td><span class="evidence evidence-indirect">企业级放量</span></td>
+            <td>Q1 2026 净利率约 40%</td>
+            <td>EPS↑ 强；PE 扩张已部分兑现</td>
+            <td>PE TTM 约 44 · PB 约 19.5 · 1Y +617% · 距止损约 24%</td>
+            <td>模组环节毛利波动、无晶圆</td>
+          </tr>
+          <tr>
+            <td><strong>香农芯创</strong><br><span class="ashare">300475</span></td>
+            <td>A股</td>
+            <td>存储分销</td>
+            <td>原厂授权分销、库存周转能力</td>
+            <td>渠道与库存管理（非制造）</td>
+            <td><span class="evidence evidence-indirect">涨价受益</span></td>
+            <td>Q1 2026 ROE 约 27%</td>
+            <td>盈利弹性大；估值已反映周期</td>
+            <td>PE TTM 约 50 · PB 约 19 · 1Y +518%</td>
+            <td>分销模式周期敏感、库存减值</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="mt-3 text-xs text-slate-500">Trailing 止损（25% 回撤阈值，2026-05-27 未触发）：兆易创新约 395 元、佰维存储约 250 元、江波龙约 459 元、澜起科技约 213 元、香农芯创约 153 元。</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold">投资机会与跟踪优先级</h2>
+      <ol class="mt-4 list-decimal pl-6 leading-7 space-y-3">
+        <li><strong>第一优先级 · HBM / 内存接口</strong>：SK 海力士、美光（海外）；A 股看<strong>澜起科技</strong>（DDR5/CXL 接口芯片，AI 服务器内存墙直接受益）。逻辑：HBM 产能售罄 + Rubin 内存 BOM 跃升；验证度高但 A 股估值已大幅透支。</li>
+        <li><strong>第一优先级 · 利基 DRAM / 国产替代</strong>：<strong>兆易创新</strong> + 未上市<strong>长鑫存储</strong>产业链（设备/材料）。逻辑：海外原厂主动退出利基市场，供给空洞 + 涨价弹性；长鑫 IPO 是板块催化剂。</li>
+        <li><strong>弹性标的 · NAND 模组</strong>：<strong>佰维存储</strong>、<strong>江波龙</strong>（高 Beta，2026 Q1 业绩拐点已现；模组无晶圆议价权，周期下行风险高）。</li>
+        <li><strong>预期差 · 企业级 SSD Gen6</strong>：市场仍按「周期股」定价部分模组厂，但 AI Checkpoint / 数据湖需求可能带来企业级 SSD 结构性增量；关注美光 9650 放量与国内企业级认证进度。</li>
+        <li><strong>谨慎 / 回避</strong>：① 纯消费级存储模组（价格战敏感）；② 估值已反映 2-3 年涨价预期且 PE &gt; 100 的标的；③ 无技术壁垒的纯分销在周期顶部的库存风险；④ 短期难兑现 HBM 收入的国产 DRAM 概念炒作。</li>
+      </ol>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">主要来源</h2>
+      <ul class="mt-4 list-disc pl-6 text-sm leading-7 text-slate-700">
+        <li>Microsoft Research · <a href="https://arxiv.org/abs/2501.09605" target="_blank" rel="noopener">Managed-Retention Memory (arXiv:2501.09605)</a> · HotOS'25</li>
+        <li>NVIDIA GTC 2026 · Micron HBM4 / SOCAMM2 / 9650 Gen6 SSD 官方发布</li>
+        <li>Morgan Stanley · Rubin VR200 NVL72 BOM Teardown（2026-05-21）— 内存占比与机架成本</li>
+        <li>NVIDIA DGX H200 官方规格 — 141GB HBM3e、2TB DDR5、30TB NVMe</li>
+        <li>TrendForce / 研精毕智 — 2026 合约价与 NAND 减产数据</li>
+        <li>工信部 2026Q1 工业和信息化发展发布会 — 存储芯片产量增速</li>
+        <li>长江存储 IPO 辅导备案公开信息（湖北证监局，2026-05）</li>
+        <li>OpenMetal · RAM/NVMe 供需领先指标分析（2026）</li>
+        <li>A 股行情：stock-analysis fetch_stock.py + stock-cli trailing（2026-05-27）</li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本文用于产业链与行业研究，不构成投资建议。</li>
+        <li>成本比例为公开资料交叉估算，非官方 BOM。</li>
+        <li>「A股重点」表示值得优先跟踪，不等同于确认订单或收入占比。</li>
+        <li>论文观点（MRM/Stratum）不代表已被产业完全验证，须结合后续披露独立判断。</li>
+        <li>估值数据抓取自公开行情接口，可能存在延迟或误差。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+        while (li.firstChild && li.firstChild !== childList) {
+          summary.appendChild(li.firstChild);
+        }
+        details.appendChild(summary);
+        details.appendChild(childList);
+        while (li.firstChild) {
+          details.appendChild(li.firstChild);
+        }
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>
