@@ -23,9 +23,10 @@ cd stock-cli && npm install && npm run build
 ```
 Task Progress:
 - [ ] 1. 抓取实时数据（必须运行脚本，禁止凭记忆填数）
+- [ ] 1c. A 股东财增强（mx_enrich，按 data_quality 缺口补数 + mx-search 事件）
 - [ ] 1b. A 股运行 stock-cli（--json），记录尾随止损判断
 - [ ] 2. 检查 data_quality.warnings，逐条反映到报告
-- [ ] 2a. 近期事件检索（必做，与 warnings 无关）
+- [ ] 2a. 近期事件检索（必做；A 股优先用 mx-search，WebSearch 补国际/非东财信源）
 - [ ] 3. 事件分类 + 映射到四范式 / §10.2 权重
 - [ ] 4. 读取 reference.md，撰写各节分析
 - [ ] 5. 撰写「投资建议」专节（评级、仓位、买卖点、监控指标、尾随止损）
@@ -65,6 +66,48 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名}
 
 脚本输出含 **`data_quality`**（`fields` 新鲜度 + `warnings`），撰写报告时必须逐条检查。
 
+### 1c. 东财增强（A 股必做，港股/美股跳过）
+
+在步骤 1 完成后，对 **A 股** 运行 `mx_enrich.py`，用东财妙想 skill 补 `fetch_stock.py` 缺口并抓取权威资讯。需已配置环境变量 `MX_APIKEY`（[妙想 Skills 页](https://dl.dfcfs.com/m/itc4)）。
+
+```bash
+python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名} --market-context --pretty > tmp/fetch.json
+python .cursor/skills/stock-analysis/scripts/mx_enrich.py --fetch-json tmp/fetch.json --pretty --output tmp/enriched.json
+```
+
+或管道一次完成（Linux/macOS；Windows 建议用 `--output` 写文件）：
+
+```bash
+python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码} --market-context --pretty \
+  | python .cursor/skills/stock-analysis/scripts/mx_enrich.py --stdin --pretty --output tmp/enriched.json
+```
+
+**触发规则（脚本自动判断，无需手选）**
+
+| fetch_stock 缺口 | mx-data 问句方向 |
+|------------------|------------------|
+| 北向 `stale` / `missing` | `{公司} 北向资金 持股变动` |
+| P/E 缺失或由财报推算 | `{公司} 市盈率 市净率 TTM` |
+| profile 缺失 | `{公司} 主营业务 所属行业 总股本` |
+| A 股默认 | `{公司} 主力资金流向` |
+
+**mx-search（A 股必跑）**：`{公司} 最新公告 业绩预告 研报` → 写入 `mx_enrich.supplement.events`，供 §6.2 事件表使用。
+
+**合并 JSON 使用约定**
+
+| 字段 | 用途 |
+|------|------|
+| `mx_enrich.triggers` | 报告「数据说明」中列出已补数项 |
+| `mx_enrich.supplement.data_tables` | 资金面/北向/股东/估值交叉验证；**不覆盖** `quote` 主数值 |
+| `mx_enrich.supplement.events` | §6.2 事件日历；来源标 `mx-search` |
+| `mx_enrich.supplement.errors` | 写入报告数据说明；API 113/401 时提示用户检查 Key/配额 |
+
+**纪律**
+
+- 价格、PE、ROE 仍以 `fetch_stock.py` 的 `quote` / `financials` 为准；mx-data 仅补缺口或交叉验证，冲突时在报告注明双源差异。
+- mx-search 可替代步骤 2a 的 **A 股公司层** 检索；行业联动、H/US 事件仍可用 WebSearch。
+- 默认输出目录：`tmp/mx_output/`（Windows 友好）；原始 xlsx/json 供审计。
+
 #### 数据质量与降级
 
 | 现象 | 根因 | 脚本处理 |
@@ -78,7 +121,13 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名}
 
 **与 `data_quality.warnings` 解耦**：即使行情/财务数据 fresh，也必须检索近期事件。`fetch_stock.py` 不抓新闻，本步骤不可跳过。
 
-**必搜（公司层）**
+**A 股**：优先使用步骤 1c 的 `mx_enrich.supplement.events`（来源 `mx-search`）。若为空或需补充，再运行：
+
+```bash
+python .cursor/skills/mx-search/mx_search.py "{公司名} 最新公告 业绩预告 研报" tmp/mx_output
+```
+
+**必搜（公司层，H/US 或 mx-search 不足时）**
 
 ```text
 {公司名或代码} {分析日期} 公告 OR 业绩说明会 OR 增持 OR 减持 OR 解禁 OR 产品发布 OR 订单
@@ -97,11 +146,11 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码或公司名}
 
 **分工（禁止越界）**
 
-| 适合搜索 | 不适合搜索 |
+| 适合 mx-search / 搜索 | 不适合搜索 |
 |----------|------------|
 | 公告、业绩预告、政策、产品发布 | 实时股价、涨跌幅 |
-| 行业景气、订单新闻、旧闻是否重发 | 精确 P/E、北向日持股 |
-| 宏观近期表态 | 财务原始数值（须来自脚本 JSON） |
+| 行业景气、订单新闻、旧闻是否重发 | 精确 P/E、北向持股（须 fetch + mx-data） |
+| 宏观近期表态 | 财务原始数值（须来自 fetch_stock JSON；mx-data 仅补缺口） |
 
 **事件新鲜度标签**（每条写入 §6.2 表格）
 
@@ -203,9 +252,10 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py 600519 华海清科 
 ## 质量检查
 
 - [ ] 价格、PE、ROE 与 JSON 一致
-- [ ] `data_quality.warnings` 已反映到报告
+- [ ] A 股已运行 **mx_enrich**（或等价 mx-data/mx-search 调用），`mx_enrich.supplement.errors` 已反映
+- [ ] `data_quality.warnings` 已反映到报告；stale/missing 项已尝试 mx-data 补数
 - [ ] 过期数据未当实时依据
-- [ ] **已检索近 7 日（含分析当日）公司事件**（步骤 2a）
+- [ ] **已检索近 7 日（含分析当日）公司事件**（步骤 2a；A 股优先 mx-search）
 - [ ] §6.2 事件表 ≥2 条，含日期、来源、新鲜度标签
 - [ ] 主题/赛道股已检索行业联动事件（或注明「无重大行业新闻」）
 - [ ] 重大事件已在 §10.2 权重表体现
@@ -218,4 +268,4 @@ python .cursor/skills/stock-analysis/scripts/fetch_stock.py 600519 华海清科 
 
 ## 附加资源
 
-- [reference.md](reference.md) · [stock-pricing-patterns.html](../../stock/public/stock-pricing-patterns.html) · [fetch_stock.py](scripts/fetch_stock.py) · [stock-cli](../../stock-cli/)
+- [reference.md](reference.md) · [stock-pricing-patterns.html](../../stock/public/stock-pricing-patterns.html) · [fetch_stock.py](scripts/fetch_stock.py) · [mx_enrich.py](scripts/mx_enrich.py) · [mx-data](../mx-data/SKILL.md) · [mx-search](../mx-search/SKILL.md) · [stock-cli](../../stock-cli/)

@@ -26,12 +26,13 @@ description: 基于用户提供的行业、论文、热点、产业链进行深�
 Task Progress:
 - [ ] 1. 确认四锚点，生成 slug 与输出文件名
 - [ ] 2. 论文解读：核心贡献、数据、局限、产业映射
-- [ ] 3. 热点与政策检索（必做，WebSearch）
+- [ ] 3. 热点与政策检索（必做；A 股/国内优先 mx-search，WebSearch 补国际信源）
+- [ ] 3b. 东财增强：行业 mx-search + 可选 mx-xuangu 筛 A 股候选池
 - [ ] 4. 产业链与成本拆解：总体 + 细分链条
 - [ ] 5. 国内外核心上市公司 mapping + 多维度对比
 - [ ] 6. 景气度研判：1-5 年 + 短/中/长期
 - [ ] 7. 投资机会与跟踪优先级
-- [ ] 8. A 股重点公司可选跑 stock-analysis 抓数（见下）
+- [ ] 8. A 股重点公司跑 fetch_stock + mx_enrich + stock-cli（见下）
 - [ ] 9. 按 template 写入 stock/public/{slug}.html
 - [ ] 10. 注册 public-html.ts / 站点导航（新报告时）
 ```
@@ -57,7 +58,23 @@ stock/public/{slug}.html
 
 ### 3. 热点与政策检索（必做）
 
-**必搜模板**（替换 `{行业}` `{热点}` `{分析日期}`）：
+**国内/A 股链路**：优先东财 `mx-search`（需 `MX_APIKEY`），WebSearch 补国际与非东财信源。
+
+```bash
+python .cursor/skills/mx-search/mx_search.py "{行业} {分析日期} 政策 产能 订单" tmp/mx_output
+python .cursor/skills/mx-search/mx_search.py "{热点} 龙头 技术突破" tmp/mx_output
+```
+
+或使用行业模式一次性输出 JSON：
+
+```bash
+python .cursor/skills/stock-analysis/scripts/mx_enrich.py --industry \
+  --search-query "{行业} 政策 补贴 产能 订单" \
+  --xuangu-query "{行业关键词} 市盈率小于40 ROE大于10" \
+  --pretty --output tmp/industry_mx.json
+```
+
+**WebSearch 模板**（国际、论文产业验证、非东财覆盖时仍必做）：
 
 ```text
 {行业} {分析日期} 政策 OR 补贴 OR 出口管制 OR 产能
@@ -67,11 +84,23 @@ stock/public/{slug}.html
 
 **信源优先级**（高 → 低）：
 
-1. 官方规格、监管文件、上市公司公告/年报/问询回复
+1. 官方规格、监管文件、上市公司公告/年报/问询回复（**mx-search 的 NOTICE 类型优先**）
 2. 龙头公司 IR、供应链签核披露
-3. TrendForce、Gartner、IEA 等产业研究
+3. TrendForce、Gartner、IEA 等产业研究（通常需 WebSearch）
 4. 主流财经媒体（须交叉验证）
 5. 自媒体、传闻 — **不得**作为「确认供货/订单」依据
+
+### 3b. 东财 A 股候选池（推荐）
+
+用 `mx-xuangu` 从行业条件筛出 A 股 universe，再人工精选写入 HTML 公司对比表：
+
+```bash
+python .cursor/skills/mx-xuangu/mx_xuangu.py "{行业} 板块 市盈率小于30" --output-dir tmp/mx_output
+```
+
+`mx_enrich.py --industry --xuangu-query "..."` 的 `supplement.screening` 可直接嵌入 HTML「A 股筛选池」折叠表（CSV 前 50 行摘要）。
+
+**配额注意**：单次行业研究 mx API 调用建议 ≤10 次；批量公司对比优先合并问句或只抓 `ashare-key` ≤5 只。
 
 ### 4. 成本拆解
 
@@ -133,14 +162,17 @@ A 股公司额外标记：`ashare` + 重要者 `ashare-key`。
 
 ### 8. A 股抓数（可选但推荐）
 
-对报告中标记为 `ashare-key` 的 **≤5 只** A 股，可调用 [stock-analysis](../stock-analysis/SKILL.md) 工作流：
+对报告中标记为 `ashare-key` 的 **≤5 只** A 股，调用 [stock-analysis](../stock-analysis/SKILL.md) 工作流 + 东财增强：
 
 ```bash
-python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码} --market-context --pretty
-node stock-cli/dist/cli.js {代码} --json   # 仅 A 股
+python .cursor/skills/stock-analysis/scripts/fetch_stock.py {代码} --market-context --pretty \
+  | python .cursor/skills/stock-analysis/scripts/mx_enrich.py --stdin --pretty > tmp/{代码}_enriched.json
+node stock-cli/dist/cli.js {代码} --json
 ```
 
-将 PE、ROE、涨跌幅、尾随止损等 **仅用于** 报告中的「上市公司对比表」与估值语境；**禁止**凭记忆填数。
+将 PE、ROE、涨跌幅、**mx-search 公告摘要**、**mx-data 资金/北向补数**、尾随止损等 **仅用于** 报告中的「上市公司对比表」与估值语境；**禁止**凭记忆填数。
+
+行业级板块指标（成分股平均 PE、涨跌幅）可用 `mx-data` 自然语言查询，例如：`{行业}板块 平均市盈率 涨跌幅`。
 
 ### 9. 写入 HTML
 
@@ -149,7 +181,7 @@ node stock-cli/dist/cli.js {代码} --json   # 仅 A 股
 - 单文件 HTML，`lang="zh-CN"`，Tailwind CDN（与现有 public 页一致）
 - Header 含：行业标签、更新日期、「公开资料估算/研究结论，非投资建议」
 - 成本树用 `<details>` 折叠结构（见 h200 范例）
-- 含：成本总览卡片、产业链树、景气度表、公司对比表、投资机会、来源、免责声明
+- 含：成本总览卡片、产业链树、景气度表、公司对比表、**A 股筛选池（mx-xuangu，可选）**、**政策/公告时间线（mx-search）**、投资机会、来源、免责声明
 - 术语首次出现附英文缩写（如 HBM（高带宽存储器））
 
 ### 10. 站点注册（新报告）
@@ -165,6 +197,7 @@ node stock-cli/dist/cli.js {代码} --json   # 仅 A 股
 ## 质量检查
 
 - [ ] 四锚点在 header 或专节中明确体现
+- [ ] 国内热点/政策已尝试 **mx-search**（或 `--industry` mx_enrich）；国际/产业研报仍 WebSearch 交叉验证
 - [ ] 论文结论与产业现状已区分「已验证 / 待验证」
 - [ ] 成本为区间表达，注明信源与口径
 - [ ] 国际 + 国内核心上市公司均已覆盖
@@ -179,3 +212,4 @@ node stock-cli/dist/cli.js {代码} --json   # 仅 A 股
 - [reference.md](reference.md) — HTML 模板与表格字段
 - [h200-industry-chain.html](../../stock/public/h200-industry-chain.html) — 范例
 - [stock-analysis](../stock-analysis/SKILL.md) — A 股个股抓数
+- [mx_enrich.py](../stock-analysis/scripts/mx_enrich.py) · [mx-data](../mx-data/SKILL.md) · [mx-search](../mx-search/SKILL.md) · [mx-xuangu](../mx-xuangu/SKILL.md)
