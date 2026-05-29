@@ -7,6 +7,8 @@ export const PUBLIC_HTML_PATHS = new Set([
   '/huawei-tau-scaling-industry-chain.html',
   '/ai-storage-industry-chain.html',
   '/ai-compute-nonferrous-metals-industry-chain.html',
+  '/optical-transceiver-industry-chain.html',
+  '/ashare-global-pricing-power.html',
 ])
 
 export function isPublicHtmlPath(href: string): boolean {

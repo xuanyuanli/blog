@@ -41,6 +41,14 @@ features:
     details: 铜铝及锡镓锗铟稀土 — AI 数据中心与电网金属需求重塑。
     link: /ai-compute-nonferrous-metals-industry-chain.html
     target: _self
+  - title: 光模块产业链
+    details: 800G/1.6T/CPO 成本拆解、激光器瓶颈与 A 股映射。
+    link: /optical-transceiver-industry-chain.html
+    target: _self
+  - title: A股全球定价权
+    details: 五维框架筛选真正具备全球定价权的 A 股公司，甄别「全球第一」误区。
+    link: /ashare-global-pricing-power.html
+    target: _self
   - title: 大宗商品定价
     details: 大宗商品定价逻辑框架。
     link: /commodity-pricing-framework.html

@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A股全球定价权公司深度研究</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #fcd34d; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #b45309; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #b45309; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .tree details details > summary { font-weight: 700; }
+    .tier-a { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .45rem; font-size: .75rem; font-weight: 800; }
+    .tier-b { display: inline-block; border-radius: .45rem; background: #dbeafe; color: #1e40af; padding: .05rem .45rem; font-size: .75rem; font-weight: 800; }
+    .tier-c { display: inline-block; border-radius: .45rem; background: #f1f5f9; color: #475569; padding: .05rem .45rem; font-size: .75rem; font-weight: 700; }
+    .tier-x { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #991b1b; padding: .05rem .45rem; font-size: .75rem; font-weight: 700; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .why { color: #475569; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .conf-high { background: #dcfce7; color: #166534; font-weight: 700; }
+    .conf-mid { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .conf-low { background: #fee2e2; color: #991b1b; font-weight: 700; }
+    a { color: #b45309; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-amber-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">A股 · 全球定价权 · 跨行业筛选</span>
+        <span class="rounded-full bg-blue-400/20 px-3 py-1 text-sm text-blue-100">更新口径：2026-05-29 UTC+8</span>
+        <span class="rounded-full bg-rose-400/20 px-3 py-1 text-sm text-rose-100">研究结论，非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">A股拥有全球定价权的公司</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        本页回答一个常被混用的问题：<strong>「全球市占第一」是否等于「全球定价权」？</strong> 通过对 A 股跨行业龙头的五维评估框架，将「定价权」拆解为寡头协同提价、成本曲线左端、规则/配额主导、份额型成本定价与伪定价权五类，筛选真正能在全球市场上影响价格或利润分配的中国上市公司，并标注置信度与主要风险。
+      </p>
+      <div class="mt-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm leading-6 text-slate-100">
+        <p class="font-semibold">四锚点摘要</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li><strong>行业</strong>：A 股全球化龙头（化工、汽车玻璃、稀土、新能源、光通信、医械、资源等）— 跨行业主题筛选，非单一产业链</li>
+          <li><strong>论文</strong>：市场结构理论（寡头集中度与定价权）· 上海对外经贸大学学报；RBV 资源基础观（腾讯财经综述）— <span class="text-amber-200">用户未指定论文，为代表性理论框架推断</span></li>
+          <li><strong>热点</strong>：MDI/稀土涨价、AI 光模块景气、锂电产能过剩分化、「反内卷」与供给端自律、中国智造出海定价</li>
+          <li><strong>产业链</strong>：按定价权来源分五类 — 寡头化工、稀缺资源配额、制造份额主导、品牌/技术溢价、全球第一但价格接受者（需甄别）</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">强定价权标的（Tier A）</p>
+        <p class="mt-2 text-2xl font-bold text-amber-800">约 3-5 家</p>
+        <p class="mt-2 text-sm text-slate-600">万华化学、福耀玻璃、北方稀土等 — 能协同全球提价或凭配额/成本曲线主导价格中枢。</p>
+      </div>
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">份额定价权（Tier B）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 8-12 家</p>
+        <p class="mt-2 text-sm text-slate-600">中际旭创、宁德时代、中国巨石、迈瑞医疗等 — 全球份额高，但买方或上游约束定价自由度。</p>
+      </div>
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">常见误区</p>
+        <p class="mt-2 text-2xl font-bold text-red-700">市占 ≠ 定价权</p>
+        <p class="mt-2 text-sm text-slate-600">海螺水泥、紫金矿业、工业富联等全球/国内规模领先，但是大宗商品或代工价格接受者。</p>
+      </div>
+      <div class="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">筛选结论</p>
+        <p class="mt-2 text-2xl font-bold text-amber-700">少数真正具备</p>
+        <p class="mt-2 text-sm text-slate-600">A 股「全球第一」标签泛滥；经五维框架筛选后，具备<strong>全球定价权</strong>的纯 A 股标的属少数稀缺资产。</p>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-950">
+      <p class="font-semibold">阅读口径 · 何谓「全球定价权」</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li><strong>定义</strong>：企业在全球市场中，对主要产品具备<strong>引领或显著影响价格中枢</strong>的能力 — 表现为寡头协同提价、紧缺周期 ASP 坚挺、成本曲线全球最左端、或政策/配额约束供给。</li>
+        <li><strong>不等于</strong>：① 国内垄断；② 全球出货量第一；③ 短期周期涨价（无结构壁垒）；④ 毛利率高但靠一次性因素。</li>
+        <li><strong>验证信号</strong>：全球涨价函联动、CR5（前五集中度）&gt;70%、毛利率长期高于全球同行 5ppt+、客户分散度合理、能在供需宽松时仍维持价差。</li>
+        <li><strong>与光模块报告联动</strong>：中际旭创等属「份额/成本定价权」 — 详见 <a href="/optical-transceiver-industry-chain.html">光模块产业链研究</a> 定价权专节。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">理论框架与产业映射</h2>
+      <p class="mt-2 text-sm text-slate-500">理论：市场结构理论（寡头垄断与定价权）· 上海对外经贸大学学报；RBV 资源基础观 · 腾讯财经等</p>
+      <ul class="mt-4 list-disc pl-6 leading-7">
+        <li><strong>核心结论</strong>：国际大宗商品与工业品定价权取决于<strong>市场集中度与供给协调</strong> — 分散的「最大买家/卖家」若内部无序竞争，仍无法将份额转化为价格影响力（稀土历史教训）。</li>
+        <li><strong>方法与数据</strong>：以 CR5、成本曲线位置、涨价函联动、海外收入占比与毛利率差为可观测指标；寡头行业（MDI CR5 约 90%）价格对供给冲击弹性显著高于竞争性行业。</li>
+        <li><strong>投资映射</strong>：优先「集中度 ↑ + 中国企业份额 ↑ + 成本曲线左移」三重共振（万华 MDI）；警惕「份额高但上游/下游更强」（光模块、锂电材料）。</li>
+        <li><strong>产业验证</strong>：<span class="evidence evidence-confirmed">已验证</span> — 万华 2025-12 全球 MDI 提价、北方稀土 2026 氧化镨钕均价同比 +74%；<span class="evidence evidence-indirect">部分验证</span> — 福耀高附加值玻璃 ASP 提升；<span class="evidence evidence-private">待验证</span> — 锂电龙头能否重获溢价。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">五维评估框架</h2>
+      <table class="data mt-4 w-full text-sm">
+        <thead>
+          <tr><th>维度</th><th>权重</th><th>强定价权信号</th><th>弱/伪定价权信号</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>1. 行业集中度</strong></td><td>25%</td><td>全球 CR5 &gt;70%，协同提价可见</td><td>碎片化竞争、价格战常态化</td></tr>
+          <tr><td><strong>2. 成本曲线位置</strong></td><td>25%</td><td>全球成本最低 10% 分位，扩张仍盈利</td><td>边际产能亏损，靠补贴/融资</td></tr>
+          <tr><td><strong>3. 价格引领能力</strong></td><td>25%</td><td>公司涨价函带动全球跟涨</td><td>被动跟踪 LME/第三方指数</td></tr>
+          <tr><td><strong>4. 毛利率韧性</strong></td><td>15%</td><td>下行周期毛利率降幅小于同行</td><td>毛利率随大宗商品同步暴跌</td></tr>
+          <tr><td><strong>5. 买方/上游制衡</strong></td><td>10%</td><td>客户分散、上游无单一卡脖子</td><td>大客户集中或关键进口芯片</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">热点与政策时间线</h2>
+      <ul class="mt-4 space-y-3 text-sm leading-7">
+        <li><strong>2025-12 · MDI 全球涨价潮</strong>：万华、巴斯夫、亨斯迈、陶氏等同步提价，最高 +350 美元/吨，覆盖亚欧美非。<span class="evidence evidence-confirmed">涨价函</span></li>
+        <li><strong>2026-Q1 · 万华业绩验证</strong>：Q1 净利约 37 亿元（+21% YoY）；福建 70 万吨技改 Q2 投产后 MDI 产能达 450 万吨/年，全球份额约 37%-40%。<span class="evidence evidence-confirmed">财报</span></li>
+        <li><strong>2026 · 稀土总量调控</strong>：《稀土开采和稀土冶炼分离总量调控管理暂行办法》堵死进口矿弹性通道；氧化镨钕 Q1 均价同比约 +74%。<span class="evidence evidence-confirmed">政策/价格</span></li>
+        <li><strong>2026 · 光模块高景气</strong>：中际旭创 Q1 净利约 57 亿元（+262% YoY）— 份额定价权兑现，但上游 DSP/EML 利润更厚。<span class="evidence evidence-indirect">财报</span></li>
+        <li><strong>2026 · 锂电分化</strong>：宁德时代全球份额仍第一，但行业产能过剩、价格战压制定价权；储能/海外高毛利细分市场仍存结构性溢价。<span class="evidence evidence-indirect">行业研究</span></li>
+        <li><strong>2026-05 · 美国 MDI 反倾销</strong>：对华 MDI 最高 159% 税 — 万华匈牙利基地可部分对冲，需跟踪区域价差。<span class="evidence evidence-confirmed">贸易政策</span></li>
+      </ul>
+    </section>
+
+    <section class="tree mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">定价权分类图谱</h2>
+      <ul class="list-disc space-y-3 pl-5">
+        <li>
+          <details open>
+            <summary class="text-xl font-bold"><span class="tier-a">Tier A</span> 强全球定价权 <span class="why">寡头协同 + 成本左端 / 配额主导</span></summary>
+            <ul class="list-disc">
+              <li><span class="ashare ashare-key">600309</span> <span class="font-semibold">万华化学</span> <span class="evidence evidence-confirmed">涨价函/财报</span> — MDI 全球产能第一（450 万吨/年E），CR5 约 90%；烟台完全成本较东北亚同行低约 6000 元/吨；2025-12 主导全球提价。<span class="why">A 股定价权最典型样本。</span></li>
+              <li><span class="ashare ashare-key">600660</span> <span class="font-semibold">福耀玻璃</span> <span class="evidence evidence-confirmed">年报</span> — 全球汽车玻璃市占约 36%+；HUD/全景天幕等高附加值产品提升单车 ASP；毛利率长期高于全球二线 10ppt+。<span class="why">「全球第一」且能卖出溢价，非纯价格接受者。</span></li>
+              <li><span class="ashare ashare-key">600111</span> <span class="font-semibold">北方稀土</span> <span class="evidence evidence-confirmed">政策/价格</span> — 全球最大轻稀土供应商；配额制 + 总量调控强化供给约束；2026 稀土进入「硬短缺」叙事。<span class="why">定价权高度依赖政策协调，需与历史「贱卖稀土」教训对照。</span></li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details open>
+            <summary class="text-xl font-bold"><span class="tier-b">Tier B</span> 份额/周期定价权 <span class="why">全球第一但议价受上下制衡</span></summary>
+            <ul class="list-disc">
+              <li><span class="ashare ashare-key">300308</span> <span class="font-semibold">中际旭创</span> — 800G/1.6T 全球份额第一；短缺周期 ASP 坚挺，但是成本型定价 + 上游芯片受制。<a href="/optical-transceiver-industry-chain.html">→ 光模块定价权专节</a></li>
+              <li><span class="ashare">300502</span> <span class="font-semibold">新易盛</span> — 同赛道高份额；与新易盛/剑桥等形成中国寡头，但客户为北美云巨头。</li>
+              <li><span class="ashare">300750</span> <span class="font-semibold">宁德时代</span> — 动力电池全球份额约 37%-42%；海外毛利率高于国内，但 2024-2026 国内价格战削弱「溢价定价」叙事。</li>
+              <li><span class="ashare">600176</span> <span class="font-semibold">中国巨石</span> — 玻纤产能全球第一；龙头协同提价有先例，但周期属性强、议价力随库存周期波动。</li>
+              <li><span class="ashare">300760</span> <span class="font-semibold">迈瑞医疗</span> — 新兴市场份额与品牌溢价；欧美高端市场仍面对 GE/飞利浦，属「区域型定价权」。</li>
+              <li><span class="ashare">300274</span> <span class="font-semibold">阳光电源</span> — 逆变器全球领先；竞争加剧，定价权弱于 Tier A。</li>
+              <li><span class="ashare">002812</span> <span class="font-semibold">恩捷股份</span> / <span class="ashare">002709</span> <span class="font-semibold">天赐材料</span> — 隔膜/电解液全球产能第一梯队；下游电池厂强势，属供应链博弈定价。</li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary class="text-xl font-bold"><span class="tier-c">Tier C</span> 全球规模领先 · 定价权弱 <span class="why">价格接受者</span></summary>
+            <ul class="list-disc">
+              <li><span class="ashare">601899</span> <span class="font-semibold">紫金矿业</span> — 全球矿产铜金产量前列，但 LME/COMEX 定价，无单品溢价。</li>
+              <li><span class="ashare">600585</span> <span class="font-semibold">海螺水泥</span> — 熟料产能全球第一，但区域性强、运输半径限制，非全球统一价格。</li>
+              <li><span class="ashare">601138</span> <span class="font-semibold">工业富联</span> — AI 服务器代工全球领先，毛利率薄、客户（NVIDIA）议价极强。</li>
+              <li><span class="ashare">601766</span> <span class="font-semibold">中国中车</span> — 轨交装备全球份额高，但政府采购/招标定价为主。</li>
+              <li><span class="ashare">603288</span> <span class="font-semibold">海天味业</span> — 酱油规模全球第一，但主战场在国内，出海定价权有限。</li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary class="text-xl font-bold"><span class="tier-x">Tier X</span> 伪定价权 · 需甄别 <span class="why">概念大于结构</span></summary>
+            <ul class="list-disc">
+              <li><strong>「全球第一」自媒体清单</strong> — 66 家「全球第一」标签中大量为产能规模第一，未经验证定价权五维。</li>
+              <li><strong>纯资源股</strong> — 有资源不等于有定价权（铁矿、铜、锂多数时候是 LME 价格接受者）。</li>
+              <li><strong>代工/组装</strong> — 全球份额高但 ROE 低、客户集中度极高，不宜冠以定价权。</li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">核心标的五维对比表</h2>
+      <p class="mb-3 text-sm text-slate-500">估值：2026-05-29 抓数 · Tier A 全量 + 代表性 Tier B</p>
+      <table class="data w-full min-w-[1000px] text-sm">
+        <thead>
+          <tr>
+            <th>公司</th>
+            <th>分级</th>
+            <th>定价权来源</th>
+            <th>全球份额/地位</th>
+            <th>定价权置信度</th>
+            <th>毛利率/净利特征</th>
+            <th>主要制衡因素</th>
+            <th>估值语境（2026-05-29）</th>
+            <th>1-3 年趋势</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>万华化学</strong><br><span class="ashare ashare-key">600309</span></td>
+            <td><span class="tier-a">Tier A</span></td>
+            <td>寡头协同 + 成本最左</td>
+            <td>MDI 产能全球第一，约 37%-40%</td>
+            <td class="conf-high">高</td>
+            <td>聚氨酯板块毛利率约 26%；MDI 涨价弹性大（千元/吨≈12 亿净利）</td>
+            <td>美国反倾销、欧洲能源、石化业务拖累</td>
+            <td>PE TTM 约 17.6 · PB 约 3.8 · 1Y +34% · 距止损约 1%</td>
+            <td>上行 — 产能投放 + 紧平衡</td>
+          </tr>
+          <tr>
+            <td><strong>福耀玻璃</strong><br><span class="ashare ashare-key">600660</span></td>
+            <td><span class="tier-a">Tier A</span></td>
+            <td>品牌 + 规模 + 产品升级</td>
+            <td>汽车玻璃全球市占约 36%+</td>
+            <td class="conf-high">高</td>
+            <td>净利率约 20%+ 区间；高附加值玻璃占比提升</td>
+            <td>汇率、海外建厂周期、整车厂年降</td>
+            <td>PE TTM 约 15.4 · PB 约 3.8 · 止损已触发（12%）</td>
+            <td>震荡偏上 — 产能扩张 + 单车价值量</td>
+          </tr>
+          <tr>
+            <td><strong>北方稀土</strong><br><span class="ashare ashare-key">600111</span></td>
+            <td><span class="tier-a">Tier A</span></td>
+            <td>配额 + 资源垄断</td>
+            <td>全球最大轻稀土供应商</td>
+            <td class="conf-mid">中高</td>
+            <td>价格上行周期利润弹性极大；Q1 板块业绩高增</td>
+            <td>政策节奏、下游磁材需求、黑市扰动</td>
+            <td>PE TTM 约 64.9 · 周期估值波动大</td>
+            <td>上行 — 硬短缺叙事</td>
+          </tr>
+          <tr>
+            <td><strong>中际旭创</strong><br><span class="ashare ashare-key">300308</span></td>
+            <td><span class="tier-b">Tier B</span></td>
+            <td>份额 + 短缺溢价</td>
+            <td>数通光模块全球第一</td>
+            <td class="conf-mid">中</td>
+            <td>FY25 净利率约 30%；但上游芯片分走更厚利润</td>
+            <td>DSP/EML、云客户集中度、2027 后竞争</td>
+            <td>PE TTM 约 88 · 估值已透支</td>
+            <td>上行但分化 — 见光模块报告</td>
+          </tr>
+          <tr>
+            <td><strong>宁德时代</strong><br><span class="ashare">300750</span></td>
+            <td><span class="tier-b">Tier B</span></td>
+            <td>技术 + 规模（弱化中）</td>
+            <td>动力电池全球约 37%-42%</td>
+            <td class="conf-mid">中低</td>
+            <td>毛利率约 26%；国内价格战压制</td>
+            <td>比亚迪/二线电池竞争、碳酸锂、客户自研</td>
+            <td>PE TTM 约 25 · PB 约 6</td>
+            <td>震荡 — 储能 vs 动力分化</td>
+          </tr>
+          <tr>
+            <td><strong>紫金矿业</strong><br><span class="ashare">601899</span></td>
+            <td><span class="tier-c">Tier C</span></td>
+            <td>无（价格接受者）</td>
+            <td>矿产金铜产量全球前列</td>
+            <td class="conf-low">低</td>
+            <td>毛利率随大宗商品波动</td>
+            <td>LME 定价、汇率、地缘</td>
+            <td>周期股 Beta</td>
+            <td>随商品周期</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">景气度与定价权可持续性</h2>
+      <table class="data w-full min-w-[720px] text-sm">
+        <thead>
+          <tr><th>时间尺度</th><th>方向</th><th>置信度</th><th>核心驱动</th><th>关键风险</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>短期 0-12M</td>
+            <td class="conf-high">分化加剧</td>
+            <td>高</td>
+            <td>MDI/稀土涨价兑现；光模块 ASP 坚挺；锂电继续洗牌</td>
+            <td>关税、需求不及预期、政策微调</td>
+          </tr>
+          <tr>
+            <td>中期 1-3Y</td>
+            <td class="conf-mid">寡头巩固</td>
+            <td>中</td>
+            <td>万华产能优势扩大；福耀全球建厂；稀土供给刚性</td>
+            <td>新产能投放打破紧平衡（MDI、光模块）</td>
+          </tr>
+          <tr>
+            <td>长期 3-5Y+</td>
+            <td class="conf-mid">结构性持有</td>
+            <td>中低</td>
+            <td>真正定价权公司穿越周期；Tier C 回归均值</td>
+            <td>技术替代（固态电池、CPO）、地缘割裂</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold">投资机会与跟踪优先级</h2>
+      <ol class="mt-4 list-decimal pl-6 leading-7 space-y-3">
+        <li><strong>第一优先级 · Tier A 强定价权</strong>：<strong>万华化学</strong>、<strong>福耀玻璃</strong>、<strong>北方稀土</strong> — 五维评分最高；跟踪 MDI/稀土价格、配额政策、海外基地对冲贸易壁垒。万华 PE 处于历史中低位，定价权与估值匹配度优于多数「全球第一」概念标的。</li>
+        <li><strong>第二优先级 · Tier B 份额龙头</strong>：<strong>中际旭创</strong>（短缺周期）、<strong>迈瑞医疗</strong>（出海溢价）— 需接受「定价权不完整」；宜在毛利率拐点与估值回落时布局。</li>
+        <li><strong>预期差</strong>：① 市场混淆「全球第一」与「定价权」— Tier A 标的稀缺性被低估；② 万华石化业务拖累掩盖 MDI 定价权；③ 稀土配额制下利润弹性大于市场按「资源股」给予的估值。</li>
+        <li><strong>谨慎/回避</strong>：① Tier C 代工与大宗商品（紫金、工业富联）不宜按定价权溢价；② Tier B 中估值已透支者（光模块 PE&gt;80）；③ 宁德时代等锂电龙头需等竞争格局再清晰；④ 自媒体「66 家全球第一」清单需逐家过五维框架。</li>
+      </ol>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">主要来源</h2>
+      <ul class="mt-4 list-disc pl-6 text-sm leading-7 text-slate-700">
+        <li>上海对外经贸大学学报 · 《基于市场结构理论的大宗商品定价权分析及中国对策》</li>
+        <li>腾讯新闻 · 《如何像苹果和迪士尼一样，成为一家有定价权的公司？》（RBV 框架）</li>
+        <li>证券市场周刊 / 澎湃新闻 · 万华化学 MDI 提价与 2026 Q1 财报</li>
+        <li>时代周报 · 稀土总量调控与 2026 价格走势</li>
+        <li>PhotonCap · Chinese Optical Modules: Assembly vs Chip Pricing Power</li>
+        <li>LightCounting / 中信建投等 · 全球光模块与 MDI 行业数据</li>
+        <li>本仓库 · <a href="/optical-transceiver-industry-chain.html">光模块产业链研究</a>（定价权专节）</li>
+        <li>A 股行情：fetch_stock + stock-cli（2026-05-29）— 万华、福耀、北方稀土、宁德、紫金</li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本文用于产业链与行业研究，不构成投资建议。</li>
+        <li>「定价权」为研究框架下的结构判断，不等同于股价短期表现。</li>
+        <li>Tier 分级随行业格局变化需动态更新；部分公司为推断性产业链地位，须以公告为准。</li>
+        <li>估值数据抓取自公开行情接口，可能存在延迟或误差。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+        while (li.firstChild && li.firstChild !== childList) {
+          summary.appendChild(li.firstChild);
+        }
+        details.appendChild(summary);
+        details.appendChild(childList);
+        while (li.firstChild) {
+          details.appendChild(li.firstChild);
+        }
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>

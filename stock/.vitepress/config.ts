@@ -48,6 +48,8 @@ export default defineConfig({
       { text: '韬定律产业链', link: '/huawei-tau-scaling-industry-chain.html', target: '_self' },
       { text: 'AI 存储', link: '/ai-storage-industry-chain.html', target: '_self' },
       { text: '算力有色', link: '/ai-compute-nonferrous-metals-industry-chain.html', target: '_self' },
+      { text: '光模块产业链', link: '/optical-transceiver-industry-chain.html', target: '_self' },
+      { text: 'A股定价权', link: '/ashare-global-pricing-power.html', target: '_self' },
       { text: '大宗商品', link: '/commodity-pricing-framework.html', target: '_self' },
     ],
     sidebar: {

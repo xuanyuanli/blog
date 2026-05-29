@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>光模块产业链深度研究</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #c7d2fe; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #4f46e5; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #4f46e5; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .tree details details > summary { font-weight: 700; }
+    .cost { display: inline-block; border-radius: 999px; background: #e0e7ff; color: #3730a3; padding: .12rem .55rem; font-size: .78rem; font-weight: 700; vertical-align: middle; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .why { color: #475569; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .prosperity-up { background: #dcfce7; color: #166534; font-weight: 700; }
+    .prosperity-flat { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .prosperity-down { background: #fee2e2; color: #991b1b; font-weight: 700; }
+    a { color: #4f46e5; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-indigo-400/20 px-3 py-1 text-sm text-indigo-100">光模块 · 800G / 1.6T / CPO</span>
+        <span class="rounded-full bg-blue-400/20 px-3 py-1 text-sm text-blue-100">更新口径：2026-05-29 UTC+8</span>
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">公开资料估算/研究结论，非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">光模块产业链深度研究</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        本页以 AI 数据中心 Scale-out（机架间扩展）网络为核心场景，拆解可插拔光模块（Pluggable Optical Transceiver）与 CPO（Co-Packaged Optics，共封装光学）两条并行技术路线——从光芯片、DSP（数字信号处理器）、硅光引擎到模块组装与交换机/NIC（网络接口卡）集成的成本结构、产能瓶颈、景气周期与国内外上市公司映射。
+      </p>
+      <div class="mt-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm leading-6 text-slate-100">
+        <p class="font-semibold">四锚点摘要</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li><strong>行业</strong>：数据中心高速光互联（400G→800G→1.6T→3.2T），周期属性叠加 AI Capex 结构性需求；中国厂商在模块组装环节全球份额约 70%+</li>
+          <li><strong>论文</strong>：IBM《Next generation Co-Packaged Optics Technology》（arXiv:2412.06570 · 2024-12）— CPO 降低 I/O 功耗与 PCB 走线成本；<span class="text-amber-200">用户未指定论文，本节为行业代表性文献推断</span></li>
+          <li><strong>热点</strong>：800G/1.6T 放量元年、NVIDIA 40 亿美元激光锁单、深圳 AI 服务器产业政策；<strong>定价权</strong>：制造层份额主导成立，全产业链定价权不成立（见专节研判）</li>
+          <li><strong>产业链</strong>：InP（磷化铟）衬底/外延 → 激光器 &amp; DSP 光芯片 → 无源器件 &amp; 光引擎 → 光模块 → 交换机/NIC/光交换（OCS）</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">AI 光模块市场规模</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 260 亿美元（2026E）</p>
+        <p class="mt-2 text-sm text-slate-600">TrendForce：AI 专用光模块 2025 约 165 亿 → 2026 约 260 亿美元（+57% YoY）；LightCounting 数通以太网光模块 2026 约 229 亿美元区间交叉验证。</p>
+      </div>
+      <div class="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">最大成本池（1.6T 硅光模块 BOM）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">硅光芯片 + DSP</p>
+        <p class="mt-2 text-sm text-slate-600">公开拆解口径：SiPh（硅光）芯片约 25%-30%，DSP 约 18%-22%，合计占单机 BOM 约 45%-50%；激光器与无源器件次之。</p>
+      </div>
+      <div class="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">当前瓶颈</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">200G/lane EML 激光器</p>
+        <p class="mt-2 text-sm text-slate-600">Lumentum 为 200G EML 唯一大批量供应商；非 NVIDIA 客户交期排至 2027 年后。CW 激光器 + 硅光路线亦面临产能挤压。</p>
+      </div>
+      <div class="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">1-3 年景气</p>
+        <p class="mt-2 text-2xl font-bold text-indigo-700">上行 · 置信度中高</p>
+        <p class="mt-2 text-sm text-slate-600">800G 出货翻倍 + 1.6T 商业化元年；龙头订单饱满、ASP（平均售价）坚挺。2027 后新产能释放或引发分化。</p>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-7 text-amber-950">
+      <p class="font-semibold">阅读口径</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>「模块 BOM 占比」按单只 800G/1.6T 可插拔光模块物料成本理解，不等同于模块厂商毛利率或终端客户采购价。</li>
+        <li>「AI 机柜网络 TCO 占比」：单机架光模块价值远低于 GPU，但集群 Scale-out 端口数量随算力规模线性放大；Rubin 时代 CPO 将改变价值分配。</li>
+        <li>EDA、光刻、外延设备成本通过晶圆与芯片价格间接进入 BOM，不强行塞进单模块分项。</li>
+        <li>A 股映射区分「模块/光引擎/光芯片/无源器件/PCB」；未披露具体客户占比时不写成「确认供货 NVIDIA」。</li>
+        <li><strong>定价权口径</strong>：「定价权」须分环节——中国在模块出货与成本定价上影响力大，不等于在全产业链或利润池上拥有定价权（详见下节研判）。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border-2 border-violet-300 bg-violet-50 p-6 shadow-sm">
+      <div class="flex flex-wrap items-center gap-3">
+        <h2 class="text-2xl font-bold text-violet-950">专题研判：「中国拥有光模块定价权」置信度</h2>
+        <span class="rounded-full bg-amber-200 px-3 py-1 text-sm font-bold text-amber-950">综合置信度：中低 · 部分成立，不可全称</span>
+      </div>
+      <p class="mt-4 leading-7 text-violet-950">
+        <strong>结论先行</strong>：若将「定价权」理解为<strong>全球可插拔光模块的出货量主导 + 成本型报价影响力</strong>，该判断<strong>中等偏高置信度成立</strong>；若理解为<strong>全产业链利润池与上游芯片的定价主导</strong>，则<strong>低置信度、基本不成立</strong>。更精确的表述是：<em>中国在光模块制造环节拥有「份额定价权」，但上游 DSP/EML 与下游超大规模云客户仍掌握更硬的议价杠杆。</em>
+      </p>
+
+      <table class="data mt-6 w-full min-w-[720px] text-sm">
+        <thead>
+          <tr>
+            <th>拆解维度</th>
+            <th>判断</th>
+            <th>置信度</th>
+            <th>核心证据</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>全球份额 / 供应主导</strong></td>
+            <td class="prosperity-up">成立</td>
+            <td>高</td>
+            <td>LightCounting：2023 年全球前十中<strong>7 家中国厂商</strong>，中际旭创首次独占第一；行业口径中国占全球光模块出货约 <strong>60%-70%</strong>。中际旭创 + 新易盛合计占 800G 市场约 <strong>60%</strong>，1.6T 份额领先。<span class="evidence evidence-confirmed">LightCounting/产业研究</span></td>
+          </tr>
+          <tr>
+            <td><strong>模块环节 ASP（短缺周期）</strong></td>
+            <td class="prosperity-flat">部分成立</td>
+            <td>中高</td>
+            <td>800G/1.6T 供需错配下 ASP 坚挺、龙头毛利率提升（中际旭创 FY25 净利率约 30%、新易盛约 38%）。但这是<strong>寡头 + 产能稀缺</strong>带来的阶段性溢价，非永久性规则制定权；McKinsey 预计 800G 短缺持续至 2027，之后竞争或加剧。<span class="evidence evidence-indirect">研报</span></td>
+          </tr>
+          <tr>
+            <td><strong>成本型定价（压低全球均价）</strong></td>
+            <td class="prosperity-up">成立</td>
+            <td>高</td>
+            <td>中国模块厂同类规格报价较西方厂商低约 <strong>20%-25%</strong>（制造规模与交付效率驱动，非质量差）。历史规律：每一代速率由西方先发高溢价，中国厂商 12-18 个月后以更低价格跟进并压缩对手份额——这是<strong>价格下行主导权</strong>，不是溢价主导权。<span class="evidence evidence-indirect">MLQ/行业渠道</span></td>
+          </tr>
+          <tr>
+            <td><strong>上游芯片定价权</strong></td>
+            <td class="prosperity-down">不成立</td>
+            <td>高</td>
+            <td>800G 模块中 <strong>DSP + EML 合计约占 BOM 40%-60%</strong>；DSP 由 Broadcom/Marvell 双寡头垄断（800G+ 市占 &gt;90%），EML 由 Lumentum/Coherent/三菱/住友等掌控；国内 25G+ 高速光芯片国产化率 <strong>&lt;15%</strong>。Broadcom GAAP 毛利率约 <strong>68%</strong>，模块龙头净利率约 20%-33%——利润留在上游。<span class="evidence evidence-confirmed">财报/产业拆解</span></td>
+          </tr>
+          <tr>
+            <td><strong>下游客户议价权</strong></td>
+            <td class="prosperity-down">客户仍强</td>
+            <td>中高</td>
+            <td>北美 hyperscaler 采购通常较标价低 <strong>20%-30%</strong>；NVIDIA 以 40 亿美元锁定激光器产能并推进自研 1.6T 模块，强化对供应链价格与规格的控制。模块厂是「量大但客户集中」的乙方。<span class="evidence evidence-confirmed">官方/渠道</span></td>
+          </tr>
+          <tr>
+            <td><strong>全产业链 / 利润池定价权</strong></td>
+            <td class="prosperity-down">基本不成立</td>
+            <td>高</td>
+            <td>产业呈现「微笑曲线」：高毛利在 DSP/EML 芯片（左端）与品牌/标准（右端），中国强项在中间封装制造。C114/PhotonCap 等交叉验证：<strong>出货量第一 ≠ 超额利润第一</strong>。<span class="evidence evidence-indirect">产业研究</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="mt-6 rounded-xl border border-violet-200 bg-white p-5 text-sm leading-7 text-slate-800">
+        <p class="font-semibold text-violet-950">三层定价权模型（建议采用此口径）</p>
+        <ul class="mt-3 list-disc pl-6 space-y-2">
+          <li><strong>规则制定层（低）</strong>：PAM4 DSP 算法/FEC IP、200G/lane EML 工艺、CPO/COUPE 平台标准 — 美系（Broadcom、NVIDIA、Lumentum、Coherent、TSMC）主导。中国尚无成熟国产 DSP，EML 量产仍在突破。</li>
+          <li><strong>制造交付层（高）</strong>：800G/1.6T 大规模交付、良率爬坡、硅光集成 — 中际旭创、新易盛等主导全球增量。此层在短缺周期可维持 ASP，但成本定价本质是<strong>「同质量更低价」</strong>而非<strong>「同成本更高价」</strong>。</li>
+          <li><strong>采购博弈层（中）</strong>：Google/Meta/Microsoft/Amazon/NVIDIA 以体量换折扣；模块厂对上游芯片价格被动接受（长协锁单、预付备货）。</li>
+        </ul>
+      </div>
+
+      <p class="mt-5 text-sm leading-7 text-violet-900">
+        <strong>投资映射</strong>：「中国光模块定价权」叙事宜<strong>降维使用</strong>——利好龙头份额与周转，但<strong>不能</strong>直接推导为可持续超额毛利；跟踪定价权应看：① 硅光自研降本（中际旭创）、② EML 自给率（光迅、源杰）、③ LPO/CPO 能否绕开 DSP 依赖、④ 上游芯片涨价能否向客户传导。2027 年后产能释放时，制造层定价权或从「短缺溢价」回归「成本竞争」。
+      </p>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">论文要点与产业映射</h2>
+      <p class="mt-2 text-sm text-slate-500">论文：Next generation Co-Packaged Optics Technology · IBM Research（Knickerbocker 等）· arXiv:2412.06570 · 2024-12</p>
+      <ul class="mt-4 list-disc pl-6 leading-7">
+        <li><strong>核心结论</strong>：数据中心内部流量占总量约 75%，可插拔光模块带宽增速滞后于算力 I/O 需求；CPO 通过在共同基板上共封装光学引擎与 ASIC（专用集成电路），将电信号传输限制在封装内距离，可显著降低 I/O 功耗、减少高速 PCB 走线并提升通道密度。</li>
+        <li><strong>方法与数据</strong>：IBM 展示完整 CPO 测试样机，含光学/电学协同设计、flip-chip 组装、微 BGA 互连与 SMF（单模光纤）阵列连接器；PIC（光子集成电路）到光波导 beachfront 密度较当前方案提升约 6 倍（51 fibers/mm）。</li>
+        <li><strong>成本/效率启示</strong>：CPO 消除独立 transceiver 封装与前端面板走线，利好先进封装（CoWoS/COUPE）、光引擎代工与光纤阵列；但封装对准良率成为新成本黑洞（行业分析指出 CPO 封装良率 70% 时单位经济性承压）。</li>
+        <li><strong>产业验证状态</strong>：<span class="evidence evidence-indirect">中试→小规模商用</span> — NVIDIA Quantum-X CPO 交换机 2026 初商用；TSMC COUPE（Compact Universal Photonic Engine）2025 可插拔版、2026 CoWoS-CPO 版资格认证；Broadcom Davisson 102.4T CPO 2025 年 10 月交付客户。</li>
+        <li><strong>投资映射</strong>：利好 TSMC COUPE 生态、Lumentum/Coherent 激光器、Fabrinet 光引擎组装、天孚通信等无源/光引擎；对传统可插拔模块厂商短中期是增量而非替代，长期 Scale-out CPO 渗透或压缩部分可插拔 TAM（总可寻址市场）。</li>
+      </ul>
+      <p class="mt-4 text-sm text-slate-500">补充参考：IMAPS《Co-Packaged Optics - Heterogeneous Integration of Chiplets》（2024-2025）— 强调 PIC/EIC/ASIC 异构集成中硅光芯片分割（chiplet）降本 vs 单片硅光性能 trade-off — <span class="evidence evidence-private">学术/产业综述</span>。</p>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">热点与政策时间线</h2>
+      <ul class="mt-4 space-y-3 text-sm leading-7">
+        <li><strong>2026-03-02 · NVIDIA 激光锁单</strong>：NVIDIA 向 Lumentum、Coherent 各投资 20 亿美元并签署多年采购承诺，锁定 200G/lane EML 优先产能；非优先客户交期延至 2027 年后。<span class="evidence evidence-confirmed">官方披露</span></li>
+        <li><strong>2026-03-25 · 深圳产业政策</strong>：《深圳市加快推进人工智能服务器产业链高质量发展行动计划（2026—2028年）》— 推动光模块 800G→1.6T/3.2T 升级，支持硅光、CPO/LPO/NPO、薄膜铌酸锂（TFLN）、磷化铟等核心技术突破。<span class="evidence evidence-confirmed">政府文件</span></li>
+        <li><strong>2026-Q1 · 龙头业绩爆发</strong>：中际旭创 Q1 营收约 195 亿元（+192% YoY）、归母净利润约 57 亿元（+262% YoY）；天孚通信 Q1 营收约 13.3 亿元（+41% YoY）。<span class="evidence evidence-confirmed">财报/媒体</span></li>
+        <li><strong>2026-05 · 产能与订单</strong>：剑桥科技 IR 披露年化产能约 350 万支，800G 为主力、1.6T 规模化量产；腾景科技股东会称全球扩产匹配 800G/1.6T 无源器件需求。<span class="evidence evidence-confirmed">公告/IR</span></li>
+        <li><strong>2026-05 · Coherent 法说会</strong>：FY26Q3 收入创纪录 18 亿美元（+27% YoY），数据中心收入 +37% YoY；6 英寸 InP 产能翻倍提前一个季度完成；1.6T 增速超预期，Backlog 延伸至 2028。<span class="evidence evidence-confirmed">财报</span></li>
+        <li><strong>技术迭代 · 硅光渗透</strong>：高盛模型显示硅光渗透率从 2024Q1 约 6% 升至 2028Q4 约 46%；800G 硅光成本较 EML 低约 26%，1.6T 低约 32%。<span class="evidence evidence-indirect">产业研究</span></li>
+        <li><strong>远期 · 3.2T &amp; TFLN</strong>：LightCounting 预计 2028 年 3.2T 市场规模约 14 亿美元、2031 年约 240 亿美元；单通道 400G 或导入薄膜铌酸锂调制器。<span class="evidence evidence-indirect">研报</span></li>
+      </ul>
+    </section>
+
+    <section class="tree mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">成本总览 · 光模块产业链树</h2>
+      <ul class="list-disc space-y-3 pl-5">
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">0. 1.6T 硅光可插拔模块 BOM 总览 <span class="cost">单机约 220-240 美元</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">硅光芯片（SiPh PIC）</span> <span class="cost">约 25%-30%</span>：调制器、波导、合分波；龙头自研（中际旭创）或 Tower/GF/TSMC COUPE 代工。决定集成度与良率。</li>
+              <li><span class="font-semibold">DSP 电芯片</span> <span class="cost">约 18%-22%</span>：PAM4（四电平脉冲幅度调制）信号处理；Broadcom、Marvell 主导，A 股暂无替代。<span class="evidence evidence-confirmed">产业拆解</span></li>
+              <li><span class="font-semibold">连续波光源（CW Laser）</span> <span class="cost">约 8%-10%</span>：硅光方案外置 DFB/CW 激光器；Lumentum、Coherent、源杰科技等。</li>
+              <li><span class="font-semibold">FAU 光纤阵列</span> <span class="cost">约 8%-12%</span>：光纤与芯片耦合精度决定模块良率；光库科技（安捷迅）等。</li>
+              <li><span class="font-semibold">薄膜铌酸锂调制器（高端）</span> <span class="cost">约 7%-10%</span>：部分 1.6T 高端方案；富士通、光库科技等。<span class="evidence evidence-indirect">方案分化</span></li>
+              <li><span class="font-semibold">无源器件</span> <span class="cost">约 6%-8%</span>：隔离器、透镜、环形器；天孚通信、腾景科技等。</li>
+              <li><span class="font-semibold">PCB / 结构件 / 组装测试</span> <span class="cost">约 10%-15%</span>：mSAP（改进半加成工艺）高速 PCB、外壳、老化测试；沪电股份、Fabrinet 等。</li>
+              <li><span class="font-semibold">EML 方案差异</span> <span class="cost">激光器占比更高</span>：传统 EML 路线激光器 + 调制器合一，800G/1.6T 单模块 InP 含量显著高于硅光；NVIDIA 环调制器架构可大幅降低 InP 用量。<span class="evidence evidence-indirect">产业链分析</span></li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">1. 上游材料与衬底 <span class="cost">芯片成本约 15%-25%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">InP 衬底 &amp; 外延</span> <span class="cost">激光器 BOM 约 30%-40%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Sumitomo Electric（住友电工）</span> <span class="evidence evidence-indirect">产业龙头</span> <span class="why">全球 InP 衬底主要供应商；产能扩张周期长（18-24 个月）。</span></li>
+                  <li><span class="font-semibold">AXT Inc.</span> <span class="why">化合物半导体衬底；受益 EML/CW 需求但受地缘与出口管制影响。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">产业链相关</span> <span class="font-semibold">有研新材等</span> <span class="why">国内 InP 衬底突破中，尚处验证/小批量；供需缺口贯穿 2027 年（行业调研口径）。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">薄膜铌酸锂（TFLN）晶圆</span> <span class="cost">3.2T 潜在瓶颈</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Fujitsu（富士通）/ HyperLight</span> <span class="why">400G/lane 低损耗调制；3.2T 导入窗口 2028-2031。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">光库科技（300620）</span> <span class="why">铌酸锂调制器与 FAU 布局；受益 1.6T/3.2T 升级。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">2. 光芯片（激光器 / DSP / 硅光 PIC） <span class="cost">模块 BOM 约 50%-60%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">EML / CW / DFB 激光器</span> <span class="cost">约 15%-35%（随方案）</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Lumentum（LITE）</span> <span class="evidence evidence-confirmed">NVIDIA 投资</span> <span class="why">200G/lane EML 唯一大批量供应商；产能全满，2026 年 EML 双位数涨价预期。</span></li>
+                  <li><span class="font-semibold">Coherent（COHR）</span> <span class="evidence evidence-confirmed">NVIDIA 投资</span> <span class="why">6 英寸 InP 产线（德州 Sherman）；EML + 硅光双平台，Backlog 至 2028。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">小批量突破</span> <span class="font-semibold">源杰科技（688498）</span> <span class="why">EML/CW 激光器芯片；国产替代窗口，但高端 200G/lane 仍处验证/爬坡。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">光迅科技（002281）</span> <span class="why">光芯片 + 模块垂直整合；低端芯片自供，高端仍依赖外采。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">DSP / 交换芯片</span> <span class="cost">约 18%-22%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Broadcom（AVGO）</span> <span class="evidence evidence-confirmed">客户指定</span> <span class="why">800G/1.6T DSP 主流；Tomahawk/TH 交换芯片 + CPO 路线图（Davisson）。</span></li>
+                  <li><span class="font-semibold">Marvell</span> <span class="why">DSP 备选；收购 Inphi 后高速互联实力强。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">硅光 PIC 代工</span> <span class="cost">约 25%-30%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">TSMC COUPE</span> <span class="evidence evidence-confirmed">官方路线图</span> <span class="why">65nm 硅光 + 6nm EIC + SoIC-X 3D 堆叠；NVIDIA 环调制器首批采用。</span></li>
+                  <li><span class="font-semibold">Tower Semiconductor / GlobalFoundries</span> <span class="why">硅光产能 5 倍扩张中；服务中国模块厂标准 8 DFB + 2 SiPh 方案。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-indirect">自研</span> <span class="font-semibold">中际旭创（300308）</span> <span class="why">1.6T 硅光芯片自研自产，部分流片台积电；硅光渗透率与良率领先。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">3. 光器件与光引擎 <span class="cost">模块 BOM 约 15%-25%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">无源器件 &amp; 光引擎组装</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Fabrinet</span> <span class="evidence evidence-indirect">代工龙头</span> <span class="why">光模块/光引擎大规模组装；受益 NVIDIA 1.6T 放量。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">业绩会</span> <span class="font-semibold">天孚通信（300394）</span> <span class="why">高速光引擎一站式平台；1.6T 光引擎量产，个别物料缺料制约产出。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">光库科技（300620）</span> <span class="why">FAU + 铌酸锂；中际旭创核心供应商。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">腾景科技（688195）</span> <span class="evidence evidence-confirmed">股东会</span> <span class="why">无源元组件；全球扩产匹配 800G/1.6T/OCS 需求。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">仕佳光子（688313）</span> <span class="why">AWG（阵列波导光栅）芯片；价值占比小但国产替代节点。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">4. 光模块组装 <span class="cost">全球产值约 260 亿美元（2026E）</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">全球龙头（中国厂商）</span>
+                <ul class="list-disc">
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">年报/IR</span> <span class="font-semibold">中际旭创（300308）</span> <span class="why">全球数通光模块龙头；800G 主力出货、1.6T 量产领先；年化产能约 2800 万只（2025 底口径）。</span></li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">年报</span> <span class="font-semibold">新易盛（300502）</span> <span class="why">海外云客户占比高；800G/1.6T 快速上量，毛利率弹性大。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">光迅科技（002281）</span> <span class="why">国内电信 + 数通双市场；芯片到模块垂直整合。</span></li>
+                  <li><span class="font-semibold">剑桥科技（603083 / 06166.HK）</span> <span class="evidence evidence-confirmed">IR 2026-05</span> <span class="why">年化产能约 350 万支；800G 主力、1.6T 规模化量产。</span></li>
+                </ul>
+              </li>
+              <li><span class="font-semibold">国际模块/系统商</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Coherent</span> <span class="why">高端 800G/1.6T + CPO 光引擎；与 NVIDIA 深度绑定。</span></li>
+                  <li><span class="font-semibold">Cisco（Acacia）</span> <span class="why">相干光模块 + 交换机协同；电信与云双客户。</span></li>
+                  <li><span class="font-semibold">Ciena</span> <span class="why">WaveLogic 6 相干光 1.6Tbps；长距 DCI（数据中心互联）场景。</span></li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">5. 下游：交换机 / NIC / OCS / CPO <span class="cost">集群 TCO 放大器</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">Scale-out 可插拔</span> <span class="cost">当前主流</span>：每台 AI 服务器 8-16 个 800G/1.6T 端口；集群光模块数量 = 服务器数 × 端口数 × 组网系数。</li>
+              <li><span class="font-semibold">CPO 交换机</span> <span class="cost">2026 小规模商用</span>：NVIDIA Quantum-X Photonics、Broadcom Davisson 102.4T；单机光学引擎价值约 3.2 万美元（CPO 交换机口径）。</li>
+              <li><span class="font-semibold">OCS（光电路交换）</span> <span class="cost">新增量</span>：Coherent 将 OCS 市场机会上调至 40 亿美元+；减少光-电-光转换，单路径光模块用量下降但 OCS 整机需求上升。</li>
+              <li><span class="font-semibold">NVIDIA 垂直整合</span> <span class="evidence evidence-confirmed">官方</span>：ConnectX-8 + 自研 1.6T 硅光模块（环调制器 + 内部 DSP），可能对第三方模块形成价格压力但扩大光互联总量。</li>
+            </ul>
+          </details>
+        </li>
+
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">6. 间接层：PCB / 封装 / 测试设备 <span class="cost">通过物料价格传导</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">高速 PCB（mSAP）</span>：800G→1.6T 推动减成法 HDI 向 mSAP-SLP 升级；沪电股份、深南电路等。</li>
+              <li><span class="font-semibold">先进封装</span>：CPO 依赖 CoWoS/COUPE；TSMC 为核心瓶颈。</li>
+              <li><span class="font-semibold">测试设备</span>：光模块老化、误码率（BER）测试；是产能扩张的隐性约束。</li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">景气度研判</h2>
+      <table class="data w-full min-w-[720px] text-sm">
+        <thead>
+          <tr>
+            <th>时间尺度</th>
+            <th>方向</th>
+            <th>置信度</th>
+            <th>核心驱动</th>
+            <th>关键风险</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>短期 0-12M</td>
+            <td class="prosperity-up">上行</td>
+            <td>高</td>
+            <td>800G 出货翻倍（约 2400 万→6300 万只）、1.6T 商业化元年、ASP 高位、龙头 Q1 业绩翻倍</td>
+            <td>估值透支、关税/出口管制、客户 CapEx 节奏波动</td>
+          </tr>
+          <tr>
+            <td>中期 1-3Y</td>
+            <td class="prosperity-up">上行</td>
+            <td>中高</td>
+            <td>GB300/Rubin 机柜放量、硅光渗透率提升至 40%+、CPO 小规模商用、中国厂商份额稳固</td>
+            <td>EML 产能释放后 ASP 回落、NVIDIA 自研模块挤压第三方、竞争加剧</td>
+          </tr>
+          <tr>
+            <td>长期 3-5Y+</td>
+            <td class="prosperity-flat">震荡分化</td>
+            <td>中</td>
+            <td>3.2T + TFLN 新周期、CPO 渗透率提升重塑价值链、国产光芯片突破</td>
+            <td>技术路线颠覆（铜缆/AEC 延长 reach）、产能过剩、地缘割裂</td>
+          </tr>
+          <tr>
+            <td><strong>1-5 年综合</strong></td>
+            <td class="prosperity-up">上行</td>
+            <td>中高</td>
+            <td>AI Scale-out 带宽刚需 + 代际升级（800G→1.6T→3.2T）驱动量价齐升；上游激光器/衬底为硬瓶颈</td>
+            <td>2028 后供给释放、CPO 替代可插拔、板块估值均值回归</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">核心上市公司多维度对比</h2>
+      <p class="mb-3 text-sm text-slate-500">估值数据：2026-05-29 抓数（fetch_stock + stock-cli）· A 股重点 ≤5 只</p>
+      <table class="data w-full min-w-[960px] text-sm">
+        <thead>
+          <tr>
+            <th>公司</th>
+            <th>市场</th>
+            <th>环节</th>
+            <th>护城河</th>
+            <th>技术壁垒</th>
+            <th>订单能见度</th>
+            <th>业绩拐点</th>
+            <th>戴维斯双击</th>
+            <th>估值语境（2026-05-29）</th>
+            <th>主要风险</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Coherent</strong></td>
+            <td>美股</td>
+            <td>InP 激光器 + 模块</td>
+            <td>NVIDIA 20 亿美元绑定、6 英寸 InP 产能</td>
+            <td>EML + 硅光双平台、先进外延</td>
+            <td><span class="evidence evidence-confirmed">Backlog 至 2028</span></td>
+            <td>1.6T 增速超预期、毛利率扩张至约 40%</td>
+            <td>EPS↑ + AI 光互联 PE 扩张</td>
+            <td>FY26Q3 收入约 18 亿美元</td>
+            <td>中国竞争、InP 良率、估值已反映景气</td>
+          </tr>
+          <tr>
+            <td><strong>Lumentum</strong></td>
+            <td>美股</td>
+            <td>EML 激光器</td>
+            <td>200G/lane EML 唯一大批量供应商</td>
+            <td>InP 工艺 know-how、可靠性认证</td>
+            <td><span class="evidence evidence-confirmed">NVIDIA 长单</span></td>
+            <td>EML 涨价 + 产能扩张（San Jose）</td>
+            <td>盈利高增确定；PE 已大幅扩张（单腿）</td>
+            <td>交期排至 2027+（非 NV 客户）</td>
+            <td>Coherent 6 英寸追赶、硅光替代 EML</td>
+          </tr>
+          <tr>
+            <td><strong>Broadcom</strong></td>
+            <td>美股</td>
+            <td>DSP + 交换芯片 + CPO</td>
+            <td>谷歌/Meta 定制 ASIC + 交换芯片生态</td>
+            <td>Tomahawk/Davisson CPO 路线图</td>
+            <td><span class="evidence evidence-confirmed">客户指定 DSP</span></td>
+            <td>CPO 交换机 2025 起交付</td>
+            <td>双驱动：AI 网络 + 软件订阅</td>
+            <td>AI 收入占比持续提升</td>
+            <td>客户自研芯片、反垄断</td>
+          </tr>
+          <tr>
+            <td><strong>中际旭创</strong><br><span class="ashare ashare-key">300308</span></td>
+            <td>A股</td>
+            <td>光模块龙头</td>
+            <td>全球份额第一、产能规模、客户粘性</td>
+            <td>自研硅光芯片、1.6T 量产领先</td>
+            <td><span class="evidence evidence-indirect">产能高位/行业饱满</span></td>
+            <td>1.6T 占比提升 → 毛利率环比提升</td>
+            <td>EPS↑ 强；PE 已高（约 88x TTM，单腿）</td>
+            <td>PE TTM 约 87.7 · PB 约 37.9 · 1Y +1176% · ROE FY25 约 36% · 止损约 898 元（25%）</td>
+            <td>估值极高、客户集中、贸易政策</td>
+          </tr>
+          <tr>
+            <td><strong>新易盛</strong><br><span class="ashare ashare-key">300502</span></td>
+            <td>A股</td>
+            <td>光模块</td>
+            <td>海外云客户结构、成本管控</td>
+            <td>800G/1.6T 快速量产能力</td>
+            <td><span class="evidence evidence-indirect">行业高景气</span></td>
+            <td>2025 净利高增、毛利率约 38%+</td>
+            <td>EPS↑ + 板块 Beta（PE 约 67x，偏单腿）</td>
+            <td>PE TTM 约 66.6 · PB 约 35.1 · 1Y +771% · ROE FY25 约 53% · 止损约 539 元</td>
+            <td>估值透支、硅光引擎外采依赖</td>
+          </tr>
+          <tr>
+            <td><strong>天孚通信</strong><br><span class="ashare ashare-key">300394</span></td>
+            <td>A股</td>
+            <td>光引擎/无源器件</td>
+            <td>一站式光器件平台、客户粘性</td>
+            <td>高精度耦合与封装</td>
+            <td><span class="evidence evidence-confirmed">1.6T 光引擎量产</span></td>
+            <td>1.6T 光引擎爬坡、物料瓶颈缓解后产出释放</td>
+            <td>EPS↑ 较确定；PE 约 166x 已透支（单腿）</td>
+            <td>PE TTM 约 166 · PB 约 60 · 1Y +800% · ROE FY25 约 37% · 止损约 347 元</td>
+            <td>估值极高、个别物料缺料、客户集中</td>
+          </tr>
+          <tr>
+            <td><strong>光迅科技</strong><br><span class="ashare">002281</span></td>
+            <td>A股</td>
+            <td>光芯片+模块</td>
+            <td>垂直整合、国内电信基本盘</td>
+            <td>硅光/EML 研发；高端芯片仍外采</td>
+            <td><span class="evidence evidence-indirect">数通放量</span></td>
+            <td>高速模块占比提升、毛利率修复</td>
+            <td>盈利改善中；PE 扩张已部分兑现</td>
+            <td>PE TTM 约 162 · PB 约 16.2 · 1Y +380% · 止损约 177 元（距止损约 17%）</td>
+            <td>估值不低、高端芯片瓶颈、竞争</td>
+          </tr>
+          <tr>
+            <td><strong>源杰科技</strong><br><span class="ashare ashare-key">688498</span></td>
+            <td>A股</td>
+            <td>激光器芯片</td>
+            <td>国内光芯片稀缺标的</td>
+            <td>EML/CW 芯片；200G/lane 仍在突破</td>
+            <td><span class="evidence evidence-private">国产替代预期</span></td>
+            <td>高速芯片放量 → 收入结构升级</td>
+            <td>叙事驱动 PE；盈利兑现待验证</td>
+            <td>PE TTM 约 390 · PB 约 56 · 1Y +1094% · 止损约 896 元</td>
+            <td>估值极高、技术未量产、客户验证周期长</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="mt-3 text-xs text-slate-500">Trailing 止损（高波动 25% 回撤阈值，2026-05-29 均未触发）：中际旭创约 898 元、新易盛约 539 元、天孚通信约 347 元、光迅科技约 177 元、源杰科技约 896 元。</p>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">A 股筛选池说明</h2>
+      <p class="mt-2 text-sm text-slate-600">东财 mx-xuangu 查询「光模块板块 · PE&lt;50 · ROE&gt;8%」本次未返回可用 CSV（板块估值已系统性抬升）。以下为产业链手动精选参考池：</p>
+      <table class="data mt-4 w-full text-sm">
+        <thead><tr><th>代码</th><th>公司</th><th>环节</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td>300308</td><td>中际旭创</td><td>光模块</td><td>全球龙头，硅光自研</td></tr>
+          <tr><td>300502</td><td>新易盛</td><td>光模块</td><td>海外云客户为主</td></tr>
+          <tr><td>300394</td><td>天孚通信</td><td>光引擎</td><td>1.6T 光引擎量产</td></tr>
+          <tr><td>002281</td><td>光迅科技</td><td>芯片+模块</td><td>垂直整合</td></tr>
+          <tr><td>688498</td><td>源杰科技</td><td>激光器芯片</td><td>国产 EML/CW 突破</td></tr>
+          <tr><td>300620</td><td>光库科技</td><td>FAU/铌酸锂</td><td>上游高价值器件</td></tr>
+          <tr><td>603083</td><td>剑桥科技</td><td>光模块</td><td>年化产能约 350 万支</td></tr>
+          <tr><td>688195</td><td>腾景科技</td><td>无源器件</td><td>全球扩产中</td></tr>
+          <tr><td>688313</td><td>仕佳光子</td><td>PLC/AWG 芯片</td><td>国产替代</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold">投资机会与跟踪优先级</h2>
+      <ol class="mt-4 list-decimal pl-6 leading-7 space-y-3">
+        <li><strong>第一优先级 · 光模块龙头（瓶颈+验证度高）</strong>：<strong>中际旭创</strong>、<strong>新易盛</strong> — 800G 主力出货 + 1.6T 量产领先，直接受益 AI Capex 与 ASP 坚挺。逻辑硬但估值已大幅透支，宜跟踪季度毛利率与 1.6T 占比而非追高。</li>
+        <li><strong>第一优先级 · 上游硬瓶颈（激光器/衬底）</strong>：Lumentum、Coherent（海外）；A 股看<strong>源杰科技</strong>（国产 EML/CW 突破窗口）。逻辑：200G/lane EML 供需缺口贯穿 2027；但 A 股标的估值极高且量产验证待兑现。</li>
+        <li><strong>第一优先级 · 光引擎/无源器件</strong>：<strong>天孚通信</strong>、光库科技 — 1.6T 光引擎与 FAU 为模块扩产隐性瓶颈；天孚 1.6T 量产已确认，物料瓶颈缓解后业绩弹性大。</li>
+        <li><strong>弹性标的 · 二线模块+器件</strong>：剑桥科技、腾景科技、仕佳光子 — 较小市值、高 Beta；产能释放与客户导入进度是核心跟踪变量。</li>
+        <li><strong>预期差</strong>：① 市场按「周期股」定价部分光芯片标的，但 200G EML 结构性短缺可能带来超预期 ASP；② CPO 2026 产业化元年被低估，TSMC COUPE 生态（天孚、Fabrinet 等）受益；③ 薄膜铌酸锂在 3.2T 的导入窗口（2028+）尚未被充分定价；④ <strong>「中国光模块定价权」</strong>被部分市场过度演绎——制造层份额定价成立，但上游芯片定价权仍在美系，宜区分「出货量」与「利润池」。</li>
+        <li><strong>谨慎/回避</strong>：① PE TTM &gt; 100 且 1Y 涨幅 &gt; 500% 的标的（均值回归风险）；② 无技术壁垒的组装代工；③ 纯电信市场光模块（与 AI 数通景气分化）；④ 把 CPO 潜力直接写成已兑现订单的概念炒作。</li>
+      </ol>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">主要来源</h2>
+      <ul class="mt-4 list-disc pl-6 text-sm leading-7 text-slate-700">
+        <li>IBM Research · <a href="https://arxiv.org/abs/2412.06570" target="_blank" rel="noopener">Next generation Co-Packaged Optics Technology (arXiv:2412.06570)</a></li>
+        <li>IMAPS · Co-Packaged Optics - Heterogeneous Integration of Chiplets (JMEP, 2024-2025)</li>
+        <li>TrendForce · AI 光模块市场规模与 800G/1.6T 出货量预测（2026）</li>
+        <li>PhotonCap · <a href="https://photoncap.net/p/chinese-optical-modules-own-7-of" target="_blank" rel="noopener">Chinese Optical Modules Own 7 of the Top 10 Seats (2026-04)</a> — 份额 vs 利润池拆解</li>
+        <li>MLQ.ai · Optical Networking Research — 中国 800G 份额与 20%-25% 价格差</li>
+        <li>C114 光通信Pro · 中国光模块全球七席与「微笑曲线」利润困局（2026-05）</li>
+        <li>LightCounting · 全球光模块厂商排名与市场规模预测</li>
+        <li>NVIDIA · Lumentum/Coherent 各 20 亿美元投资公告（2026-03-02）</li>
+        <li>Coherent Corp. · FY26 Q3 Earnings Call（2026-05）</li>
+        <li>深圳市工信局 · AI 服务器产业链行动计划（2026-2028）</li>
+        <li>SemiAnalysis · Co-Packaged Optics 产业分析；Goldman Sachs · 硅光渗透率模型</li>
+        <li>中际旭创/天孚通信/剑桥科技 · 年报、投资者关系活动记录（mx-search NOTICE 类型）</li>
+        <li>A 股行情：stock-analysis fetch_stock.py + mx_enrich.py + stock-cli trailing（2026-05-29）</li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本文用于产业链与行业研究，不构成投资建议。</li>
+        <li>成本比例为公开资料交叉估算，非官方 BOM。</li>
+        <li>「A股重点」表示值得优先跟踪，不等同于确认订单或收入占比。</li>
+        <li>论文观点不代表已被产业完全验证，须结合后续披露独立判断。</li>
+        <li>估值数据抓取自公开行情接口，可能存在延迟或误差。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+        while (li.firstChild && li.firstChild !== childList) {
+          summary.appendChild(li.firstChild);
+        }
+        details.appendChild(summary);
+        details.appendChild(childList);
+        while (li.firstChild) {
+          details.appendChild(li.firstChild);
+        }
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>
