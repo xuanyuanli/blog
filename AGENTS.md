@@ -241,4 +241,5 @@ python scripts/docx/docx.py unpack path/to/file.docx path/to/unpacked/
 - 修改历史技术文章：在 `vuepress/docs/` 下按分类查找，保持相邻文件格式。
 - 调整旧博客主题或插件：查看 `vuepress/docs/.vuepress/`。
 - 新增/更新股票分析报告：使用 `.cursor/skills/stock-analysis/`，输出到 `stock/data/`。
+- AI 算力主线 + 成交额 Top200 + 右侧技术筛选：使用 `.cursor/skills/ai-right-side-screen/`；结果持久化在 `data/ai-pool.json`、`data/exclude-codes.txt`。
 - 调整部署流程：查看 `build.sh`、`blog-ops/` 和 `nginx/nginx.conf`。

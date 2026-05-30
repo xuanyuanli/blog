@@ -45,6 +45,14 @@ features:
     details: 800G/1.6T/CPO 成本拆解、激光器瓶颈与 A 股映射。
     link: /optical-transceiver-industry-chain.html
     target: _self
+  - title: AI 算力产业链
+    details: 金字塔式全栈拆解：应用→芯片→互连→IDC→电网→半导体上游。
+    link: /ai-compute-industry-chain.html
+    target: _self
+  - title: L4–L10 瓶颈评分卡
+    details: Serenity 逻辑 · 35 个二三层瓶颈 · 五维评分 · A 股/美股对标 · 证据分级（独立调研 2026-05-30）。
+    link: /ai-compute-bottleneck-scorecard.html
+    target: _self
   - title: A股全球定价权
     details: 五维框架筛选真正具备全球定价权的 A 股公司，甄别「全球第一」误区。
     link: /ashare-global-pricing-power.html

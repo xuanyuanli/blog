@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 算力产业链金字塔拆解</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #dbeafe; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #2563eb; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #2563eb; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .tree details details > summary { font-weight: 700; }
+    .cost { display: inline-block; border-radius: 999px; background: #e0f2fe; color: #075985; padding: .12rem .55rem; font-size: .78rem; font-weight: 700; vertical-align: middle; }
+    .layer { display: inline-block; border-radius: .45rem; background: #ede9fe; color: #5b21b6; padding: .05rem .45rem; font-size: .72rem; font-weight: 800; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .why { color: #475569; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .prosperity-up { background: #dcfce7; color: #166534; font-weight: 700; }
+    .prosperity-flat { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .prosperity-down { background: #fee2e2; color: #991b1b; font-weight: 700; }
+    a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+    .pyramid-hint { background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%); border-left: 4px solid #2563eb; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-indigo-400/20 px-3 py-1 text-sm text-indigo-100">AI 算力 · 全栈产业链</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">更新口径：2026-05-30 UTC+8</span>
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">公开资料估算 · 研究结论 · 非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">AI 算力产业链金字塔拆解</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        本页以<strong>金字塔式无序列表</strong>自顶向下拆解 AI 算力全栈：从 Token 消耗与 Agent 应用，经软件栈、智算服务、服务器集群、高速互连、AI 芯片与 HBM（高带宽存储器）、液冷电源、AIDC（人工智能数据中心）到电网与半导体上游。层级越深，环节越细；成本占比为公开资料交叉估算的区间表达。
+      </p>
+      <div class="mt-5 rounded-2xl border border-white/15 bg-white/10 p-4 text-sm leading-6 text-slate-100">
+        <p class="font-semibold">四锚点摘要</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li><strong>行业</strong>：全球 AI 算力 Capex（资本开支）高景气；国产替代从推理侧闭环走向训练侧突破；超节点（SuperPod）成国产算力竞争舞台</li>
+          <li><strong>论文</strong>：待用户补充具体论文；本页引用华为 τ 定律（时间缩放）、Scaling Law（缩放定律）等公开产业叙事作背景，不将实验室结论写成已量产</li>
+          <li><strong>热点</strong>：Token 爆发驱动存储超级周期；800G/1.6T 光模块放量；DeepSeek 等国产模型 Day 0 适配昇腾/寒武纪；十五五「人工智能+」与全国一体化算力体系</li>
+          <li><strong>产业链</strong>：价值分配呈「芯片 + 存储 &gt; 互连 &gt; 系统集成 &gt; 土建电力」；瓶颈在 HBM、CoWoS（2.5D 先进封装）、先进制程、电网与液冷</li>
+        </ul>
+      </div>
+    </header>
+
+    <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">研究方法与工作步骤</h2>
+      <p class="mt-2 text-sm text-slate-500">数据截止：2026-05-30（UTC+8）· 时效窗口：近 3 个月内公开资料 · 本页非投资建议</p>
+      <ol class="mt-4 list-decimal space-y-3 pl-6 text-sm leading-7">
+        <li><strong>锚点拆解</strong>：以用户提供的「类股C简」文章为<strong>假设起点</strong>（GB200 机柜内铜缆增量、1.6T 光模块、高多层 PCB、液冷刚需），对照 NVIDIA 官网/技术博客、上市公司公告与券商研报交叉验证；<strong>自媒体结论默认「待验证」</strong>，仅公告/官网可标「确认」。</li>
+        <li><strong>产业链分层</strong>：自 L0 应用至 L10 半导体材料，按金字塔无序列表逐层展开；每层标注 TCO/BOM 权重区间（公开资料估算，非官方 BOM）。</li>
+        <li><strong>东财 mx-search</strong>（2026-05-30）：检索 GB200/铜缆、光模块 Q1 业绩、液冷政策、沃尔核材/鼎通科技投资者关系记录、十五五「人工智能+」等；<span class="evidence evidence-confirmed">NOTICE</span> 类型优先于 <span class="evidence evidence-indirect">INV_NEWS</span>。</li>
+        <li><strong>东财 mx-xuangu</strong>：条件「AI算力 板块 市盈率小于40」，筛出 59 只候选池；概念标签较宽，需人工映射至具体产业链环节。</li>
+        <li><strong>个股抓数</strong>（≤5 只 ashare-key）：`fetch_stock.py` + `mx_enrich.py` 抓取 300308/002130/002837 等行情与财务；估值语境仅作参考。</li>
+        <li><strong>国际信源 WebSearch</strong>：NVIDIA GB200 NVL72 规格、NVLink Switch 铜缆 cartridge 设计；用于验证「铜进光退」是否等于「光模块需求下降」（结论：<strong>否</strong>——机柜内铜增、机柜间光仍增）。</li>
+        <li><strong>证据分级</strong>：<span class="evidence evidence-confirmed">确认</span> 公告/官网/IR；<span class="evidence evidence-indirect">间接</span> 研报/产业链高相关；<span class="evidence evidence-private">推断</span> 自媒体/未点名客户——<strong>不得</strong>写为确定供货。</li>
+      </ol>
+    </section>
+
+    <section class="mb-6 rounded-2xl border border-amber-200 bg-amber-50/60 p-6 shadow-sm">
+      <h2 class="text-2xl font-bold text-amber-950">自媒体逻辑校验 · GB200 算力链变局</h2>
+      <p class="mt-2 text-sm text-amber-900/80">对照「类股C简」文章四条主线；✅=多信源一致 · ⚠️=部分验证 · ❌=夸大或待证</p>
+      <table class="data mt-4 w-full text-sm">
+        <thead><tr><th>文章叙事</th><th>校验结论</th><th>置信度</th><th>权威依据</th><th>A股映射（证据）</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>GB200 NVLink 机柜内大量铜缆，「铜进光退」</td>
+            <td>✅ 机柜内 Scale-up 铜缆/cartridge 增量成立；❌ 不等于光模块整体退潮</td>
+            <td>高（架构）/ 中（用量倍数）</td>
+            <td>NVIDIA 技术博客：NVL72 用 copper cable cartridge 互联 GPU 与 NVLink Switch；机柜间仍用光</td>
+            <td><span class="ashare-key">沃尔核材</span> 高速通信线 2025 营收 10.17 亿（+238%）<span class="evidence evidence-confirmed">年报</span>；<span class="ashare">鼎通科技</span> 224G 批量、112G 满产 <span class="evidence evidence-confirmed">投资者关系</span>；<span class="ashare">华丰科技</span> 高速背板连接器 <span class="evidence evidence-indirect">产业链</span></td>
+          </tr>
+          <tr>
+            <td>光模块向 1.6T 升级，LPO/CPO 趋势</td>
+            <td>✅ 1.6T 为 2026 交付主力；CPO 仍处小规模商用前夜</td>
+            <td>高（1.6T 放量）/ 低（CPO 时间表）</td>
+            <td>新易盛互动易 2026-05-29：1.6T 订单良好；中际旭创 Q1 营收 194.96 亿（+192%）<span class="evidence evidence-confirmed">一季报</span></td>
+            <td><span class="ashare-key">中际旭创、新易盛、天孚通信、光迅科技</span>；硅光/CPO 看 <span class="ashare">源杰科技、仕佳光子</span></td>
+          </tr>
+          <tr>
+            <td>AI 服务器 PCB 20–30 层、低损耗材料</td>
+            <td>✅ 高多层/HDI 结构性需求；毛利率因客户与产品结构分化</td>
+            <td>高</td>
+            <td>沪电股份 IR：2025 年 AI 服务器+交换机 PCB 约占营收 59%<span class="evidence evidence-confirmed">投资者关系</span>；胜宏 Q1 营收 55.19 亿（+28%）</td>
+            <td><span class="ashare-key">沪电股份、胜宏科技、深南电路</span>；材料 <span class="ashare">生益科技</span></td>
+          </tr>
+          <tr>
+            <td>B200/GB200 TDP 1000W+，液冷成标配</td>
+            <td>✅ NVL72 机柜级液冷；Rubin 世代机柜 100% 液冷趋势获 IR/产业数据支持</td>
+            <td>高</td>
+            <td>英维克 IR 2026-04：产品匹配 GPU/ASIC 100% 全液冷场景；TrendForce  cited：2026 渗透率约 40%</td>
+            <td><span class="ashare-key">英维克、高澜股份、申菱环境、同飞股份</span>；氟化液 <span class="ashare">巨化股份</span></td>
+          </tr>
+          <tr>
+            <td>文章表格「确认 NV 供应链」</td>
+            <td>⚠️ 多数公司未在公告中点名 NVIDIA；沃尔核材 IR 明确回应「英伟达全面放弃铜缆」为不实传闻</td>
+            <td>低（供货确认）</td>
+            <td>沃尔核材 2026-05-24 互动易：铜缆与光模块<strong>并存</strong>，非替代关系</td>
+            <td>跟踪订单用<strong>业绩增速+ IR 表述</strong>，勿凭自媒体「独家供应链」</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">全球 AI 芯片市场（2024）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">约 1,050 亿美元</p>
+        <p class="mt-2 text-sm text-slate-600">GPU 占云端训练约 78%；推理侧 ASIC 与国产 NPU 渗透率快速提升。</p>
+      </div>
+      <div class="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">智算中心 TCO 最大池</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">算力芯片 + HBM</p>
+        <p class="mt-2 text-sm text-slate-600">单台 8 卡 AI 服务器硬件价值约 75%-85% 在 GPU/HBM 子系统。</p>
+      </div>
+      <div class="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">中国智能算力增速</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">CAGR 约 46%</p>
+        <p class="mt-2 text-sm text-slate-600">2023-2028 智能算力规模复合增速（IDC/信通院口径），政策与需求双驱动。</p>
+      </div>
+      <div class="rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">国产替代能见度</p>
+        <p class="mt-2 text-2xl font-bold text-red-600">推理 &gt; 训练</p>
+        <p class="mt-2 text-sm text-slate-600">14nm+ 推理芯片国内 AI 服务器份额约 40%；高端训练仍受先进制程与 HBM 掣肘。</p>
+      </div>
+    </section>
+
+    <section class="mb-6 rounded-2xl border border-blue-200 pyramid-hint p-5 text-sm leading-7 text-slate-700">
+      <p class="font-semibold text-slate-900">金字塔阅读法</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li><strong>塔尖（L0-L1）</strong>：应用与软件——决定 Token 需求总量与算力调用形态（训练 vs 推理 vs Agent）。</li>
+        <li><strong>塔身（L2-L5）</strong>：智算服务、服务器、互连、芯片——决定 Capex 结构与利润分配；当前景气与瓶颈集中于此。</li>
+        <li><strong>塔基（L6-L9）</strong>：散热电源、IDC 土建、电网、半导体制造与材料——决定交付周期、电价与国产替代上限。</li>
+        <li>每一层均为<strong>无序列表</strong>，子层用缩进 `<ul>` 展开；带 <span class="cost">成本标签</span> 的为价值占比或 TCO 权重区间。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">热点与政策时间线</h2>
+      <table class="data mt-4 w-full text-sm">
+        <thead><tr><th>时间</th><th>事件</th><th>产业链含义</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>2026-03</td>
+            <td><span class="evidence evidence-confirmed">十五五规划</span> 全面实施「人工智能+」；超大规模智算集群、算电协同写入政府工作报告</td>
+            <td>AIDC、国产芯片、液冷、绿电配套需求制度化；地方算力券/模型券延续</td>
+          </tr>
+          <tr>
+            <td>2026-Q1</td>
+            <td><span class="evidence evidence-confirmed">寒武纪等</span> 国产 AI 芯片营收爆发；存储合约价持续上涨</td>
+            <td>国产算力业绩拐点与 HBM/DRAM 超级周期共振；封测先进封装订单外溢</td>
+          </tr>
+          <tr>
+            <td>2026-05</td>
+            <td><span class="evidence evidence-indirect">研报</span> 800G/1.6T 光模块供需缺口扩大；CPO 小规模商用预期</td>
+            <td>光模块/硅光/激光器链高景气；PCB 低损耗材料升级</td>
+          </tr>
+          <tr>
+            <td>2024-2026</td>
+            <td><span class="evidence evidence-confirmed">BIS 管制</span> 加码；台积电等对大陆先进制程代工受限</td>
+            <td>国产 GPU/NPU、成熟制程扩产、Chiplet+先进封装路线加速</td>
+          </tr>
+          <tr>
+            <td>2026-05-25</td>
+            <td><span class="evidence evidence-confirmed">华为</span> ISCAS 发布 τ 定律与逻辑折叠路线图</td>
+            <td>固定节点下靠 3D 封装/EDA 提升密度；利好 OSAT、混合键合设备</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="tree rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">产业链金字塔 · 无序列表全拆解</h2>
+      <ul class="list-disc space-y-3 pl-5">
+
+        <!-- L0 总览 -->
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">L0 · AI 算力产业链总览 <span class="cost">智算中心 TCO 100%</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">应用与软件层</span> <span class="layer">塔尖</span> <span class="cost">约 3%-8% TCO（运营侧）</span>：大模型 API、Agent、行业 SaaS；决定 Token 调用曲线。</li>
+              <li><span class="font-semibold">智算服务与运营层</span> <span class="cost">约 5%-12%</span>：公有云 GPU、智算中心租赁、算力调度平台。</li>
+              <li><span class="font-semibold">系统与集群层</span> <span class="cost">约 8%-15%</span>：AI 服务器、存储阵列、集群网络、机房集成。</li>
+              <li><span class="font-semibold">高速互连与板级层</span> <span class="cost">约 6%-12%</span>：光模块、交换机、NIC/DPU、高速 PCB/载板、铜连接。</li>
+              <li><span class="font-semibold">算力芯片与存储层</span> <span class="cost">约 55%-70%</span>：GPU/NPU/CPU + HBM + DDR + SSD；产业链最大价值池。</li>
+              <li><span class="font-semibold">散热与电源层</span> <span class="cost">约 4%-10%</span>：PSU、液冷、CDU、柴发/燃机备用。</li>
+              <li><span class="font-semibold">数据中心土建与机柜层</span> <span class="cost">约 8%-15%</span>：AIDC 土建、机电、机柜、布线、消防。</li>
+              <li><span class="font-semibold">能源与电网层</span> <span class="cost">约 5%-12%（全生命周期）</span>：市电接入、变电站、绿电、储能、算电协同。</li>
+              <li><span class="font-semibold">半导体制造与材料层</span> <span class="layer">塔基</span> <span class="cost">摊入芯片/板卡成本</span>：晶圆代工、设备、EDA、特气、靶材、硅片。</li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L1 应用层 -->
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">L1 · 应用层（塔尖） <span class="cost">Token 需求源头</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">通用大模型与 API 服务</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">OpenAI / Anthropic / Google</span>：GPT、Claude、Gemini 驱动全球云端训练与推理 Capex。<span class="why">塔尖定价者，决定 GPU 代际需求节奏。</span></li>
+                  <li><span class="font-semibold">字节 / 阿里 / 腾讯 / 百度</span>：国内云厂商资本开支与自研芯片/昇腾适配。<span class="why">国产算力最大下游买家。</span></li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">产业链相关</span> <span class="font-semibold">科大讯飞、金山办公、同花顺</span>：行业大模型与 AI 应用落地。<span class="why">应用层弹性标的，算力成本为 Opex。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">AI Agent 与编程助手</span>
+                <ul class="list-disc">
+                  <li>Cursor、Devin、Copilot 等提升<strong>长上下文推理</strong>与<strong>多步 Agent</strong>调用频次。</li>
+                  <li>推理算力占比提升 → 利好能效比更高的 ASIC 与国产 NPU；KV Cache 放大存储需求。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">行业垂直 AI</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">自动驾驶</span>：车载 AI 芯片、边缘推理；英伟达 Orin/Thor、特斯拉 FSD、地平线等。</li>
+                  <li><span class="font-semibold">医疗 / 金融 / 政务</span>：国产算力优先场景；昇腾+DeepSeek 等组合批量落地。</li>
+                  <li><span class="font-semibold">具身智能 / 机器人</span>：端侧 NPU + 云端训练；算力需求分散化。</li>
+                  <li><span class="font-semibold">AIGC 内容生成</span>：视频/3D 生成推高多模态算力与存储带宽需求。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">端侧 AI（Edge AI）</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">AI PC / AI 手机</span>：NPU、LPDDR、小模型本地推理；与云端算力互补。</li>
+                  <li><span class="font-semibold">AI 眼镜 / IoT</span>：低功耗 SoC、传感器；算力链路与数据中心间接相关。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L2 软件栈 -->
+        <li>
+          <details>
+            <summary class="text-xl font-bold">L2 · AI 软件栈 <span class="cost">生态锁定层</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">深度学习框架</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">PyTorch</span>（Meta）：事实标准训练框架；CUDA 绑定深。</li>
+                  <li><span class="font-semibold">TensorFlow / JAX</span>：Google 系；TPU 生态。</li>
+                  <li><span class="font-semibold">PaddlePaddle / MindSpore</span>：百度/华为国产框架；昇腾 CANN 适配。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">GPU 编程与驱动</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">CUDA</span>（NVIDIA）：最大护城河；cuDNN、NCCL、TensorRT 全栈。</li>
+                  <li><span class="font-semibold">ROCm</span>（AMD）：开源替代路径；MI300 生态建设中。</li>
+                  <li><span class="font-semibold">CANN</span>（华为）：昇腾专用；已支持 DeepSeek、Llama 等主流模型。</li>
+                  <li><span class="font-semibold">oneAPI / SYCL</span>（Intel）：XPU 统一编程。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">推理引擎与编译器</span>
+                <ul class="list-disc">
+                  <li>TensorRT、vLLM、Triton Inference Server、ONNX Runtime。</li>
+                  <li>国产：飞桨推理引擎、昇思 MindSpore Lite、寒武纪 MagicMind。</li>
+                  <li><span class="why">推理优化决定同等芯片下的 Token 吞吐，影响客户芯片选型。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">MLOps 与算力调度</span>
+                <ul class="list-disc">
+                  <li>Kubernetes + GPU 虚拟化（HAMi vGPU、MIG）；提升集群利用率。</li>
+                  <li>Weights & Biases、MLflow；训练任务编排与实验管理。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L3 智算服务 -->
+        <li>
+          <details>
+            <summary class="text-xl font-bold">L3 · 智算服务与云 <span class="cost">Capex 变现层</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">全球公有云 AI</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">AWS / Azure / GCP</span>：Trainium/Inferentia、Maia、TPU 自研 ASIC 与 NVIDIA 并存。</li>
+                  <li><span class="font-semibold">CoreWeave / Lambda</span>：GPU 云专业厂商；租赁价格反映供需。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">中国公有云与智算中心</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">阿里云 / 腾讯云 / 华为云 / 天翼云</span>：智算集群建设主力；昇腾 384 超节点、万卡集群。</li>
+                  <li><span class="font-semibold">运营商 IDC</span>：中国移动、中国电信、中国联通「云+网+AI」；2025 合计 Capex 超 2800 亿元。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">光环新网、数据港、奥飞数据、润泽科技</span>：AIDC 运营与定制机房。<span class="why">上架率与单机柜功率决定盈利。</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">中科曙光</span>：scaleX640 等国产算力集群方案。<span class="evidence evidence-confirmed">官网/研报</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">算力租赁与调度平台</span>
+                <ul class="list-disc">
+                  <li>GPU 租赁定价随 HBM 供需波动；国产芯片租赁折扣反映生态成熟度。</li>
+                  <li>算力券、模型券（地方政策）降低中小企业试用门槛。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L4 系统集群 -->
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">L4 · 系统与集群集成 <span class="cost">单机约 8%-15% 硬件价值</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">AI 服务器平台定义</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVIDIA</span>：HGX/DGX（Hopper/H200/Blackwell/Rubin 路线图）、NVLink/NVSwitch 参考设计。</li>
+                  <li><span class="font-semibold">AMD</span>：Instinct MI300/MI325 平台。</li>
+                  <li><span class="font-semibold">华为</span>：昇腾 910/910C、384 超节点；鲲鹏 CPU + 昇腾 NPU 异构。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">品牌服务器 OEM</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Dell / HPE / Lenovo / Supermicro</span>：全球企业级 AI 服务器交付。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">官网</span> <span class="font-semibold">浪潮信息</span>：HGX 平台 GPU 服务器；国内 AI 服务器份额领先。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">联想集团（H股）</span>、<span class="font-semibold">紫光股份（新华三）</span>：企业级服务器与网络。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">ODM/JDM 制造</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">广达 / 纬颖 / 纬创 / 英业达</span>：云巨头定制 AI 服务器主力。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">Foxconn/NVIDIA</span> <span class="font-semibold">工业富联</span>：AI 服务器制造与 NVL72 等机柜集成。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">集群级产品</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVL72 机柜</span>：72 GPU + 液冷；Rubin 时代机柜级交付成趋势。</li>
+                  <li><span class="font-semibold">华为昇腾 SuperPod</span>：384 卡超节点；国产万卡集群标杆。</li>
+                  <li><span class="font-semibold">存储阵列</span>：全闪存/NVMe 分布式存储；AI 训练数据管道。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L5 互连 -->
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">L5 · 高速互连与板级 <span class="cost">单机约 6%-12%；集群 TCO 权重更高</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">光模块与光引擎</span> <span class="cost">集群网络核心</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">800G / 1.6T</span>：AI 集群 Scale-up/Scale-out 刚需；硅光渗透率提升。</li>
+                  <li><span class="font-semibold">CPO（共封装光学）</span>：2026 小规模商用；降低功耗与延迟。</li>
+                  <li><span class="font-semibold">LPO / LRO</span>：线性驱动可插拔；降本路径。</li>
+                  <li>国际：<span class="font-semibold">Coherent / Lumentum / Marvell（DSP）</span>。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">中际旭创、新易盛、天孚通信、光迅科技、源杰科技、仕佳光子</span>。<span class="why">全球光模块份额超 70% 在中国；1.6T 放量核心受益。</span></li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">交换机与 NIC/DPU</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVIDIA Spectrum / BlueField</span>；<span class="font-semibold">Broadcom Tomahawk</span>；<span class="font-semibold">Arista / Cisco</span>。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">盛科通信、中兴通讯</span>：交换芯片与设备。</li>
+                  <li><span class="font-semibold">ConnectX-7/8 NIC</span>：GPU 服务器标准配置；400G/800G 端口。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">高速 PCB 与载板</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">AI 服务器 PCB</span>：20-30 层、M8/M9 低损耗 CCL（覆铜板）。</li>
+                  <li><span class="font-semibold">ABF 载板</span>：GPU/HBM 封装基板；Ibiden、欣兴、南亚电路。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">沪电股份、胜宏科技、深南电路、生益科技、兴森科技</span>。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">铜连接与高速线缆</span> <span class="cost">GB200 机柜内 Scale-up 增量</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">架构逻辑</span>：NVL72 用 NVLink Switch + <strong>copper cable cartridge</strong> 将 72 GPU 连成单一 NVLink 域（130 TB/s）；机柜间 Scale-out 仍依赖光模块。<span class="evidence evidence-confirmed">NVIDIA 官网</span></li>
+                  <li><span class="font-semibold">DAC / ACC / 高速通信线</span>：短距低功耗；224G 批量、448G 送样验证中。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">年报/IR</span> <span class="font-semibold">沃尔核材（002130）</span>：子公司乐庭智联；2025 高速通信线营收 10.17 亿（+238%）；客户含安费诺、泰科等，<strong>未公告点名 NV</strong>。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">投资者关系</span> <span class="font-semibold">鼎通科技（688668）</span>：112G 满产、224G 批量；液冷组件小批量交付。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">华丰科技（688629）、兆龙互连（300913）、胜蓝股份（301171）</span>：高速背板/IO 连接器、DAC 线缆。<span class="evidence evidence-indirect">产业链</span></li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">立讯精密（002475）、金田股份（601609）</span>：铜缆高速连接概念；需区分消费电子与数通占比。</li>
+                  <li><span class="why">自媒体「铜进光退」易误读为光模块利空——实际为<strong>分工重构</strong>：机柜内铜增、集群光仍随 1.6T 放量。</span></li>
+                  <li>详见 <a href="/ai-compute-nonferrous-metals-industry-chain.html">AI 算力有色产业链</a>：铜需求重塑。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">光纤光缆</span>
+                <ul class="list-disc">
+                  <li><span class="ashare">A股</span> <span class="font-semibold">长飞光纤、亨通光电、中天科技</span>：数据中心互联与 DCI（数据中心互联）。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L6 芯片存储 -->
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">L6 · 算力芯片与存储 <span class="cost">约 55%-70% 硬件价值</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">GPU / GPGPU</span> <span class="cost">云端训练主导</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">NVIDIA</span>：H100/H200/B200/GB200/Rubin；CUDA 生态+NVLink 绑定。</li>
+                  <li><span class="font-semibold">AMD</span>：MI300X/MI325X；ROCm 生态追赶。</li>
+                  <li><span class="font-semibold">Intel</span>：Gaudi 2/3；性价比定位。</li>
+                  <li><span class="ashare">A股</span> <span class="evidence evidence-indirect">未上市/港股</span> <span class="font-semibold">摩尔线程、沐曦股份</span>：国产 GPU 新锐。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">NPU / AI ASIC</span> <span class="cost">推理与专用场景</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Google TPU</span>、<span class="font-semibold">Amazon Trainium/Inferentia</span>、<span class="font-semibold">Microsoft Maia</span>：云巨头自研。</li>
+                  <li><span class="font-semibold">华为昇腾</span> 910/910C/910D；CANN + 超节点；国产训练主力。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">财报</span> <span class="font-semibold">寒武纪</span>：思元系列；2026Q1 营收高增。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">海光信息</span>：DCU 协处理器；x86+CUDA 兼容路径。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">CPU 与 DPU</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Intel Xeon / AMD EPYC</span>：AI 服务器主机 CPU。</li>
+                  <li><span class="font-semibold">ARM 服务器</span>：Ampere、华为鲲鹏、飞腾；能效优势场景。</li>
+                  <li><span class="font-semibold">DPU/IPU</span>：NVIDIA BlueField、AMD Pensando；卸载网络与存储。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">HBM（高带宽存储器）</span> <span class="cost">GPU BOM 约 30%-45%</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">HBM3e / HBM4</span>：12hi/16hi 堆叠；带宽决定 GPU 性能释放。</li>
+                  <li>国际：<span class="font-semibold">SK hynix、Samsung、Micron</span>；SK 份额领先。</li>
+                  <li>国产：<span class="ashare">A股</span> <span class="font-semibold">长鑫存储（未上市）</span>、<span class="font-semibold">通富微电/长电科技</span> HBM 封测。<span class="evidence evidence-indirect">产业链相关</span></li>
+                  <li>详见 <a href="/ai-storage-industry-chain.html">AI 算力存储产业链</a>。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">DRAM / DDR5</span>
+                <ul class="list-disc">
+                  <li>服务器内存：AI 主机平台 1-2TB DDR5 成标配。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">兆易创新</span>：利基存储；<span class="font-semibold">北京君正</span> 等。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">NAND / SSD</span>
+                <ul class="list-disc">
+                  <li>训练数据存储、Checkpoint；QLC 企业级 SSD 需求增长。</li>
+                  <li><span class="font-semibold">Samsung / Kioxia / Solidigm / WDC</span>；国产 <span class="font-semibold">长江存储</span>。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">先进封装（Chiplet / CoWoS）</span> <span class="cost">交期瓶颈</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">CoWoS-S/L</span>（TSMC）、<span class="font-semibold">EMIB</span>（Intel）、<span class="font-semibold">Chiplet</span> 异构集成。</li>
+                  <li><span class="font-semibold">2.5D/3D 封装</span>：硅中介层、TSV（硅通孔）、混合键合。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">长电科技、通富微电、华天科技</span>：OSAT 先进封装。</li>
+                  <li>详见 <a href="/huawei-tau-scaling-industry-chain.html">韬定律产业链</a>、<a href="/h200-industry-chain.html">H200 产业链</a>。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">晶圆代工（制造环节）</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">TSMC</span>：4nm/3nm GPU；CoWoS 产能。</li>
+                  <li><span class="font-semibold">Samsung Foundry</span>：GAA 节点；HBM 一体化。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">中芯国际、华虹半导体</span>：成熟制程与部分先进节点国产替代。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L7 散热电源 -->
+        <li>
+          <details>
+            <summary class="text-xl font-bold">L7 · 散热与电源 <span class="cost">单机约 4%-10%；机柜级更高</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">风冷散热</span>
+                <ul class="list-disc">
+                  <li>H200 级 GPU 服务器以风冷为主；高风量风扇、热管、VC（ vapor chamber）。</li>
+                  <li><span class="font-semibold">Delta / Nidec / AVC</span> 风扇；<span class="ashare">A股</span> <span class="font-semibold">奇鋐、双鸿</span> 等散热模组。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">液冷</span> <span class="cost">GB200/Rubin 时代刚需</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">冷板式液冷</span>：CDU、冷板、快接头、冷却液；PUE 降至 1.2 以下。</li>
+                  <li><span class="font-semibold">浸没式液冷</span>：超高密度场景；氟化液。</li>
+                  <li><span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">英维克、高澜股份、申菱环境、同飞股份</span>。</li>
+                  <li>氟化液：<span class="ashare">A股</span> <span class="font-semibold">巨化股份、昊华科技</span>。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">服务器电源 PSU</span>
+                <ul class="list-disc">
+                  <li>3.3kW-5.5kW 钛金级 PSU；GPU 功耗上升驱动功率密度升级。</li>
+                  <li><span class="font-semibold">Delta / Lite-On / Flex</span>；<span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="evidence evidence-confirmed">公告</span> <span class="font-semibold">麦格米特</span>：NV 供应链 PSU。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">欧陆通、泰嘉股份</span>：服务器电源。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">备用电源</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">UPS</span>：科华数据、科士达；<span class="font-semibold">柴发</span>：潍柴、科泰电源、泰豪科技。</li>
+                  <li><span class="font-semibold">燃气轮机</span>：AIDC 自备电源；GEV、西门子、<span class="ashare">A股</span> 应流股份、联德股份、杰瑞股份（北美数据中心）。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L8 IDC -->
+        <li>
+          <details>
+            <summary class="text-xl font-bold">L8 · 数据中心土建与机柜 <span class="cost">约 8%-15% TCO</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">AIDC 土建与机电</span>
+                <ul class="list-disc">
+                  <li>高功率密度机房（30-100kW/柜 → 150kW+）；承重、层高、管线改造。</li>
+                  <li>消防、暖通、弱电、动环监控。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">宝信软件</span>：IDC 软件与钢铁系机房资源。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">机柜与布线</span>
+                <ul class="list-disc">
+                  <li>标准/定制机柜、PDU、母线槽、光纤配线。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">算电协同</span>
+                <ul class="list-disc">
+                  <li>「东数西算」枢纽节点；绿电直供、余热回收。</li>
+                  <li>2026 政府工作报告：超大规模智算集群 + 算电协同新基建。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L9 电网 -->
+        <li>
+          <details>
+            <summary class="text-xl font-bold">L9 · 能源与电网（塔基） <span class="cost">全生命周期 5%-12%</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">电网接入与扩容</span>
+                <ul class="list-disc">
+                  <li>110kV/220kV 变电站、外线、容量审批；美国部分区域排队 3-5 年。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">国电南瑞、许继电气、平高电气、中国西电</span>：电网设备。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">绿电与储能</span>
+                <ul class="list-disc">
+                  <li>光伏、风电直供 AIDC；PPA（购电协议）锁定电价。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">阳光电源、宁德时代</span>：逆变器与储能。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">区域电力运营</span>
+                <ul class="list-disc">
+                  <li>低电价区域（内蒙、贵州、甘肃等）承接智算中心。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">明星电力、西昌电力</span>：区域电力+数据中心概念。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+        <!-- L10 半导体上游 -->
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">L10 · 半导体制造与材料（塔基） <span class="cost">摊入芯片成本</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="font-semibold">EDA（电子设计自动化）</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">Synopsys / Cadence / Siemens EDA</span>：全球双寡头；GPU 设计必备。</li>
+                  <li><span class="ashare">A股</span> <span class="font-semibold">华大九天、概伦电子、广立微</span>：国产 EDA；7nm 数字全流程突破中。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">半导体设备</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">光刻</span>：ASML EUV/DUV；国产上海微电子 DUV 验证中。</li>
+                  <li><span class="font-semibold">刻蚀/薄膜/CMP</span>：<span class="font-semibold">LAM / AMAT / TEL</span>；国产 <span class="ashare">A股</span> <span class="ashare-key">重点</span> <span class="font-semibold">北方华创、中微公司、拓荆科技、华海清科</span>。</li>
+                  <li><span class="font-semibold">检测</span>：<span class="font-semibold">KLA</span>；国产 <span class="font-semibold">精测电子、中科飞测</span>。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">半导体材料</span>
+                <ul class="list-disc">
+                  <li><span class="font-semibold">硅片</span>：Shin-Etsu、SUMCO；国产 <span class="font-semibold">沪硅产业、立昂微</span>。</li>
+                  <li><span class="font-semibold">电子特气</span>：六氟化钨、三氟化氮；<span class="ashare">A股</span> <span class="font-semibold">华特气体、金宏气体、昊华科技</span>。</li>
+                  <li><span class="font-semibold">光刻胶 / 靶材 / 湿电子化学品</span>：<span class="font-semibold">JSR / TOK</span>；国产 <span class="font-semibold">南大光电、晶瑞电材、江丰电子、中巨芯</span>。</li>
+                  <li><span class="font-semibold">CMP 材料 / 溅射靶材</span>：<span class="font-semibold">Entegris</span>；国产 <span class="font-semibold">安集科技、鼎龙股份</span>。</li>
+                </ul>
+              </li>
+              <li>
+                <span class="font-semibold">关键金属与矿物</span>
+                <ul class="list-disc">
+                  <li>铜、铝、锡、镓、锗、铟、稀土；HBM 与 PCB 上游。</li>
+                  <li>详见 <a href="/ai-compute-nonferrous-metals-industry-chain.html">AI 算力有色产业链</a>。</li>
+                </ul>
+              </li>
+            </ul>
+          </details>
+        </li>
+
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">A股核心公司多维度对比（文章四主线 + 全栈延伸）</h2>
+      <p class="mt-2 text-sm text-slate-500">行情口径 2026-05-29 · Q1 业绩来自公告/一季报 · PE 为 TTM</p>
+      <div class="mt-4 overflow-x-auto">
+        <table class="data w-full min-w-[1100px] text-xs">
+          <thead><tr>
+            <th>公司</th><th>代码</th><th>环节</th><th>护城河</th><th>技术壁垒</th><th>订单能见度</th><th>业绩拐点</th><th>戴维斯双击</th><th>PE(TTM)</th><th>主要风险</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="ashare-key">中际旭创</span></td><td>300308</td>
+              <td>1.6T/800G 光模块</td>
+              <td>全球龙头规模+硅光方案；客户绑定海外 CSP</td>
+              <td>1.6T 量产、DSP/硅光集成</td>
+              <td><span class="evidence evidence-confirmed">Q1</span> 营收 194.96 亿（+192%）；高速占比持续提升</td>
+              <td>2026 1.6T 放量接力 800G</td>
+              <td>EPS 高增已兑现；PE 随盈利释放消化（单腿→双 Leg 待观察）</td>
+              <td>约 56</td>
+              <td>客户集中、价格战、估值波动</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">新易盛</span></td><td>300502</td>
+              <td>光模块</td>
+              <td>海外订单+泰国产能</td>
+              <td>1.6T 为主力交付产品</td>
+              <td><span class="evidence evidence-confirmed">互动易</span> 2026-05-29：1.6T 订单良好</td>
+              <td>物料缓解后产能释放</td>
+              <td>业绩高增+估值仍高</td>
+              <td>—</td>
+              <td>光芯片短缺、汇兑</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">天孚通信</span></td><td>300394</td>
+              <td>光引擎/无源器件</td>
+              <td>上游卡位+CPO 配套储备</td>
+              <td>1.6T 光引擎量产</td>
+              <td><span class="evidence evidence-confirmed">Q1</span> 净利 4.92 亿（+46%）</td>
+              <td>物料供给改善后环比修复</td>
+              <td>高毛利+渗透率提升</td>
+              <td>—</td>
+              <td>上游物料、客户集中</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">沃尔核材</span></td><td>002130</td>
+              <td>高速通信线/铜缆</td>
+              <td>乐庭智联规模+224G 量产能力</td>
+              <td>448G 样品送样；224G 批量</td>
+              <td><span class="evidence evidence-confirmed">年报</span> 高速通信线 +238%；<strong>未确认 NV 直供</strong></td>
+              <td>2026 Q1 高速线继续增长</td>
+              <td>业绩增速高+股价已大幅回调（3M -21%）</td>
+              <td>约 27</td>
+              <td>铜缆叙事波动、扩产折旧、传闻扰动</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">鼎通科技</span></td><td>688668</td>
+              <td>高速连接器+液冷组件</td>
+              <td>112G/224G 连接器满产</td>
+              <td>液冷组件新产线 2026Q2–Q3 投产</td>
+              <td><span class="evidence evidence-confirmed">IR</span> AI 算力订单饱和</td>
+              <td>2026Q1 净利 +52%</td>
+              <td>连接器+液冷双曲线</td>
+              <td>—</td>
+              <td>客户集中、新品良率</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">沪电股份</span></td><td>002463</td>
+              <td>AI 服务器/交换机 PCB</td>
+              <td>数据中心 PCB 59% 营收占比</td>
+              <td>高多层+泰国基地 90%+ 利用率</td>
+              <td><span class="evidence evidence-confirmed">Q1</span> 营收 62.14 亿（+54%）</td>
+              <td>泰国产能 Q2 进一步释放</td>
+              <td>盈利稳增+估值相对光模块低</td>
+              <td>—</td>
+              <td>竞争加剧、汇兑（Q1 汇损 1.48 亿）</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">胜宏科技</span></td><td>300476</td>
+              <td>AI PCB（HDI/高多层）</td>
+              <td>100 层+ HDI 能力</td>
+              <td>东南亚产能扩张</td>
+              <td><span class="evidence evidence-confirmed">Q1</span> 净利 12.88 亿（+40%）</td>
+              <td>AI PCB 占比提升</td>
+              <td>高 beta</td>
+              <td>—</td>
+              <td> capex 强度、估值</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">英维克</span></td><td>002837</td>
+              <td>液冷 CDU/冷板</td>
+              <td>Coolinside 全链条；MGX/NVL 认证<span class="evidence evidence-indirect">研报引述</span></td>
+              <td>全液冷场景 100% 匹配 IR 表述</td>
+              <td>液冷收入占比仍个位数；渗透率提升逻辑</td>
+              <td>2026 国内外产能扩张</td>
+              <td>渗透率↑+业绩释放（估值已高 PE~185）</td>
+              <td>约 185</td>
+              <td>估值透支、液冷占比披露不足</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">工业富联</span></td><td>601138</td>
+              <td>AI 服务器 ODM/NVL72 集成</td>
+              <td>全球 JDM 龙头</td>
+              <td>机柜级交付能力</td>
+              <td><span class="evidence evidence-indirect">产业链</span> NV 服务器制造</td>
+              <td>AI 服务器占比提升</td>
+              <td>制造环节利润率有限</td>
+              <td>—</td>
+              <td>毛利率低、客户议价</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">浪潮信息</span></td><td>000977</td>
+              <td>品牌 AI 服务器</td>
+              <td>国内 AI 服务器份额领先</td>
+              <td>HGX 平台交付</td>
+              <td><span class="evidence evidence-indirect">行业</span> 国内 CSP+政企</td>
+              <td>国产+ NV 双线</td>
+              <td>算力基建政策+出货</td>
+              <td>—</td>
+              <td>芯片供给、竞争</td>
+            </tr>
+            <tr>
+              <td><span class="ashare-key">寒武纪</span></td><td>688256</td>
+              <td>国产 AI 芯片</td>
+              <td>思元系列+生态</td>
+              <td>7nm 训练/推理</td>
+              <td><span class="evidence evidence-confirmed">Q1</span> 营收高增</td>
+              <td>国产替代业绩拐点</td>
+              <td>国产算力主题+盈利改善</td>
+              <td>—</td>
+              <td>生态、制程约束</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">按环节 A 股公司清单（细拆）</h2>
+      <details open class="mt-3">
+        <summary class="font-bold text-indigo-900">① 高速铜连接 / 连接器 / 线缆</summary>
+        <p class="mt-2 text-sm leading-7"><span class="ashare-key">沃尔核材</span> · <span class="ashare-key">鼎通科技</span> · 华丰科技 · 兆龙互连 · 胜蓝股份 · 意华股份 · 博创科技 · 金田股份 · 立讯精密 · 中航光电（军工+高速）· 川环科技（UQD/液冷管路）</p>
+      </details>
+      <details class="mt-3">
+        <summary class="font-bold text-indigo-900">② 光模块 / 光器件 / 光芯片</summary>
+        <p class="mt-2 text-sm leading-7"><span class="ashare-key">中际旭创</span> · <span class="ashare-key">新易盛</span> · <span class="ashare-key">天孚通信</span> · 光迅科技 · 华工科技 · 源杰科技 · 仕佳光子 · 长光华芯 · 剑桥科技 · 联特科技 · 德科立</p>
+      </details>
+      <details class="mt-3">
+        <summary class="font-bold text-indigo-900">③ PCB / 覆铜板 / 载板</summary>
+        <p class="mt-2 text-sm leading-7"><span class="ashare-key">沪电股份</span> · <span class="ashare-key">胜宏科技</span> · 深南电路 · 生益科技 · 兴森科技 · 鹏鼎控股 · 景旺电子 · 奥士康 · 广合科技 · 南亚新材</p>
+      </details>
+      <details class="mt-3">
+        <summary class="font-bold text-indigo-900">④ 液冷 / 散热 / 电源</summary>
+        <p class="mt-2 text-sm leading-7"><span class="ashare-key">英维克</span> · 高澜股份 · 申菱环境 · 同飞股份 · 川环科技 · 巨化股份 · 昊华科技 · <span class="ashare-key">麦格米特</span>（PSU）· 欧陆通 · 科华数据/科士达（UPS）</p>
+      </details>
+      <details class="mt-3">
+        <summary class="font-bold text-indigo-900">⑤ 服务器 / 集成 / IDC</summary>
+        <p class="mt-2 text-sm leading-7"><span class="ashare-key">工业富联</span> · <span class="ashare-key">浪潮信息</span> · 紫光股份 · 中科曙光 · 联想集团 · 光环新网 · 润泽科技 · 数据港 · 奥飞数据</p>
+      </details>
+      <details class="mt-3">
+        <summary class="font-bold text-indigo-900">⑥ 国产 AI 芯片 / 封测 / 设备</summary>
+        <p class="mt-2 text-sm leading-7"><span class="ashare-key">寒武纪</span> · <span class="ashare-key">海光信息</span> · 龙芯中科 · 景嘉微 · 长电科技 · 通富微电 · 华天科技 · 北方华创 · 中微公司 · 中芯国际</p>
+      </details>
+      <p class="mt-4 text-xs text-slate-500">清单来自产业链 mapping + mx-xuangu 交叉，「重点」不等于确认进入 NV 供应链；蹭概念公司需逐份阅读年报分部收入。</p>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">景气度研判</h2>
+      <table class="data mt-4 w-full text-sm">
+        <thead><tr><th>时间尺度</th><th>方向</th><th>置信度</th><th>核心驱动</th><th>关键风险</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>短期 0-12M</td>
+            <td class="prosperity-up">上行</td>
+            <td>高</td>
+            <td>存储/HBM 涨价；光模块 1.6T 放量；国产芯片业绩释放</td>
+            <td>估值过高；美国关税与出口管制升级</td>
+          </tr>
+          <tr>
+            <td>中期 1-3Y</td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>Rubin 周期 Capex；国产超节点规模部署；液冷渗透率提升</td>
+            <td>技术路线变更；产能过剩环节（低端 IDC）</td>
+          </tr>
+          <tr>
+            <td>长期 3-5Y+</td>
+            <td class="prosperity-flat">震荡偏上</td>
+            <td>中</td>
+            <td>Agent 常态化为 Token 需求托底；Chiplet/存算一体降本</td>
+            <td>量子/光子计算替代；电力瓶颈</td>
+          </tr>
+          <tr>
+            <td><strong>1-5 年综合</strong></td>
+            <td class="prosperity-up">上行</td>
+            <td>中</td>
+            <td>AI 商业化兑现 + 国产替代双轮；算力仍为核心主线</td>
+            <td>地缘政治、电网约束、部分环节估值透支</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">投资机会与跟踪优先级</h2>
+      <ol class="mt-4 list-decimal pl-6 leading-7 space-y-3">
+        <li><strong>第一优先级（瓶颈 + 公告验证）</strong>：1.6T 光模块（中际旭创/新易盛/天孚）、HBM/存储、CoWoS — Q1 业绩已兑现，置信度最高。</li>
+        <li><strong>文章主线·铜连接（预期差大）</strong>：沃尔核材/鼎通科技/华丰科技 — GB200 架构逻辑硬，但<strong>供货关系多未公告确认</strong>；适合跟踪 224G/448G 放量与 IR，忌追自媒体「独家 NV 供应链」。</li>
+        <li><strong>液冷（渗透率逻辑）</strong>：英维克/高澜 — Rubin 机柜 100% 液冷趋势，但液冷占英维克营收仍低，看 2026H2 订单转化。</li>
+        <li><strong>PCB（稳健受益）</strong>：沪电/胜宏 — AI 占比高、业绩连续高增，估值低于光模块龙头。</li>
+        <li><strong>国产替代</strong>：寒武纪/海光/昇腾链 — 十五五「人工智能+」+ 国测芯片目录；与 NV 链估值框架不同。</li>
+        <li><strong>谨慎/回避</strong>：仅概念标签无分部收入、低端 IDC、自媒体「光进铜退=光模块利空」的误读交易。</li>
+      </ol>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">A 股筛选池（mx-xuangu 摘要，PE&lt;40）</h2>
+      <p class="mt-2 text-sm text-slate-500">来源：东财妙想选股 · 2026-05-30 · 条件「AI算力 板块 市盈率小于40」· 共 59 只 · 下表为与<strong>文章四主线</strong>相关的前 12 只</p>
+      <table class="data mt-4 w-full text-xs">
+        <thead><tr><th>代码</th><th>名称</th><th>PE(TTM)</th><th>涨跌幅</th><th>与主线关联</th></tr></thead>
+        <tbody>
+          <tr><td>300547</td><td>川环科技</td><td>37.89</td><td>-8.55%</td><td>液冷管路/UQD · 液冷</td></tr>
+          <tr><td>601609</td><td>金田股份</td><td>27.66</td><td>-5.22%</td><td>铜缆高速连接概念 · 铜连接</td></tr>
+          <tr><td>001309</td><td>德明利</td><td>35.38</td><td>-2.64%</td><td>存储/HBM 概念 · 算力芯片侧</td></tr>
+          <tr><td>603929</td><td>亚翔集成</td><td>30.49</td><td>-5.56%</td><td>洁净室 · 半导体/IDC 土建</td></tr>
+          <tr><td>301291</td><td>明阳电气</td><td>36.25</td><td>-5.28%</td><td>配电/变压器 · 算电协同</td></tr>
+          <tr><td>688213</td><td>思特威-W</td><td>38.01</td><td>-6.72%</td><td>边缘感知芯片 · 弱相关</td></tr>
+          <tr><td>000338</td><td>潍柴动力</td><td>27.08</td><td>+0.08%</td><td>柴发/燃机 · AIDC 备用电源</td></tr>
+          <tr><td>600089</td><td>特变电工</td><td>20.76</td><td>-2.16%</td><td>电网/变压器 · 塔基电力</td></tr>
+          <tr><td>002415</td><td>海康威视</td><td>18.75</td><td>-0.65%</td><td>安防 AI · 应用层弱相关</td></tr>
+          <tr><td>603153</td><td>上海建科</td><td>16.17</td><td>+2.95%</td><td>工程咨询 · 弱相关</td></tr>
+          <tr><td>601633</td><td>长城汽车</td><td>15.95</td><td>+0.12%</td><td>车载 AI · 边缘算力</td></tr>
+          <tr><td>600570</td><td>恒生电子</td><td>34.33</td><td>-2.22%</td><td>金融 AI 软件 · 应用层</td></tr>
+        </tbody>
+      </table>
+      <p class="mt-3 text-xs text-slate-500">概念筛选口径较宽，多数非文章核心标的；完整列表见 tmp/mx_output/mx_xuangu_AI算力_板块_市盈率小于40.csv（59 行）</p>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">主要来源</h2>
+      <ul class="mt-4 list-disc pl-6 leading-7 text-sm">
+        <li><strong>一级</strong>：NVIDIA GB200 NVL72 官网与技术博客；沃尔核材/鼎通科技/沪电股份/英维克/新易盛 投资者关系记录与一季报（巨潮资讯）</li>
+        <li><strong>二级</strong>：IDC/信通院《2025 年中国人工智能计算力发展评估报告》；2026 政府工作报告与十五五规划纲要；TrendForce 液冷渗透率 cited 于券商研报</li>
+        <li><strong>三级</strong>：东财 mx-search / mx-xuangu（2026-05-30）；西南证券/招商证券/国盛证券等公开研报摘要</li>
+        <li><strong>未采信</strong>：自媒体「类股C简」中未交叉验证的 NV 供应链表格、 「光进铜退=光模块利空」叙事</li>
+        <li>本仓库 <a href="/h200-industry-chain.html">H200</a>、<a href="/ai-storage-industry-chain.html">存储</a>、<a href="/optical-transceiver-industry-chain.html">光模块</a>、<a href="/ai-compute-nonferrous-metals-industry-chain.html">有色</a>、<a href="/huawei-tau-scaling-industry-chain.html">韬定律</a> 专题页</li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本文用于产业链与行业研究，不构成投资建议。</li>
+        <li>成本比例为公开资料交叉估算，非官方 BOM。</li>
+        <li>「A股重点」表示值得优先跟踪，不等同于确认订单或收入占比。</li>
+        <li>产业链层级划分为主观研究框架，不同机构口径可能略有差异。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+        while (li.firstChild && li.firstChild !== childList) {
+          summary.appendChild(li.firstChild);
+        }
+        details.appendChild(summary);
+        details.appendChild(childList);
+        while (li.firstChild) {
+          details.appendChild(li.firstChild);
+        }
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>

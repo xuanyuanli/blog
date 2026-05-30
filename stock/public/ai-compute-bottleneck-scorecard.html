@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 算力 L4–L10 瓶颈评分卡 · Serenity 逻辑</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .72rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .72rem; font-weight: 700; }
+    .us { display: inline-block; border-radius: .45rem; background: #dbeafe; color: #1e40af; padding: .05rem .4rem; font-size: .72rem; font-weight: 700; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .45rem .6rem; text-align: left; vertical-align: top; font-size: .78rem; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .score-high { background: #dcfce7; color: #166534; font-weight: 800; }
+    .score-mid { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .score-low { background: #f1f5f9; color: #475569; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-3 flex flex-wrap gap-2 text-sm">
+        <span class="rounded-full bg-indigo-400/20 px-3 py-1">Serenity 瓶颈套利 · L4–L10</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1">调研截止 2026-05-30 UTC+8</span>
+        <span class="rounded-full bg-amber-400/20 px-3 py-1">非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold md:text-4xl">AI 算力产业链 L4–L10 瓶颈评分卡</h1>
+      <p class="mt-4 max-w-5xl text-sm leading-7 text-slate-200">
+        本页<strong>不依赖仓库既有 HTML 文章结论</strong>，基于 2026-05-30 前后独立调研：东财 mx-search（公告 NOTICE / 研报 REPORT 优先）、mx-xuangu 候选池、WebSearch 国际信源（Lumentum/AXT/Ibiden/GE Vernova/Vertiv/Supermicro 等）交叉验证。每层 5 个<strong>二三层物理瓶颈</strong>（刻意避开 L1 明星 GPU/HBM 原厂），每环节 3 只 A 股 + 1 只美股对标。
+      </p>
+    </header>
+
+    <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm text-sm leading-7">
+      <h2 class="text-xl font-bold">评分方法论（Serenity 五维 · 各 1–5 分，满分 25）</h2>
+      <table class="data mt-4 w-full">
+        <thead><tr><th>维度</th><th>5 分</th><th>3 分</th><th>1 分</th></tr></thead>
+        <tbody>
+          <tr><td>物理稀缺性</td><td>扩产周期 &gt;18 月或全球 ≤3 家能量产</td><td>6–18 月，寡头但可扩</td><td>产能充裕、commodity 化</td></tr>
+          <tr><td>单点故障性</td><td>断供则 AI 集群/芯片交付停摆</td><td>可降级替代但性能/成本大损</td><td>多源冗余</td></tr>
+          <tr><td>定价充分度</td><td>研报/成交额覆盖少，非明星叙事</td><td>部分定价，仍有预期差</td><td>充分定价（如光模块龙头）</td></tr>
+          <tr><td>客户验证</td><td>公告/IR 点名客户或白名单</td><td>产业链高相关未点名</td><td>仅概念标签</td></tr>
+          <tr><td>业绩能见度</td><td>订单/Backlog/涨价/交期拉长有硬数据</td><td>景气逻辑清晰，业绩待兑现</td><td>纯主题</td></tr>
+        </tbody>
+      </table>
+      <p class="mt-3 text-slate-600">证据标签：<span class="evidence evidence-confirmed">确认</span> 公告/官网/IR · <span class="evidence evidence-indirect">间接</span> 研报/产业链 · <span class="evidence evidence-private">推断</span> 自媒体/未验证</p>
+    </section>
+
+    <section class="mb-6 rounded-2xl border border-blue-200 bg-blue-50/50 p-5 text-sm">
+      <h2 class="font-bold text-blue-950">调研信源摘要（2026-05-22 ~ 05-30）</h2>
+      <ul class="mt-2 list-disc pl-6 leading-7 text-blue-900">
+        <li><strong>EML 激光器</strong>：Lumentum FY2026Q3 法说会（华创证券纪要）——供需缺口 &gt;30%，200G EML 收入 QoQ 翻倍+，产能锁定至 2027；证券时报 2026-05-29 引 LightCounting 1.6T 卡点在上游芯片。</li>
+        <li><strong>InP 衬底</strong>：AXT Q1 2026 业绩会——InP backlog &gt;$100M，出口许可为交付瓶颈；扩产目标 2026 末季度产能约 $35M。</li>
+        <li><strong>ABF 载板</strong>：Ibiden 2026-02 公告 5000 亿日元 CapEx（2026–2028）；深南电路 2026-05-27 IR——FC-BGA 22 层量产、产能利用率高位；Ajinomoto ABF 膜 2026Q3 拟涨价约 30%（Semicon/Wccftech）。</li>
+        <li><strong>CoWoS</strong>：中信建投 2026-05-26 引 TrendForce——2026 末 TSMC CoWoS 月产能约 12–13 万片，仍 oversubscribed；C.C. Wei 公开表述 sold out 至 2026。</li>
+        <li><strong>MLCC</strong>：财联社 2026-05-26——村田/太阳诱电涨价，AI 服务器单机用量较普通服务器 +3 倍；TrendForce 引 VR200 NVL72 约 60 万颗 MLCC。</li>
+        <li><strong>液冷 CDU</strong>：Vertiv Q1 2026——backlog &gt;$15B，book-to-bill 2.9x；Rubin 机柜 100% 液冷趋势（东财液冷专题研报 2026-05-28）。</li>
+        <li><strong>变压器/电网</strong>：Wood Mackenzie Q2 2025——大型变压器 lead time 128 周；Morning Overview 2026——美东部分项目 100MVA+ 变压器等 5 年。</li>
+        <li><strong>燃机/柴发</strong>：GE Vernova Q1 2026——燃机 backlog 100GW，数据中心占 electrification 订单显著比例；AIDC 约 20% 合同与数据中心相关。</li>
+        <li><strong>机柜 JDM</strong>：Supermicro FY2025——Blackwell 供给不足 + 客户 site readiness 延迟；工业富联 2026Q1 合同负债高增（国泰海通研报 2026-03，<span class="evidence evidence-indirect">间接</span>）。</li>
+        <li><strong>高速铜缆</strong>：沃尔核材 2026-04-09 NOTICE——2025 高速通信线营收 10.17 亿（+238%），448G 样品送样；鼎通科技 2026-05 NOTICE——112G 满产、224G 批量。</li>
+      </ul>
+    </section>
+
+    <!-- ========== L4 ========== -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-2xl font-bold text-indigo-900">L4 · 系统与集群集成</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[1100px]">
+          <thead><tr>
+            <th>瓶颈环节</th><th>物理约束</th><th>稀缺</th><th>单点</th><th>定价</th><th>验证</th><th>能见度</th><th>总分</th>
+            <th>A 股 ×3</th><th>美股对标</th><th>核心证据</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1. NVL72/Rubin 机柜级 JDM 集成</strong></td>
+              <td>机柜含 ~200 万零部件、液冷+供电+互连联调；Rubin 代工厂从十余家缩至 5–6 家</td>
+              <td class="score-high">5</td><td class="score-high">5</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td>
+              <td class="score-high">20</td>
+              <td><span class="ashare">工业富联</span> 601138 · <span class="ashare">浪潮信息</span> 000977 · <span class="ashare">中科曙光</span> 603019</td>
+              <td><span class="us">SMCI</span> Super Micro</td>
+              <td>SMCI 2025 财报：Blackwell 分配不足致收入 miss，backlog 创新高（DCD）；鸿海/IR <span class="evidence evidence-indirect">产业链</span> GB200–Rubin 机柜集成；<strong>未公告点名 NV 份额</strong></td>
+            </tr>
+            <tr>
+              <td><strong>2. 224G/448G 机柜内铜缆 cartridge</strong></td>
+              <td>NVL72 Scale-up 铜缆；448G 认证周期 + 扩产设备交付</td>
+              <td class="score-high">4</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td>
+              <td class="score-high">18</td>
+              <td><span class="ashare">沃尔核材</span> 002130 · <span class="ashare">鼎通科技</span> 688668 · <span class="ashare">华丰科技</span> 688629</td>
+              <td><span class="us">APH</span> Amphenol</td>
+              <td>沃尔核材 <span class="evidence evidence-confirmed">NOTICE</span> 2026-04-09：高速通信线 +238%，448G 送样；鼎通 <span class="evidence evidence-confirmed">NOTICE</span> 112G 满产/224G 批量；NV 直供 <span class="evidence evidence-private">未确认</span></td>
+            </tr>
+            <tr>
+              <td><strong>3. 机柜级液冷 manifold / 二次侧环路</strong></td>
+              <td>1500W+ 芯片热密度；manifold+CDU 与机柜同步交付</td>
+              <td class="score-high">4</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-indirect">3</td><td class="score-mid">3</td>
+              <td class="score-high">17</td>
+              <td><span class="ashare">英维克</span> 002837 · <span class="ashare">川环科技</span> 300547 · <span class="ashare">工业富联</span> 601138</td>
+              <td><span class="us">VRT</span> Vertiv</td>
+              <td>工业富联 IR <span class="evidence evidence-indirect">INV_NEWS</span> 自研液冷 1500W；Vertiv backlog $15B+（Q1 2026）；英维克液冷占营收仍低 <span class="evidence evidence-indirect">研报</span></td>
+            </tr>
+            <tr>
+              <td><strong>4. Spectrum-X CPO 全光交换机代工</strong></td>
+              <td>CPO 交换机集成度极高；2026 出货上修至 5 万台级（产业链）</td>
+              <td class="score-high">5</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-high">18</td>
+              <td><span class="ashare">工业富联</span> 601138 · <span class="ashare">紫光股份</span> 000938 · <span class="ashare">锐捷网络</span> 301165</td>
+              <td><span class="us">ANET</span> Arista</td>
+              <td>鸿海 2026-05 <span class="evidence evidence-indirect">INV_NEWS</span> CPO 机柜提前出货；「独家代工」<span class="evidence evidence-private">待公告确认</span>；ANET 为下游交换机龙头参照</td>
+            </tr>
+            <tr>
+              <td><strong>5. AI 训练 NVMe / 分布式存储阵列</strong></td>
+              <td>Checkpoint/数据湖 IO 常成训练瓶颈；全闪存带宽需求指数级</td>
+              <td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-mid">16</td>
+              <td><span class="ashare">浪潮信息</span> 000977 · <span class="ashare">同有科技</span> 300302 · <span class="ashare">德明利</span> 001309</td>
+              <td><span class="us">NTAP</span> NetApp</td>
+              <td>存储链超级周期 <span class="evidence evidence-indirect">TrendForce/研报</span>；A 股多为模组/方案，<strong>非 NV 核心存储 OEM</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== L5 ========== -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-2xl font-bold text-indigo-900">L5 · 高速互连与板级</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[1100px]">
+          <thead><tr>
+            <th>瓶颈环节</th><th>物理约束</th><th>稀缺</th><th>单点</th><th>定价</th><th>验证</th><th>能见度</th><th>总分</th>
+            <th>A 股 ×3</th><th>美股对标</th><th>核心证据</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1. 200G/lane EML 激光器芯片</strong></td>
+              <td>1.6T 需 8×200G EML；LITE 称缺口 &gt;30%，sold out 至 2027</td>
+              <td class="score-high">5</td><td class="score-high">5</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">5</td>
+              <td class="score-high">21</td>
+              <td><span class="ashare">源杰科技</span> 688498 · <span class="ashare">长光华芯</span> 688048 · <span class="ashare">仕佳光子</span> 688313</td>
+              <td><span class="us">LITE</span> Lumentum</td>
+              <td>Lumentum FY26Q3 <span class="evidence evidence-indirect">REPORT</span> 缺口 &gt;30%；源杰 200G 验证中 <span class="evidence evidence-indirect">东吴证券 2026-05-17</span>；扩产周期 1–3 年</td>
+            </tr>
+            <tr>
+              <td><strong>2. 1.6T 光引擎 / FAU（非模块组装）</strong></td>
+              <td>天孚 1.6T 光引擎因物料缺货未达产；上游无源器件隐性瓶颈</td>
+              <td class="score-high">4</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-high">4</td>
+              <td class="score-high">19</td>
+              <td><span class="ashare">天孚通信</span> 300394 · <span class="ashare">光库科技</span> 300620 · <span class="ashare">博创科技</span> 300548</td>
+              <td><span class="us">COHR</span> Coherent</td>
+              <td>天孚 2026-04 业绩说明会 <span class="evidence evidence-indirect">REPORT</span> 物料缺货；新易盛预付款 +3920% <span class="evidence evidence-confirmed">一季报</span></td>
+            </tr>
+            <tr>
+              <td><strong>3. ABF / FC-BGA GPU 封装载板</strong></td>
+              <td>高端 FC-BGA lead time 26–30 周；Ibiden AI 份额 70–80%</td>
+              <td class="score-high">5</td><td class="score-high">5</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td>
+              <td class="score-high">20</td>
+              <td><span class="ashare">深南电路</span> 002916 · <span class="ashare">兴森科技</span> 002436 · <span class="ashare">沪电股份</span> 002463</td>
+              <td><span class="us">IBIDF</span> Ibiden</td>
+              <td>Ibiden <span class="evidence evidence-confirmed">官网</span> 5000 亿日元扩产；深南 IR <span class="evidence evidence-confirmed">NOTICE</span> 2026-05-27 FC-BGA 22 层量产、产能高位</td>
+            </tr>
+            <tr>
+              <td><strong>4. M9 低损耗 CCL + 30 层 AI PCB</strong></td>
+              <td>高端 CCL 交期 3–4 周→6 周；AI PCB 层数/面积跃升</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-high">4</td>
+              <td class="score-high">18</td>
+              <td><span class="ashare">生益科技</span> 600183 · <span class="ashare">沪电股份</span> 002463 · <span class="ashare">胜宏科技</span> 300476</td>
+              <td><span class="us">TTMI</span> TTM Technologies</td>
+              <td>沪电 Q1 营收 +54% <span class="evidence evidence-confirmed">一季报</span>；The Elec CCL 交期拉长 <span class="evidence evidence-indirect">产业</span>；TTMI 为北美军工/数据中心 PCB 参照</td>
+            </tr>
+            <tr>
+              <td><strong>5. 224G 高速背板 / IO 连接器</strong></td>
+              <td>112G 满产后 224G 认证+模具；与液冷组件共线争产能</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-high">4</td><td class="score-high">4</td>
+              <td class="score-high">19</td>
+              <td><span class="ashare">鼎通科技</span> 688668 · <span class="ashare">华丰科技</span> 688629 · <span class="ashare">意华股份</span> 002897</td>
+              <td><span class="us">APH</span> Amphenol</td>
+              <td>鼎通 <span class="evidence evidence-confirmed">NOTICE</span> 2026-05：112G 满产、224G 批量、液冷组件小批量</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== L6 ========== -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-2xl font-bold text-indigo-900">L6 · 算力芯片与存储（二三层瓶颈，非 GPU/HBM 原厂）</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[1100px]">
+          <thead><tr>
+            <th>瓶颈环节</th><th>物理约束</th><th>稀缺</th><th>单点</th><th>定价</th><th>验证</th><th>能见度</th><th>总分</th>
+            <th>A 股 ×3</th><th>美股对标</th><th>核心证据</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1. CoWoS 类 2.5D 先进封装产能</strong></td>
+              <td>TSMC CoWoS 2026 目标 ~12–13 万片/月仍 oversubscribed；扩产 12–18 月</td>
+              <td class="score-high">5</td><td class="score-high">5</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td>
+              <td class="score-high">20</td>
+              <td><span class="ashare">长电科技</span> 600584 · <span class="ashare">通富微电</span> 002156 · <span class="ashare">华天科技</span> 002185</td>
+              <td><span class="us">AMKR</span> Amkor</td>
+              <td>中信建投 2026-05-26 TrendForce 产能；通富 AMD MI300 绑定 <span class="evidence evidence-indirect">产业链</span>；Huang 飞 TSMC 锁产能 <span class="evidence evidence-indirect">新闻</span></td>
+            </tr>
+            <tr>
+              <td><strong>2. HBM Known-Good Die 探针 / 堆叠前测试</strong></td>
+              <td>HBM3→HBM4 堆高测试强度 +25–30%；探针卡故障即停线</td>
+              <td class="score-high">5</td><td class="score-high">4</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td>
+              <td class="score-high">20</td>
+              <td><span class="ashare">精智达</span> 688627 · <span class="ashare">长川科技</span> 300604 · <span class="ashare">华峰测控</span> 688200</td>
+              <td><span class="us">FORM</span> FormFactor</td>
+              <td>FORM Q1 2026：HBM 探针业务 H1 YoY +50%+；精智达 HBM 探针 <span class="evidence evidence-indirect">研报</span></td>
+            </tr>
+            <tr>
+              <td><strong>3. AI 服务器高端 MLCC</strong></td>
+              <td>VR200 单机 ~60 万颗；村田 AI 专用 MLCC 涨价 15–35%</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">5</td>
+              <td class="score-high">19</td>
+              <td><span class="ashare">三环集团</span> 300408 · <span class="ashare">风华高科</span> 000636 · <span class="ashare">洁美科技</span> 002859</td>
+              <td><span class="us">KYOCY</span> Kyocera ADR</td>
+              <td>财联社 2026-05-26 涨价潮；兴业证券 2026-05-27 MLCC 景气周期；交期 8→24 周 <span class="evidence evidence-indirect">产业</span></td>
+            </tr>
+            <tr>
+              <td><strong>4. HBM / GPU 封装测试 OSAT</strong></td>
+              <td>TSV、micro-bump 良率；国内 HBM 封测配套长鑫/国产 GPU</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-mid">16</td>
+              <td><span class="ashare">通富微电</span> 002156 · <span class="ashare">长电科技</span> 600584 · <span class="ashare">深科技</span> 000021</td>
+              <td><span class="us">AMKR</span> Amkor</td>
+              <td>通富 Q1 净利 +224% <span class="evidence evidence-indirect">INV_NEWS</span>；HBM 量产确认度 <span class="evidence evidence-private">低于 CoWoS 台系</span></td>
+            </tr>
+            <tr>
+              <td><strong>5. 国产 AI ASIC / NPU（推理侧闭环）</strong></td>
+              <td>7nm 推理芯片国产替代；生态≠ NV，独立估值框架</td>
+              <td class="score-mid">3</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-high">4</td>
+              <td class="score-mid">17</td>
+              <td><span class="ashare">寒武纪</span> 688256 · <span class="ashare">海光信息</span> 688041 · <span class="ashare">龙芯中科</span> 688047</td>
+              <td><span class="us">AVGO</span> Broadcom</td>
+              <td>寒武纪 Q1 高增 <span class="evidence evidence-confirmed">财报</span>；AVGO 为云 ASIC 定制龙头参照（非 Serenity 冷门逻辑，作景气锚）</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== L7 ========== -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-2xl font-bold text-indigo-900">L7 · 散热与电源</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[1100px]">
+          <thead><tr>
+            <th>瓶颈环节</th><th>物理约束</th><th>稀缺</th><th>单点</th><th>定价</th><th>验证</th><th>能见度</th><th>总分</th>
+            <th>A 股 ×3</th><th>美股对标</th><th>核心证据</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1. CDU / 冷板液冷系统</strong></td>
+              <td>50kW+ 机柜刚需；Vertiv 液冷市占 ~11%，backlog 翻倍</td>
+              <td class="score-high">4</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td>
+              <td class="score-high">18</td>
+              <td><span class="ashare">英维克</span> 002837 · <span class="ashare">高澜股份</span> 300499 · <span class="ashare">申菱环境</span> 301018</td>
+              <td><span class="us">VRT</span> Vertiv</td>
+              <td>Vertiv Q1 2026 backlog $15B+；TrendForce 2026 液冷渗透率 ~40% <span class="evidence evidence-indirect">研报</span></td>
+            </tr>
+            <tr>
+              <td><strong>2. 氟化液 / 浸没式冷却液</strong></td>
+              <td>3M Novec 退出后替代验证；浸没式高密度场景</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-high">17</td>
+              <td><span class="ashare">巨化股份</span> 600160 · <span class="ashare">昊华科技</span> 600378 · <span class="ashare">三美股份</span> 603379</td>
+              <td><span class="us">SOL</span> Solvay</td>
+              <td>巨化/昊华 <span class="evidence evidence-indirect">产业链</span> 浸没式氟化液；Solvay 为全球氟化液化学龙头参照</td>
+            </tr>
+            <tr>
+              <td><strong>3. 5.5kW+ 钛金 AI 服务器 PSU</strong></td>
+              <td>NVL72 需 36×5.5kW；台达/光宝垄断→国产白名单突破</td>
+              <td class="score-high">4</td><td class="score-high">4</td><td class="score-high">4</td><td class="score-high">4</td><td class="score-mid">3</td>
+              <td class="score-high">19</td>
+              <td><span class="ashare">麦格米特</span> 002851 · <span class="ashare">欧陆通</span> 300870 · <span class="ashare">杰华特</span> 688141</td>
+              <td><span class="us">AEIS</span> Advanced Energy</td>
+              <td>麦格米特 <span class="evidence evidence-indirect">REPORT</span> 东吴 2026-04：5.5kW 进 NV 白名单；欧陆通 IR <span class="evidence evidence-confirmed">NOTICE</span> 2026-05-25 5.5–18.4kW 布局</td>
+            </tr>
+            <tr>
+              <td><strong>4. 燃气轮机 / 柴发 AIDC 自备电源</strong></td>
+              <td>GEV 燃机 backlog 100GW，2030 槽位紧张；grid 排队 3–7 年</td>
+              <td class="score-high">5</td><td class="score-high">5</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">5</td>
+              <td class="score-high">22</td>
+              <td><span class="ashare">科泰电源</span> 300153 · <span class="ashare">泰豪科技</span> 600590 · <span class="ashare">潍柴动力</span> 000338</td>
+              <td><span class="us">GEV</span> GE Vernova</td>
+              <td>GEV Q1 2026：100GW backlog，数据中心 electrification Q1 订单 &gt;2025 全年</td>
+            </tr>
+            <tr>
+              <td><strong>5. UQD 液冷快接头 / 二次侧管路</strong></td>
+              <td>漏液风险高、认证严；与 CDU 同步放量</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-high">17</td>
+              <td><span class="ashare">川环科技</span> 300547 · <span class="ashare">鼎通科技</span> 688668 · <span class="ashare">鹏翎股份</span> 300375</td>
+              <td><span class="us">PH</span> Parker-Hannifin</td>
+              <td>川环 UQD/液冷管路 <span class="evidence evidence-indirect">mx-xuangu 板块</span>；PH 为流体连接全球龙头参照</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== L8 ========== -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-2xl font-bold text-indigo-900">L8 · 数据中心土建与机柜</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[1100px]">
+          <thead><tr>
+            <th>瓶颈环节</th><th>物理约束</th><th>稀缺</th><th>单点</th><th>定价</th><th>验证</th><th>能见度</th><th>总分</th>
+            <th>A 股 ×3</th><th>美股对标</th><th>核心证据</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1. 半导体级 / IDC 洁净室工程</strong></td>
+              <td>高等级洁净室施工资质+周期长；先进封装/封测扩产拉动</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-high">17</td>
+              <td><span class="ashare">亚翔集成</span> 603929 · <span class="ashare">柏诚股份</span> 601133 · <span class="ashare">太极实业</span> 600667</td>
+              <td><span class="us">EME</span> EMCOR Group</td>
+              <td>亚翔 <span class="evidence evidence-indirect">mx-xuangu AI算力 PE&lt;40</span> 洁净室标签；EME 为北美数据中心机电 EPC 参照</td>
+            </tr>
+            <tr>
+              <td><strong>2. 150kW+ 高密机柜 / 列头配电</strong></td>
+              <td>承重/层高/母线升级；与液冷管路协同设计</td>
+              <td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-mid">16</td>
+              <td><span class="ashare">科华数据</span> 002335 · <span class="ashare">科士达</span> 002518 · <span class="ashare">曙光数创</span> 872808</td>
+              <td><span class="us">NVT</span> nVent</td>
+              <td>nVent 机柜/PDU 全球龙头；科华 UPS+液冷 <span class="evidence evidence-indirect">产业链</span></td>
+            </tr>
+            <tr>
+              <td><strong>3. AIDC 机电总包 / 算力园区 EPC</strong></td>
+              <td>120kW 基准→200kW 迭代；PUE&lt;1.3 硬性考核</td>
+              <td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-mid">16</td>
+              <td><span class="ashare">宝信软件</span> 600845 · <span class="ashare">润泽科技</span> 300442 · <span class="ashare">数据港</span> 603881</td>
+              <td><span class="us">EQIX</span> Equinix</td>
+              <td>十五五算电协同 <span class="evidence evidence-confirmed">政策</span>；润泽/数据港定制机房 <span class="evidence evidence-indirect">研报</span></td>
+            </tr>
+            <tr>
+              <td><strong>4. 动环监控 / 数据中心 BMS</strong></td>
+              <td>液冷+电力联动监控；故障预测软件粘性</td>
+              <td class="score-mid">3</td><td class="score-low">2</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-mid">15</td>
+              <td><span class="ashare">佳力图</span> 603912 · <span class="ashare">依米康</span> 300249 · <span class="ashare">英维克</span> 002837</td>
+              <td><span class="us">VRT</span> Vertiv</td>
+              <td>Vertiv 软件+服务生命周期 <span class="evidence evidence-indirect">官网</span>；A 股偏项目型</td>
+            </tr>
+            <tr>
+              <td><strong>5. 算力钢结构 / 重载土建</strong></td>
+              <td>液冷机柜密度↑→楼面荷载↑；土建改造周期 12–24 月</td>
+              <td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">5</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-mid">17</td>
+              <td><span class="ashare">鸿路钢构</span> 002541 · <span class="ashare">精工钢构</span> 600496 · <span class="ashare">中国化学</span> 601117</td>
+              <td><span class="us">BLD</span> TopBuild</td>
+              <td>SMCI 强调 customer site readiness 延迟 <span class="evidence evidence-indirect">财报</span>；土建为隐性瓶颈</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== L9 ========== -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-2xl font-bold text-indigo-900">L9 · 能源与电网</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[1100px]">
+          <thead><tr>
+            <th>瓶颈环节</th><th>物理约束</th><th>稀缺</th><th>单点</th><th>定价</th><th>验证</th><th>能见度</th><th>总分</th>
+            <th>A 股 ×3</th><th>美股对标</th><th>核心证据</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1. 100MVA+ 大型电力变压器</strong></td>
+              <td>Lead time 128 周（Wood Mac）；美东案例达 5 年</td>
+              <td class="score-high">5</td><td class="score-high">5</td><td class="score-high">5</td><td class="score-high">4</td><td class="score-high">5</td>
+              <td class="score-high">24</td>
+              <td><span class="ashare">特变电工</span> 600089 · <span class="ashare">中国西电</span> 601179 · <span class="ashare">保变电气</span> 600550</td>
+              <td><span class="us">GEV</span> GE Vernova</td>
+              <td>Wood Mackenzie Q2 2025；Morning Overview 2026-05；GEV Prolec 变压器并购强化 grid</td>
+            </tr>
+            <tr>
+              <td><strong>2. 电网继保 / 调度自动化</strong></td>
+              <td>超大规模集群并网调度；国标+认证壁垒</td>
+              <td class="score-high">4</td><td class="score-high">4</td><td class="score-high">4</td><td class="score-high">4</td><td class="score-mid">3</td>
+              <td class="score-high">19</td>
+              <td><span class="ashare">国电南瑞</span> 600406 · <span class="ashare">许继电气</span> 000400 · <span class="ashare">四方股份</span> 601126</td>
+              <td><span class="us">ETN</span> Eaton</td>
+              <td>算力中心并网 <span class="evidence evidence-indirect">十五五政策</span>；ETN 数据中心电力管理全球参照</td>
+            </tr>
+            <tr>
+              <td><strong>3. AIDC 中压配电 / 开关柜</strong></td>
+              <td>断路器价 +47%（2021 以来）；switchgear +50%</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td>
+              <td class="score-high">18</td>
+              <td><span class="ashare">明阳电气</span> 301291 · <span class="ashare">良信股份</span> 002706 · <span class="ashare">正泰电器</span> 601877</td>
+              <td><span class="us">ETN</span> Eaton</td>
+              <td>Blueprint DC 2026 LinkedIn：breaker/switchgear 涨价；明阳电气 mx-xuangu 算力配电标签</td>
+            </tr>
+            <tr>
+              <td><strong>4. 电网侧储能 / 削峰填谷</strong></td>
+              <td>200MW 级 campus 需储能平抑；与并网排队绑定</td>
+              <td class="score-mid">3</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-high">4</td>
+              <td class="score-mid">17</td>
+              <td><span class="ashare">阳光电源</span> 300274 · <span class="ashare">宁德时代</span> 300750 · <span class="ashare">科华数据</span> 002335</td>
+              <td><span class="us">FLNC</span> Fluence</td>
+              <td>ERCOT 储能排队 23 月 <span class="evidence evidence-indirect">Macro Notes</span>；Fluence 为全球 AIDC 储能系统集成参照</td>
+            </tr>
+            <tr>
+              <td><strong>5. 低电价区域算力配套（算电协同）</strong></td>
+              <td>内蒙/贵州/甘肃绿电直供；区位即壁垒</td>
+              <td class="score-mid">3</td><td class="score-low">2</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-mid">15</td>
+              <td><span class="ashare">内蒙华电</span> 600863 · <span class="ashare">西昌电力</span> 600505 · <span class="ashare">明星电力</span> 600101</td>
+              <td><span class="us">CEG</span> Constellation</td>
+              <td>CEG 核电 PPA 供 DC <span class="evidence evidence-indirect">US 新闻</span>；A 股多为区域电力+算力主题，需甄别纯概念</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== L10 ========== -->
+    <section class="mb-8">
+      <h2 class="mb-4 text-2xl font-bold text-indigo-900">L10 · 半导体制造与材料（塔基）</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="data w-full min-w-[1100px]">
+          <thead><tr>
+            <th>瓶颈环节</th><th>物理约束</th><th>稀缺</th><th>单点</th><th>定价</th><th>验证</th><th>能见度</th><th>总分</th>
+            <th>A 股 ×3</th><th>美股对标</th><th>核心证据</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1. InP 磷化铟化合物衬底</strong></td>
+              <td>EML/硅光必需衬底；AXT backlog &gt;$100M，出口许可瓶颈</td>
+              <td class="score-high">5</td><td class="score-high">5</td><td class="score-high">5</td><td class="score-mid">3</td><td class="score-high">5</td>
+              <td class="score-high">23</td>
+              <td><span class="ashare">三安光电</span> 600703 · <span class="ashare">云南锗业</span> 002428 · <span class="ashare">有研新材</span> 600206</td>
+              <td><span class="us">AXTI</span> AXT Inc</td>
+              <td>AXT Q1 2026 业绩会 <span class="evidence evidence-confirmed">IR</span>；Serenity 典型案例；A 股多为外延/材料布局 <span class="evidence evidence-indirect">产业链</span></td>
+            </tr>
+            <tr>
+              <td><strong>2. ABF 树脂薄膜（载板上游）</strong></td>
+              <td>Ajinomoto ~95% 份额；2026Q3 拟涨价 ~30%；新厂 2032 投产</td>
+              <td class="score-high">5</td><td class="score-high">5</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td>
+              <td class="score-high">21</td>
+              <td><span class="ashare">华正新材</span> 603186 · <span class="ashare">南亚新材</span> 688519 · <span class="ashare">圣泉集团</span> 605589</td>
+              <td><span class="us">ENTG</span> Entegris</td>
+              <td>Wccftech/Semicon 2026-05 Ajinomoto 涨价；A 股 CCL 厂商受益/替代研发 <span class="evidence evidence-indirect">研报</span></td>
+            </tr>
+            <tr>
+              <td><strong>3. 刻蚀 / 薄膜沉积设备</strong></td>
+              <td>先进封装/存储扩产；设备交期 12–18 月+</td>
+              <td class="score-high">4</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-high">4</td>
+              <td class="score-high">19</td>
+              <td><span class="ashare">北方华创</span> 002371 · <span class="ashare">中微公司</span> 688012 · <span class="ashare">拓荆科技</span> 688072</td>
+              <td><span class="us">LRCX</span> Lam Research</td>
+              <td>台积电 2026 九厂+先进封装 CapEx <span class="evidence evidence-indirect">法说会</span>；北方华创订单 <span class="evidence evidence-indirect">行业</span></td>
+            </tr>
+            <tr>
+              <td><strong>4. 晶圆光学检测 / 计量</strong></td>
+              <td>先进制程缺陷检测；KLA  oligopoly</td>
+              <td class="score-high">5</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-high">18</td>
+              <td><span class="ashare">精测电子</span> 300567 · <span class="ashare">中科飞测</span> 688361 · <span class="ashare">天准科技</span> 688003</td>
+              <td><span class="us">KLAC</span> KLA Corp</td>
+              <td>国产替代窗口 <span class="evidence evidence-indirect">研报</span>；KLAC 为全球检测龙头参照</td>
+            </tr>
+            <tr>
+              <td><strong>5. 电子特气（刻蚀/沉积气体）</strong></td>
+              <td>三氟化氮/六氟化钨等；扩产同步晶圆厂</td>
+              <td class="score-high">4</td><td class="score-mid">3</td><td class="score-high">4</td><td class="score-mid">3</td><td class="score-mid">3</td>
+              <td class="score-high">17</td>
+              <td><span class="ashare">华特气体</span> 688268 · <span class="ashare">金宏气体</span> 688106 · <span class="ashare">昊华科技</span> 600378</td>
+              <td><span class="us">LIN</span> Linde</td>
+              <td>半导体材料国产化 <span class="evidence evidence-indirect">政策</span>；Linde 全球电子气龙头</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-6 shadow-sm">
+      <h2 class="text-xl font-bold text-emerald-950">Serenity 逻辑 · 全栈 Top 10 瓶颈（按总分排序，跨层）</h2>
+      <ol class="mt-4 list-decimal space-y-2 pl-6 text-sm leading-7 text-emerald-900">
+        <li><strong>L9 大型变压器</strong>（24 分）— 全球 lead time 极端；GEV/特变电工 · <span class="evidence evidence-indirect">Wood Mac</span></li>
+        <li><strong>L10 InP 衬底</strong>（23 分）— AXTI 式「隐形单点故障」；AXTI/三安光电</li>
+        <li><strong>L7 燃机/柴发</strong>（22 分）— 100GW backlog；GEV/科泰电源</li>
+        <li><strong>L5 200G EML</strong>（21 分）— LITE 缺口 &gt;30%；LITE/源杰科技</li>
+        <li><strong>L10 ABF 薄膜</strong>（21 分）— Ajinomoto 涨价；Ibiden/深南电路</li>
+        <li><strong>L4 NVL72 JDM</strong>（20 分）— 厂商收敛至 5–6 家；SMCI/工业富联</li>
+        <li><strong>L5 FC-BGA 载板</strong>（20 分）— 26 周交期；IBIDF/兴森科技</li>
+        <li><strong>L6 CoWoS 封装</strong>（20 分）— sold out；AMKR/长电科技</li>
+        <li><strong>L6 HBM 探针测试</strong>（20 分）— 测试强度指数级；FORM/精智达</li>
+        <li><strong>L7 5.5kW PSU</strong>（19 分）— 台系垄断打破；麦格米特/AEIS</li>
+      </ol>
+      <p class="mt-4 text-xs text-emerald-800">回避提示：1.6T 光模块<strong>组装</strong>龙头（中际旭创等）业绩已兑现、定价充分，不符合 Serenity「冷门咽喉」风格，故未纳入 L5 主瓶颈清单。</p>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm text-sm">
+      <h2 class="text-xl font-bold">主要来源</h2>
+      <ul class="mt-3 list-disc pl-6 leading-7 text-slate-700">
+        <li>东财 mx-search：EML/液冷/PSU/铜缆/ABF/MLCC/CoWoS/工业富联等 15+ 检索，2026-05-30</li>
+        <li>东财 mx-xuangu：液冷 CDU、IC 载板 ABF、半导体设备板块，2026-05-30</li>
+        <li>Lumentum FY2026Q3 纪要（华创证券）、Ibiden 2026-02 资本开支公告、AXT Q1 2026 业绩会</li>
+        <li>Vertiv / GE Vernova Q1 2026 财报与业绩会</li>
+        <li>Wood Mackenzie 变压器市场、Morning Overview 2026、Macro Notes Substation Decade</li>
+        <li>沃尔核材/鼎通科技/深南电路/欧陆通 投资者关系 NOTICE（巨潮）</li>
+        <li>关联地图（只作层级参照）：<a href="/ai-compute-industry-chain.html">ai-compute-industry-chain.html</a></li>
+      </ul>
+    </section>
+
+    <footer class="rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本页为产业链研究输出，不构成投资建议。评分为主观加权，需随公告与交期动态更新。</li>
+        <li>「美股对标」用于环节参照，非一对一供应链确认。A 股「确认/间接/推断」标签不可作为确定供货依据。</li>
+        <li>自媒体「独家 NV 供应链」类表述默认 <span class="evidence evidence-private">推断</span>，除非有 NOTICE 点名。</li>
+      </ul>
+    </footer>
+  </main>
+</body>
+</html>
