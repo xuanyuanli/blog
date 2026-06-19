@@ -1,0 +1,43 @@
+# 美股 AI 分层 watchlist（tier 决定预警动作）
+tiers:
+  high_risk_app:
+    description: PS>15、无持续经营现金流的应用小票 — 预警期优先清仓
+    symbols:
+      - SOUN
+      - BBAI
+      - AI
+      - PATH
+  capex_heavy:
+    description: 高 CapEx、算力周期 — 涨幅>200% 或 CAPE 高位时分批减至 30-40%
+    symbols:
+      - NVDA
+      - AMD
+      - AVGO
+      - MU
+      - SMCI
+      - DELL
+  platform_giant:
+    description: 主业稳定 + AI 第二曲线 — 预警期保留，不全清
+    symbols:
+      - MSFT
+      - GOOGL
+      - META
+      - AMZN
+      - AAPL
+
+defensive_etfs:
+  description: 杠铃防御底仓参考锚（非交易信号）
+  symbols:
+    - XLP
+    - XLU
+    - XLE
+    - GLD
+    - SHV
+
+ai_etfs:
+  description: 散户 AI 资金情绪跟踪
+  symbols:
+    - SMH
+    - BOTZ
+    - AIQ
+    - SOXX

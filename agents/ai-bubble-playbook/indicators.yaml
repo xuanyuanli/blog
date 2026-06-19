@@ -1,0 +1,85 @@
+# AI 泡沫预警指标 — 全部由 Agent CLI WebSearch 抓取
+
+meta:
+  version: "2.0"
+  data_source: agent_cli_search
+
+indicators:
+  - id: shiller_cape
+    name: 席勒 CAPE
+    phase: warning
+    threshold: { op: ">", value: 40, signal: warning }
+    agent_search:
+      task: 02-valuation-cape
+      queries:
+        - "multpl shiller PE ratio current"
+        - "YCharts cyclically adjusted PE ratio"
+
+  - id: nasdaq_drawdown_pct
+    name: 纳指100自峰值回撤
+    phase: crash
+    agent_search:
+      task: 02-valuation-cape
+      queries:
+        - "NASDAQ 100 current drawdown from peak"
+        - "^NDX drawdown portfolioslab"
+
+  - id: real_rate_10y
+    name: 10Y 实际利率 (TIPS)
+    phase: warning
+    agent_search:
+      task: 01-macro-liquidity
+      queries:
+        - "FRED DFII10 latest"
+        - "Fed H.15 10 year TIPS yield"
+
+  - id: credit_spread_bbb
+    name: BBB 信用利差
+    phase: warning
+    agent_search:
+      task: 01-macro-liquidity
+      queries:
+        - "FRED BAMLC0A4CBBB latest"
+
+  - id: finra_margin_debt
+    name: FINRA 融资余额
+    phase: warning
+    agent_search:
+      task: 01-macro-liquidity
+      queries:
+        - "FRED MDODFS margin debt"
+
+  - id: ai_etf_flows
+    name: AI ETF 资金情绪
+    phase: warning
+    agent_search:
+      task: 03-sentiment-flows
+      queries:
+        - "SMH SOXX ETF flows 2026"
+        - "Nasdaq 100 YTD return 2026"
+
+  - id: media_sentiment
+    name: 媒体 AI 叙事
+    phase: warning
+    agent_search:
+      task: 03-sentiment-flows
+
+  - id: vc_funding_trend
+    name: AI VC 融资
+    phase: warning
+    agent_search:
+      task: 04-vc-ipo-primary
+
+  - id: ipo_pipeline_delay
+    name: IPO 管道
+    phase: warning
+    agent_search:
+      task: 04-vc-ipo-primary
+
+  - id: stock_ps_ratio
+    name: 个股 PS
+    phase: warning
+    agent_search:
+      task: 05-bottom-screening
+      queries:
+        - "NVDA MSFT price to sales ratio TTM"

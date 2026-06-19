@@ -1,0 +1,18 @@
+# A 股对冲补充（可选 fetch_stock.py，≤5 只）
+description: 降低外销硬件敞口、对冲全球风险偏好下行
+symbols:
+  - code: "600519"
+    name: 贵州茅台
+    role: 必需消费锚
+  - code: "601088"
+    name: 中国神华
+    role: 高股息能源
+  - code: "600900"
+    name: 长江电力
+    role: 公用事业
+  - code: "518880"
+    name: 黄金ETF
+    role: 黄金对冲
+  - code: "511010"
+    name: 国债ETF
+    role: 短债锚

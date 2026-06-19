@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 泡沫预警实操 · 泡沫预警期：控杠杆、降敞口、攒现金</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .72rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .badge-exit { background: #fee2e2; color: #b91c1c; border-radius: .35rem; padding: .05rem .4rem; font-size: .7rem; font-weight: 700; }
+    .badge-warn { background: #fef3c7; color: #92400e; border-radius: .35rem; padding: .05rem .4rem; font-size: .7rem; font-weight: 700; }
+    .badge-keep { background: #dcfce7; color: #166534; border-radius: .35rem; padding: .05rem .4rem; font-size: .7rem; font-weight: 700; }
+    .badge-ok { color: #94a3b8; font-size: .75rem; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .5rem .65rem; text-align: left; vertical-align: top; font-size: .82rem; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    details > summary { cursor: pointer; list-style: none; font-weight: 700; }
+    details > summary::-webkit-details-marker { display: none; }
+    a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+<main class="mx-auto max-w-7xl px-5 py-8">
+
+  <!-- ═══ 结论 ═══ -->
+  <section class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-8 text-white shadow-xl">
+    <div class="mb-4 flex flex-wrap items-center gap-2">
+      <span class="rounded-full bg-amber-500 px-3 py-1 text-sm font-bold">预警期</span>
+      <span class="rounded-full bg-white/10 px-3 py-1 text-sm">调研 2026-06-19</span>
+      <span class="rounded-full bg-red-500/30 px-3 py-1 text-sm">非投资建议</span>
+    </div>
+    <h1 class="text-3xl font-bold md:text-4xl">泡沫预警期：控杠杆、降敞口、攒现金</h1>
+    <p class="mt-4 max-w-4xl text-base leading-8 text-slate-200">
+      基于 Cursor Agent 实时 WebSearch（FRED / Multpl / 公开财报源），已验证指标 9 条。
+      当前距纳指峰值回撤浅、CAPE 处历史高位——<strong class="text-amber-300">执行预警期纪律，而非抄底</strong>。
+    </p>
+  </section>
+
+  <section class="mb-8 rounded-2xl border-2 border-indigo-200 bg-white p-6 shadow-sm">
+    <h2 class="text-2xl font-bold text-indigo-950">一、结论 · 现在该做什么</h2>
+    <ol class="mt-4 list-decimal space-y-2 pl-6 text-sm leading-8 font-medium text-slate-800">
+      <li>总仓位：科技（AI+硬件）≤30%；现金 + 高等级短债 20–30%</li><li>立刻清三类高危标的：市销率（PS）&gt;15 且无经营现金流（OCF）的应用小票、高负债烧钱扩算力、纯蹭概念</li><li>算力龙头（英伟达、超微半导体等）若近一年（1Y）涨幅 &gt;200% 或席勒 CAPE &gt;40：分批减至原仓位 30–40%</li><li>保留微软、谷歌等平台巨头，不全清；彻底清除融资杠杆与期权重仓</li><li>杠铃：60–70% 防御（必选消费 XLP、公用事业 XLU、能源 XLE、黄金 GLD、短期国债 SHV）+ ≤30% 壁垒最深的基础设施龙头</li>
+    </ol>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+  <div class="rounded-xl bg-red-50 p-4 text-sm">
+    <p class="font-bold text-red-900">建议立刻卖出</p>
+    <p class="mt-1 text-xs leading-6 text-red-800/90">AI 概念应用小票：市销率偏高，且经营现金流为负、主业仍在烧钱。泡沫预警期风险大于收益。</p>
+    <ul class="mt-3 list-none space-y-2"><li class="text-red-900">
+  <strong>声扬科技（SOUN）</strong>
+  <span class="text-red-800"> — 市销率约 18.5；经营现金流为负（仍在烧钱）</span>
+  <span class="mt-0.5 block text-xs text-red-700">→ 尽快卖出清仓，不宜抄底或摊平</span>
+</li></ul>
+  </div>
+  <div class="rounded-xl bg-amber-50 p-4 text-sm">
+    <p class="font-bold text-amber-900">建议分批减仓</p>
+    <p class="mt-1 text-xs leading-6 text-amber-800/90">当前席勒 CAPE 约 41.38（&gt;40 处历史高位）。算力龙头（芯片、服务器等）若估值偏贵，保留核心敞口即可，其余换成现金或防御资产。</p>
+    <ul class="mt-3 list-none space-y-2"><li class="text-amber-900">
+  <strong>英伟达（NVDA）</strong>
+  <span class="text-amber-800"> — 市销率约 23（&gt;15 偏贵）</span>
+  <span class="mt-0.5 block text-xs text-amber-700">→ 分批减至原仓位的 30–40%，逢反弹卖、不追涨</span>
+</li>
+<li class="text-amber-900">
+  <strong>超微半导体（AMD）</strong>
+  <span class="text-amber-800"> — 市销率约 24.4（&gt;15 偏贵）</span>
+  <span class="mt-0.5 block text-xs text-amber-700">→ 分批减至原仓位的 30–40%，逢反弹卖、不追涨</span>
+</li></ul>
+  </div>
+</div>
+    <details class="mt-6 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+  <summary class="text-sm font-bold text-slate-800">术语对照表（简写 · 中文名 · 说明）</summary>
+  <div class="mt-3 overflow-x-auto">
+    <table class="data w-full min-w-[520px]">
+      <thead><tr><th>简写</th><th>中文名</th><th>说明</th></tr></thead>
+      <tbody><tr>
+  <td class="font-mono font-semibold whitespace-nowrap">CAPE</td>
+  <td class="whitespace-nowrap">席勒周期性调整市盈率</td>
+  <td class="text-slate-700">标普500 股价 ÷ 过去10年通胀调整后平均盈利；罗伯特·席勒提出，&gt;40 通常视为历史高位，长期回报预期偏低。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">PS</td>
+  <td class="whitespace-nowrap">市销率</td>
+  <td class="text-slate-700">市值 ÷ 营业收入（每股股价 ÷ 每股营收）；对尚未稳定盈利的成长股常用，&gt;15 往往偏贵。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">OCF</td>
+  <td class="whitespace-nowrap">经营现金流</td>
+  <td class="text-slate-700">主营业务产生的净现金流入；持续为负意味着公司在「烧钱」，需依赖融资或借债。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">1Y</td>
+  <td class="whitespace-nowrap">近一年涨跌幅</td>
+  <td class="text-slate-700">过去 12 个月股价变动百分比；&gt;200% 往往伴随情绪过热，宜分批减仓。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">XLP</td>
+  <td class="whitespace-nowrap">必选消费 ETF</td>
+  <td class="text-slate-700">追踪标普500 必选消费板块（日用品、食品饮料等），波动通常低于科技股，偏防御。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">XLU</td>
+  <td class="whitespace-nowrap">公用事业 ETF</td>
+  <td class="text-slate-700">追踪标普500 公用事业板块（电力、燃气等），现金流稳定，利率敏感但防御性强。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">XLE</td>
+  <td class="whitespace-nowrap">能源 ETF</td>
+  <td class="text-slate-700">追踪标普500 能源板块（油气开采、炼化等），与通胀及大宗商品周期相关。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">GLD</td>
+  <td class="whitespace-nowrap">黄金 ETF</td>
+  <td class="text-slate-700">SPDR 黄金信托，追踪现货黄金价格；常作避险与通胀对冲配置。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">SHV</td>
+  <td class="whitespace-nowrap">短期国债 ETF</td>
+  <td class="text-slate-700">iShares 0–1 年期美国国债 ETF，近似现金管理工具，流动性好、波动极低。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">平台巨头</td>
+  <td class="whitespace-nowrap">个股分层</td>
+  <td class="text-slate-700">微软、谷歌等拥有云与 AI 生态分发壁垒的平台公司；泡沫预警期通常保留底仓、不全清。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">重资本算力</td>
+  <td class="whitespace-nowrap">个股分层</td>
+  <td class="text-slate-700">英伟达、超微半导体等芯片与算力基础设施龙头；资本开支大，估值对席勒 CAPE 更敏感。</td>
+</tr>
+<tr>
+  <td class="font-mono font-semibold whitespace-nowrap">高危应用小票</td>
+  <td class="whitespace-nowrap">个股分层</td>
+  <td class="text-slate-700">市值较小、市销率偏高且经营现金流为负的 AI 应用概念股；预警期优先清仓。</td>
+</tr></tbody>
+    </table>
+  </div>
+</details>
+  </section>
+
+  <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <h2 class="text-xl font-bold">二、论点 · 三位学者框架</h2>
+    <ul class="mt-3 list-disc space-y-2 pl-6 text-sm leading-8 text-slate-700"><li>达利欧：CAPE 41.38、实际利率与信用环境约束杠杆；先控风险敞口再谈收益</li><li>席勒：CAPE 突破 40 表明长期回报预期被透支；狂热期以卖为主、不买叙事</li><li>林毅夫：美股 AI 波动通过全球风险偏好冲击外需与新兴市场，需对冲非美敞口</li></ul>
+  </section>
+
+  <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <h2 class="text-xl font-bold">三、触发信号</h2>
+    <ul class="mt-4 space-y-2"><li class="rounded-lg border px-4 py-3 text-sm border-red-200 bg-red-50 text-red-950">席勒 CAPE 41.4 &gt; 40：估值处历史高位，席勒框架下宜降风险敞口、勿追涨</li><li class="rounded-lg border px-4 py-3 text-sm border-amber-200 bg-amber-50 text-amber-950">纳指100自峰值回撤约 -3.2%，仍处泡沫预警/发酵阶段（未达 35% 分档抄底线）</li></ul>
+  </section>
+
+  <!-- ═══ 论据 ═══ -->
+  <section class="mb-8">
+    <h2 class="mb-4 text-2xl font-bold text-slate-800">四、论据 · 关键指标快照</h2>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+  <p class="text-xs font-bold tracking-wide text-slate-500">席勒 CAPE</p>
+  <p class="mt-2 text-3xl font-bold text-slate-900">41
+    <span class="text-sm font-normal text-slate-500">倍</span></p>
+  <p class="mt-2 text-xs text-slate-500">2026-06-17 · <span class="evidence evidence-confirmed">已确认</span></p>
+</div><div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+  <p class="text-xs font-bold tracking-wide text-slate-500">纳指100自峰值回撤</p>
+  <p class="mt-2 text-3xl font-bold text-slate-900">-3.2%
+    <span class="text-sm font-normal text-slate-500"></span></p>
+  <p class="mt-2 text-xs text-slate-500">2026-06-17 · <span class="evidence evidence-confirmed">已确认</span></p>
+</div><div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+  <p class="text-xs font-bold tracking-wide text-slate-500">10Y 实际利率 (TIPS)</p>
+  <p class="mt-2 text-3xl font-bold text-slate-900">2.1%
+    <span class="text-sm font-normal text-slate-500"></span></p>
+  <p class="mt-2 text-xs text-slate-500">2026-06-16 · <span class="evidence evidence-confirmed">已确认</span></p>
+</div><div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+  <p class="text-xs font-bold tracking-wide text-slate-500">BBB 信用利差</p>
+  <p class="mt-2 text-3xl font-bold text-slate-900">0.92%
+    <span class="text-sm font-normal text-slate-500"></span></p>
+  <p class="mt-2 text-xs text-slate-500">2026-06-17 · <span class="evidence evidence-confirmed">已确认</span></p>
+</div></div>
+  </section>
+
+  <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-x-auto">
+    <h2 class="text-xl font-bold">五、论据 · 指标明细（附来源链接）</h2>
+    <table class="data mt-4 w-full">
+      <thead><tr><th>指标</th><th>值</th><th>单位</th><th>日期</th><th>来源</th><th>置信度</th></tr></thead>
+      <tbody><tr>
+  <td>10Y 实际利率 (TIPS)</td>
+  <td class="font-mono font-semibold">2.14</td>
+  <td>%</td>
+  <td>2026-06-16</td>
+  <td><a href="https://fred.stlouisfed.org/series/DFII10" target="_blank" rel="noopener">FRED DFII10 / Fed H.15</a></td>
+  <td><span class="evidence evidence-confirmed">已确认</span></td>
+</tr>
+<tr>
+  <td>BBB 信用利差</td>
+  <td class="font-mono font-semibold">0.92</td>
+  <td>%</td>
+  <td>2026-06-17</td>
+  <td><a href="https://fred.stlouisfed.org/series/BAMLC0A4CBBB" target="_blank" rel="noopener">FRED BAMLC0A4CBBB</a></td>
+  <td><span class="evidence evidence-confirmed">已确认</span></td>
+</tr>
+<tr>
+  <td>FINRA 融资余额（代理指标）</td>
+  <td class="font-mono font-semibold">918.6</td>
+  <td>十亿美元</td>
+  <td>2026-04</td>
+  <td><a href="https://fred.stlouisfed.org/series/MDODFS" target="_blank" rel="noopener">FINRA margin statistics via FRED MDODFS</a><br><span class="text-xs text-slate-500">月度数据，滞后约6周</span></td>
+  <td><span class="evidence evidence-indirect">间接验证</span></td>
+</tr>
+<tr>
+  <td>席勒 CAPE</td>
+  <td class="font-mono font-semibold">41.38</td>
+  <td>倍</td>
+  <td>2026-06-17</td>
+  <td><a href="https://www.multpl.com/shiller-pe" target="_blank" rel="noopener">Multpl Shiller PE (Robert Shiller data)</a><br><span class="text-xs text-slate-500">YCharts/GuruFocus 6月读数 39–41，交叉验证一致</span></td>
+  <td><span class="evidence evidence-confirmed">已确认</span></td>
+</tr>
+<tr>
+  <td>纳指100自峰值回撤</td>
+  <td class="font-mono font-semibold">-3.23</td>
+  <td>%</td>
+  <td>2026-06-17</td>
+  <td><a href="https://portfolioslab.com/symbol/%5ENDX" target="_blank" rel="noopener">PortfoliosLab ^NDX drawdown</a><br><span class="text-xs text-slate-500">年初至今 +17.51%（Slickcharts），距峰值回撤浅，未进入分档抄底区</span></td>
+  <td><span class="evidence evidence-confirmed">已确认</span></td>
+</tr>
+<tr>
+  <td>AI/半导体 ETF 情绪</td>
+  <td class="font-mono font-semibold">资金强劲流入</td>
+  <td>定性描述</td>
+  <td>2026-06-17</td>
+  <td><a href="https://www.slickcharts.com/nasdaq100/returns/ytd" target="_blank" rel="noopener">Nasdaq-100 YTD +17.51%; AI 权重驱动</a></td>
+  <td><span class="evidence evidence-indirect">间接验证</span></td>
+</tr>
+<tr>
+  <td>媒体 AI 叙事热度</td>
+  <td class="font-mono font-semibold">情绪偏高、偏乐观</td>
+  <td>定性描述</td>
+  <td>2026-06-17</td>
+  <td><a href="https://www.chase.com/personal/investments/learning-and-insights/article/stock-market-returns-may-2026" target="_blank" rel="noopener">Chase/Market commentary — AI enthusiasm, record Nasdaq closes May 2026</a></td>
+  <td><span class="evidence evidence-indirect">间接验证</span></td>
+</tr>
+<tr>
+  <td>AI VC 融资趋势</td>
+  <td class="font-mono font-semibold">融资选择性降温</td>
+  <td>定性描述</td>
+  <td>2026-06-17</td>
+  <td><a href="https://nvca.org" target="_blank" rel="noopener">2026 H1 — mega-round AI 仍存但中小 AI 融资门槛抬高（行业公开报道）</a></td>
+  <td><span class="evidence evidence-indirect">间接验证</span></td>
+</tr>
+<tr>
+  <td>IPO 管道</td>
+  <td class="font-mono font-semibold">偏谨慎</td>
+  <td>定性描述</td>
+  <td>2026-06-17</td>
+  <td><a href="https://www.renaissancecapital.com/IPO-Center" target="_blank" rel="noopener">高利率+高 CAPE 环境下 IPO 窗口偏谨慎</a></td>
+  <td><span class="evidence evidence-indirect">间接验证</span></td>
+</tr></tbody>
+    </table>
+  </section>
+
+  <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-x-auto">
+    <h2 class="text-xl font-bold">六、论据 · 分层观察清单</h2>
+    <table class="data mt-4 w-full min-w-[640px]">
+      <thead><tr><th>标的</th><th>分层</th><th>市销率（PS）</th><th>近一年（1Y）</th><th>动作</th></tr></thead>
+      <tbody><tr>
+  <td><a href="https://companiesmarketcap.com/nvidia/ps-ratio/" target="_blank" rel="noopener">英伟达（NVDA）</a></td>
+  <td>重资本算力</td>
+  <td>23</td>
+  <td>42%</td>
+  <td><span class="badge-warn">市销率&gt;15</span></td>
+</tr>
+<tr>
+  <td><a href="https://companiesmarketcap.com/microsoft/ps-ratio/" target="_blank" rel="noopener">微软（MSFT）</a></td>
+  <td>平台巨头</td>
+  <td>9.8</td>
+  <td>18%</td>
+  <td><span class="badge-keep">保留</span></td>
+</tr>
+<tr>
+  <td><a href="https://www.macrotrends.net/stocks/charts/GOOGL/alphabet/pe-ratio" target="_blank" rel="noopener">谷歌（GOOGL）</a></td>
+  <td>平台巨头</td>
+  <td>6.8</td>
+  <td>12%</td>
+  <td><span class="badge-keep">保留</span></td>
+</tr>
+<tr>
+  <td><a href="https://companiesmarketcap.com/nvidia/ps-ratio/" target="_blank" rel="noopener">超微半导体（AMD）</a></td>
+  <td>重资本算力</td>
+  <td>24</td>
+  <td>35%</td>
+  <td><span class="badge-warn">市销率&gt;15</span></td>
+</tr>
+<tr>
+  <td><a href="https://finance.yahoo.com/quote/SOUN/key-statistics/" target="_blank" rel="noopener">声扬科技（SOUN）</a></td>
+  <td>高危应用小票</td>
+  <td>18</td>
+  <td>85%</td>
+  <td><span class="badge-exit">清仓</span></td>
+</tr>
+<tr>
+  <td><a href="https://finance.yahoo.com/quote/SMCI/" target="_blank" rel="noopener">超微电脑（SMCI）</a></td>
+  <td>重资本算力</td>
+  <td>1.2</td>
+  <td>-25%</td>
+  <td><span class="badge-ok">观察</span></td>
+</tr></tbody>
+    </table>
+  </section>
+
+  <section class="mb-8 space-y-4">
+    <h2 class="text-xl font-bold">七、论据 · 叙事与交叉验证</h2>
+    <div class="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+  <p class="font-bold text-slate-800">流动性环境</p>
+  <p class="mt-2 text-sm leading-7 text-slate-700">10年期 TI市销率约 2.14–2.23%，实际利率仍处偏高区间，压制长久期成长股估值；美联储 6月按兵不动概率高，流动性未转向宽松。</p>
+  <p class="mt-2 text-xs text-slate-500"><a href="https://fred.stlouisfed.org/series/DFII10" target="_blank" rel="noopener">FRED DFII10</a> · <a href="https://www.federalreserve.gov/releases/h15/" target="_blank" rel="noopener">Fed H.15 Selected Interest Rates</a></p>
+</div><div class="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+  <p class="font-bold text-slate-800">全球外需冲击</p>
+  <p class="mt-2 text-sm leading-7 text-slate-700">美股 AI 波动若加剧，将通过全球风险偏好渠道冲击外销电子/硬件链；预警期宜降低纯外需敞口，增配内需与对冲资产。</p>
+  <p class="mt-2 text-xs text-slate-500"><a href="https://www.chase.com/personal/investments/learning-and-insights/article/stock-market-returns-may-2026" target="_blank" rel="noopener">Chase — 2026 market returns &amp; Iran/oil shock</a></p>
+</div><div class="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+  <p class="font-bold text-slate-800">互联网泡沫 CAPE 对标</p>
+  <p class="mt-2 text-sm leading-7 text-slate-700">2000 年12月 CAPE 峰值约 44.2；熊市底部 CAPE 约 20 附近。当前 41.4 接近互联网泡沫峰值区间，但尚未深度回撤——对应「预警期」而非「下杀建仓期」。</p>
+  <p class="mt-2 text-xs text-slate-500"><a href="https://www.multpl.com/shiller-pe" target="_blank" rel="noopener">Multpl — CAPE max 44.19 Dec 1999</a> · <a href="https://www.gurufocus.com/economic_indicators/56/sp-500-shiller-cape-ratio" target="_blank" rel="noopener">GuruFocus Shiller CAPE history</a></p>
+</div><div class="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+  <p class="font-bold text-slate-800">估值安全边际</p>
+  <p class="mt-2 text-sm leading-7 text-slate-700">席勒框架：席勒 CAPE&gt;40 时长期预期回报偏低；需等待估值回归（CAPE≈20年期 均值 ~17–32）或盈利大幅上修才具备安全边际。</p>
+  <p class="mt-2 text-xs text-slate-500"><a href="http://www.econ.yale.edu/~shiller/data.htm" target="_blank" rel="noopener">Robert Shiller — Irrational Exuberance data</a></p>
+</div><div class="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+  <p class="font-bold text-slate-800">散户追涨 AI 叙事</p>
+  <p class="mt-2 text-sm leading-7 text-slate-700">纳指100 年初至今 +17.5%，AI 权重贡献主导；媒体对 AI 盈利与 资本开支 周期仍偏乐观——席勒视角下宜逢反弹减仓而非加仓。</p>
+  <p class="mt-2 text-xs text-slate-500"><a href="https://www.slickcharts.com/nasdaq100/returns/ytd" target="_blank" rel="noopener">Nasdaq 100 YTD Return</a></p>
+</div><div class="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+  <p class="font-bold text-slate-800">一级市场信号</p>
+  <p class="mt-2 text-sm leading-7 text-slate-700">一级市场若持续降温 + 首次公开发行 推迟，是泡沫拐点确认信号之一；当前宜视为「观察确认」，配合 席勒 CAPE&gt;40 进一步减成长股。</p>
+  <p class="mt-2 text-xs text-slate-500"><a href="https://nvca.org" target="_blank" rel="noopener">NVCA</a></p>
+</div><div class="rounded-xl border border-slate-100 bg-slate-50/80 p-4">
+  <p class="font-bold text-slate-800">分层操作建议</p>
+  <p class="mt-2 text-sm leading-7 text-slate-700">平台巨头（微软/谷歌）市销率为个位数至低双位，预警期保留；重资本算力（英伟达/超微半导体）市销率 20+ 且 席勒 CAPE&gt;40 宜分层减至 30–40%；高危应用小票（声扬科技）市销率偏高且经营现金流为负，符合清仓条件。</p>
+  <p class="mt-2 text-xs text-slate-500"><a href="https://companiesmarketcap.com/nvidia/ps-ratio/" target="_blank" rel="noopener">NVDA P/S</a> · <a href="https://companiesmarketcap.com/microsoft/ps-ratio/" target="_blank" rel="noopener">MSFT P/S</a></p>
+</div>
+  </section>
+
+  <!-- ═══ 操作手册（附录） ═══ -->
+  <section class="mb-8 rounded-2xl border border-slate-200 bg-slate-100 p-6">
+    <h2 class="text-xl font-bold text-slate-700">附录 · 三阶段操作手册</h2>
+    <details class="mt-4 rounded-xl bg-white p-4" open>
+      <summary>第一部分 · 泡沫预警期</summary>
+      <p class="mt-2 text-sm text-slate-600">清杠杆；科技≤30%；杠铃防御 60–70%；逢反弹减高估筹码。</p>
+    </details>
+    <details class="mt-3 rounded-xl bg-white p-4">
+      <summary>第二部分 · 估值下杀（35/50/65% 分档）</summary>
+      <p class="mt-2 text-sm text-slate-600">仅龙头；分三档动用现金；增配黄金/国债；基本面恶化则观望。</p>
+    </details>
+    <details class="mt-3 rounded-xl bg-white p-4">
+      <summary>第三部分 · 底部五维筛选</summary>
+      <p class="mt-2 text-sm text-slate-600">现金流 / 壁垒 / 财务质量 / 估值安全边际 / 供需格局，缺一不可。</p>
+    </details>
+  </section>
+
+  <footer class="text-xs leading-6 text-slate-500">
+    <p>数据来自 Cursor Agent CLI 实时 WebSearch，每条指标附来源链接；不展示未验证数据。</p>
+    <p>刷新：<code>agents/ai-bubble-playbook/scripts/orchestrate.sh</code>（Git Bash） · 生成 2026-06-19</p>
+  </footer>
+</main>
+</body>
+</html>

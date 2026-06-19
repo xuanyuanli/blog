@@ -14,6 +14,7 @@
 ├── stock-cli/       # A 股尾随止损 CLI（波动分级、止损线）
 ├── nginx/           # Nginx 配置
 ├── blog-ops/        # 博客运维 CLI
+├── agents/          # Cursor CLI 调研编排（如 ai-bubble-playbook）
 └── build.sh         # 服务器侧构建部署脚本
 ```
 
@@ -242,4 +243,5 @@ python scripts/docx/docx.py unpack path/to/file.docx path/to/unpacked/
 - 调整旧博客主题或插件：查看 `vuepress/docs/.vuepress/`。
 - 新增/更新股票分析报告：使用 `.cursor/skills/stock-analysis/`，输出到 `stock/data/`。
 - AI 算力主线 + 成交额 Top200 + 右侧技术筛选：使用 `.cursor/skills/ai-right-side-screen/`；结果持久化在 `data/ai-pool.json`、`data/exclude-codes.txt`。
+- 调整 AI 泡沫预警实操报告：`.cursor/skills/ai-bubble-playbook/`，Git Bash 运行 `agents/ai-bubble-playbook/scripts/orchestrate.sh`，HTML 输出 `stock/public/ai-bubble-playbook.html`。
 - 调整部署流程：查看 `build.sh`、`blog-ops/` 和 `nginx/nginx.conf`。

@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "IndicatorRecord",
+  "type": "object",
+  "required": ["id", "confidence"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "value": {},
+    "unit": { "type": "string" },
+    "as_of": { "type": "string" },
+    "source": { "type": "string" },
+    "source_url": { "type": "string" },
+    "fetch_layer": {
+      "type": "string",
+      "enum": ["python", "python_fallback", "agent_search", "manual"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["confirmed", "indirect", "unverified"]
+    },
+    "freshness": {
+      "type": "string",
+      "enum": ["fresh", "stale", "missing"]
+    },
+    "error": { "type": "string" },
+    "pending_fallback": { "type": "boolean" },
+    "footnote": { "type": "string" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "confidence": { "const": "confirmed" } },
+        "required": ["confidence"]
+      },
+      "then": {
+        "required": ["id", "value", "source", "as_of", "confidence"]
+      }
+    }
+  ]
+}

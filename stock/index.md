@@ -57,6 +57,10 @@ features:
     details: 五维框架筛选真正具备全球定价权的 A 股公司，甄别「全球第一」误区。
     link: /ashare-global-pricing-power.html
     target: _self
+  - title: AI 泡沫预警实操
+    details: 结论先行 · 达利欧×席勒×林毅夫 · Agent 实时搜索验证数据。
+    link: /ai-bubble-playbook.html
+    target: _self
   - title: 大宗商品定价
     details: 大宗商品定价逻辑框架。
     link: /commodity-pricing-framework.html
