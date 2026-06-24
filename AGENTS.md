@@ -245,3 +245,18 @@ python scripts/docx/docx.py unpack path/to/file.docx path/to/unpacked/
 - AI 算力主线 + 成交额 Top200 + 右侧技术筛选：使用 `.cursor/skills/ai-right-side-screen/`；结果持久化在 `data/ai-pool.json`、`data/exclude-codes.txt`。
 - 调整 AI 泡沫预警实操报告：`.cursor/skills/ai-bubble-playbook/`，Git Bash 运行 `agents/ai-bubble-playbook/scripts/orchestrate.sh`，HTML 输出 `stock/public/ai-bubble-playbook.html`。
 - 调整部署流程：查看 `build.sh`、`blog-ops/` 和 `nginx/nginx.conf`。
+
+## Cursor Cloud specific instructions
+
+环境启动时会自动对 `astro/`、`vuepress/`、`stock/`、`stock-cli/`、`blog-ops/` 各自执行 `npm install`（无统一 workspace）。各子项目的标准 `dev/build/test` 命令见上文对应章节，此处只记录非显而易见的注意事项：
+
+- **Node 版本**：VM 默认 `node` 为 v22。`astro`、`stock`、`stock-cli`、`blog-ops` 用默认 v22 即可（依赖安装与构建/测试均通过）。
+- **VuePress 必须用 Node 20 构建**：`vuepress/` 的 `package.json` 限定 `node >18 <=20.x`，且基于 webpack 4，必须设置 `--openssl-legacy-provider`，否则 `npm run build/dev` 会因 OpenSSL 报错。已通过 nvm 安装 v20.20.2。运行示例（依赖可用默认 v22 安装，但构建/dev 需切到 v20）：
+  ```bash
+  export PATH="/home/ubuntu/.nvm/versions/node/v20.20.2/bin:$PATH"
+  export NODE_OPTIONS=--openssl-legacy-provider
+  cd vuepress && npm run build   # 历史文章很多，全量构建约 5~6 分钟，属正常
+  ```
+- **本地 dev 端口**：`astro` dev → http://localhost:4321/ ；`stock`（VitePress）dev → http://localhost:5173/ 。`vuepress` dev 同样需要上面的 Node 20 + openssl 设置，且编译同样较慢。
+- **`blog-ops` 不要在云端实际执行**：它是部署/SSH/Nginx 同步 CLI，会连接线上服务器；云端仅做 `npm run build` 验证即可，切勿运行 `node bin/bops.js <deploy>` 等真实部署命令。`build.sh` 同理（依赖 Docker 与 `/var/www`，面向服务器侧）。
+- **校验方式**：仓库无任何 `lint` 脚本；可用的程序化校验是各子项目的 `npm run build`，外加 `stock-cli` 的 `npm test`（node --test，约 23 个用例）。
