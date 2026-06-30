@@ -37,6 +37,10 @@ features:
     details: HBM / DRAM / NAND / SSD 三层架构、超级周期与 A 股映射。
     link: /ai-storage-industry-chain.html
     target: _self
+  - title: HBM 国产替代调研
+    details: HBM 产业链深度调研；前道材料/设备专节；产业梯度 + 结合股价梯度（2026-06-30）。
+    link: /hbm-domestic-replacement-industry-research.html
+    target: _self
   - title: AI 算力有色
     details: 铜铝及锡镓锗铟稀土 — AI 数据中心与电网金属需求重塑。
     link: /ai-compute-nonferrous-metals-industry-chain.html

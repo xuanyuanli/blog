@@ -12,6 +12,7 @@ export const PUBLIC_HTML_PATHS = new Set([
   '/ai-compute-industry-chain.html',
   '/ai-compute-bottleneck-scorecard.html',
   '/ai-bubble-playbook.html',
+  '/hbm-domestic-replacement-industry-research.html',
 ])
 
 export function isPublicHtmlPath(href: string): boolean {

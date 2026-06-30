@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HBM 国产替代深度调研</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tree ul { margin-left: 1.25rem; padding-left: 1rem; border-left: 1px solid #dbeafe; }
+    .tree li { margin: .55rem 0; }
+    .tree li::marker { color: #2563eb; }
+    details > summary { cursor: pointer; list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::before { content: "▸"; display: inline-block; margin-right: .4rem; color: #2563eb; transition: transform .15s ease; }
+    details[open] > summary::before { transform: rotate(90deg); }
+    .cost { display: inline-block; border-radius: 999px; background: #e0f2fe; color: #075985; padding: .12rem .55rem; font-size: .78rem; font-weight: 700; vertical-align: middle; }
+    .ashare { display: inline-block; border-radius: .45rem; background: #fee2e2; color: #b91c1c; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .ashare-key { display: inline-block; border-radius: .45rem; background: #fef3c7; color: #92400e; padding: .05rem .4rem; font-size: .75rem; font-weight: 800; }
+    .evidence { display: inline-block; border-radius: .45rem; padding: .05rem .4rem; font-size: .75rem; font-weight: 700; }
+    .evidence-confirmed { background: #dcfce7; color: #166534; }
+    .evidence-indirect { background: #ede9fe; color: #5b21b6; }
+    .evidence-private { background: #f1f5f9; color: #334155; }
+    .evidence-reject { background: #fee2e2; color: #991b1b; }
+    .why { color: #475569; }
+    table.data th, table.data td { border: 1px solid #e2e8f0; padding: .55rem .75rem; text-align: left; vertical-align: top; }
+    table.data th { background: #f8fafc; font-weight: 700; }
+    .prosperity-up { background: #dcfce7; color: #166534; }
+    .prosperity-flat { background: #fef3c7; color: #92400e; }
+    .prosperity-down { background: #fee2e2; color: #991b1b; }
+    .tier-1 { background: #dbeafe; color: #1e40af; font-weight: 800; }
+    .tier-2 { background: #dcfce7; color: #166534; font-weight: 700; }
+    .tier-3 { background: #fef3c7; color: #92400e; font-weight: 700; }
+    .tier-w { background: #fee2e2; color: #991b1b; font-weight: 700; }
+    .val-ok { background: #dcfce7; color: #166534; }
+    .val-hot { background: #fef3c7; color: #92400e; }
+    .val-ext { background: #fee2e2; color: #991b1b; }
+    a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <main class="mx-auto max-w-7xl px-5 py-8">
+    <header class="mb-8 rounded-3xl bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-8 text-white shadow-xl">
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-indigo-400/20 px-3 py-1 text-sm text-indigo-100">HBM（高带宽内存）· 国产替代</span>
+        <span class="rounded-full bg-emerald-400/20 px-3 py-1 text-sm text-emerald-100">更新：2026-06-30</span>
+        <span class="rounded-full bg-amber-400/20 px-3 py-1 text-sm text-amber-100">公开资料研究 · 非投资建议</span>
+      </div>
+      <h1 class="text-3xl font-bold tracking-tight md:text-5xl">HBM 国产替代深度调研</h1>
+      <p class="mt-4 max-w-5xl text-base leading-7 text-slate-200">
+        本页从产业链环节、信源强度与业绩兑现窗口出发，梳理 HBM 超级周期下 A 股映射标的；估值采用<strong>四源交叉</strong>（同花顺 + 东财一致预期 + NTM 滚动 EPS + 产业链自下而上），以 <strong>PE(NTM)</strong> 为主锚。
+      </p>
+      <div class="mt-5 grid gap-3 md:grid-cols-4 text-sm">
+        <div class="rounded-xl border border-white/15 bg-white/10 p-3"><p class="text-slate-300">行业</p><p class="mt-1 font-semibold">HBM / DRAM 先进封装 / 封装材料</p></div>
+        <div class="rounded-xl border border-white/15 bg-white/10 p-3"><p class="text-slate-300">热点</p><p class="mt-1 font-semibold">HBM 超级周期、长鑫 HBM3 样品、国产 AI 算力自主</p></div>
+        <div class="rounded-xl border border-white/15 bg-white/10 p-3"><p class="text-slate-300">产业链</p><p class="mt-1 font-semibold">颗粒原厂 → TSV 堆叠 → CoWoS 2.5D → 材料 / 设备 / 载板</p></div>
+        <div class="rounded-xl border border-white/15 bg-white/10 p-3"><p class="text-slate-300">方法</p><p class="mt-1 font-semibold">公告优先 · 交叉验证 · 区分确认与传闻</p></div>
+      </div>
+    </header>
+
+    <section class="mb-6 grid gap-4 md:grid-cols-4">
+      <div class="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">全球 HBM 格局（2025Q3 收入口径）</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">SK 海力士 ~57–62%</p>
+        <p class="mt-2 text-sm text-slate-600">Counterpoint / DRAMWatch 交叉；三星 HBM 份额约 17–22%，显著低于其 DRAM 综合份额。</p>
+      </div>
+      <div class="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">国产 HBM 颗粒</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">长鑫 HBM3 样品验证中</p>
+        <p class="mt-2 text-sm text-slate-600">HBM3E 规模量产规划约 2027；A 股无纯正 HBM 原厂标的。</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <p class="text-sm text-slate-500">国产替代最快环节</p>
+        <p class="mt-2 text-2xl font-bold text-slate-950">前道材料 + 设备</p>
+        <p class="mt-2 text-sm text-slate-600">硅片/特气/靶材/CMP/前驱体为 DRAM 晶圆刚需；TSV 刻蚀、ALD/CVD 为 HBM 堆叠关键工艺。国产化率仍低但长鑫扩产驱动「必选」。</p>
+      </div>
+      <div class="rounded-2xl border border-amber-100 bg-amber-50 p-5 shadow-sm">
+        <p class="text-sm text-amber-800">估值语境（Forward PE）</p>
+        <p class="mt-2 text-2xl font-bold text-amber-950">TTM 高估 · 26E 分化</p>
+        <p class="mt-2 text-sm text-amber-900">四源交叉后，<strong>PE(NTM)</strong> 为主锚（深南 48×、北方 67×、江丰 102×）；中船 NTM 仍 268× 为真风险。THS/东财 20/24 家一致。</p>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">研究方法论与信源规则</h2>
+      <ul class="mt-4 list-disc pl-6 leading-7 text-sm">
+        <li><strong>信源分级</strong>：交易所公告 / 官网 / 法说会 &gt; 产业研究 &gt; 财经媒体 &gt; 自媒体「产业链调研」。</li>
+        <li><strong>两套梯度</strong>：产业梯度只看环节卡位、证据强度、兑现窗口；估值梯度采用<strong>四源交叉</strong>：同花顺一致预期、东财一致预期、NTM 滚动 EPS、产业链自下而上模型。</li>
+        <li><strong>Forward PE 四源框架</strong>：
+          <ul class="mt-2 list-disc pl-6 space-y-1">
+            <li><strong>同花顺一致预期 EPS</strong>（akshare stock_profit_forecast_ths）→ PE 2026E / 2027E</li>
+            <li><strong>东财一致预期 EPS</strong>（datacenter RPT_WEB_RESPREDICT 汇总）→ 与 THS 交叉，差异 &gt;20% 标注分化</li>
+            <li><strong>NTM EPS</strong>（滚动 12 个月）= H2(2026E−H1est) + H1(2027E/2)；H1est 优先取已披露季报，否则 Q1×2 或季节性估算</li>
+            <li><strong>自下而上</strong>：产能 × 利用率 × 单价 − 成本 → 隐含营收/净利/EPS，与一致预期比对</li>
+          </ul>
+        </li>
+        <li><strong>交叉验证规则</strong>：THS/东财 EPS 偏差 &lt;8% → 一致；8–20% → 接近；&gt;20% → 分化（须看哪家更贴近订单/季报）。自下而上与一致预期偏差 &gt;25% → 标注乐观/保守。</li>
+        <li><strong>估值主锚选择（NTM 非万能，按场景切换）</strong>：
+          <ul class="mt-2 list-disc pl-6 space-y-1">
+            <li><strong>默认</strong>：业绩线性增长、26E/27E 均为正 → <strong>PE(NTM)</strong> 为主锚（比单一 26E 多纳入 27H1，比 TTM 少受已爆发基数干扰）。</li>
+            <li><strong>26E EPS ≤ 0（未盈利/仍亏）</strong>：NTM 与 PE 26E <strong>均不可用</strong> → 不用 PE，改看 <strong>PS、毛利率拐点、产能利用率、自下而上盈亏平衡</strong>（如沪硅）。<em>不能</em>硬回退一致预期算 PE——卖方给负 EPS 时 PE 同样无意义。</li>
+            <li><strong>业绩非线性（H1 与全年严重偏离）</strong>：扭亏、H2 集中放量、季节性极端 → NTM 的 H1est 失真，可能<strong>假贵</strong>（H1 已 beat → h2 被压低）或<strong>假便宜</strong>（H1 仍亏 → h2 被抬高）。此时主锚切换为 <strong>PE 2027E</strong> 或 <strong>THS/东财 26E 双源均值</strong>，并标注「非线性」。</li>
+            <li><strong>27E/26E ≥ 1.35（利润陡峭 ramp）</strong>：NTM <strong>优于</strong>单一 26E——已含 27H1，不会把「尚未爆发」错杀成 TTM 式天价（如华海诚科 NTM 189× vs 26E THS 253×）。<em>此场景不应回退 26E，而应保留 NTM 或看 27E。</em></li>
+            <li><strong>THS/东财 分化 &gt;20%</strong>：不单信一家 → <strong>PE(NTM)</strong> 或双源 EPS 均值，对照自下而上。</li>
+            <li><strong>覆盖机构 &lt;3 家</strong>：一致预期与 NTM <strong>同步降权</strong>（赛腾 1 家、太极 1 家）→ 更依赖订单/季报 beat 与自下而上，Forward PE 仅作参考。</li>
+            <li><strong>自下而上 ≪ 一致预期</strong>：卖方已计入 HBM 超级周期 → 即使 NTM/26E 看似合理也须打折；订单 miss 时估值向 BU 收敛（拓荆 THS 5.90 vs BU 3.52）。</li>
+          </ul>
+        </li>
+        <li><strong>纪律</strong>：① 一致预期非真值，超级周期中卖方常滞后；② 股价大涨 = 预期已部分买入；③ 亏损股不用 PE，看 PS/拐点；④ 低覆盖标的 Forward PE 置信度低；⑤ <strong>回退原则</strong>：NTM 失效时按上表切换主锚，而非一律回退 26E 一致预期——26E 在 ramp 初期同样可能滞后或过度乐观。</li>
+        <li><strong>常见误读</strong>：① 把 MRDIMM 接口芯片等同于 HBM 栈内芯片；② 把长江存储（NAND）与长鑫存储（DRAM/HBM）混谈；③ 把封测营销良率等同于原厂 HBM 栈良率。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border-2 border-violet-200 bg-gradient-to-br from-violet-50 to-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold text-violet-950">估值框架：四源交叉验证</h2>
+      <p class="mt-2 leading-7 text-slate-700">HBM 业绩爆发期，单一 TTM 或单一数据源易误判。本报告对 26 家 A 股映射标的执行<strong>同花顺 EPS + 东财 EPS + NTM 滚动 EPS + 产业链自下而上</strong>四源交叉；估值主锚<strong>按场景切换</strong>（默认 PE(NTM)，非线性/亏损/低覆盖时见方法论决策树），PE 2026E（THS/东财）为辅。</p>
+
+      <div class="mt-4 grid gap-3 md:grid-cols-4 text-sm">
+        <div class="rounded-lg border border-violet-200 bg-white p-3"><p class="font-bold text-violet-900">同花顺一致预期</p><p class="mt-1 text-slate-600">卖方 EPS 中值 · 2026E/2027E</p></div>
+        <div class="rounded-lg border border-violet-200 bg-white p-3"><p class="font-bold text-violet-900">东财一致预期</p><p class="mt-1 text-slate-600">RPT_WEB_RESPREDICT 汇总 EPS</p></div>
+        <div class="rounded-lg border border-violet-200 bg-white p-3"><p class="font-bold text-violet-900">NTM EPS</p><p class="mt-1 text-slate-600">H2(26E−H1)+H1(27E/2) 滚动 12M</p></div>
+        <div class="rounded-lg border border-violet-200 bg-white p-3"><p class="font-bold text-violet-900">自下而上</p><p class="mt-1 text-slate-600">产能×利用率×单价−成本</p></div>
+      </div>
+
+      <div class="mt-6 overflow-x-auto">
+        <table class="data w-full text-sm">
+          <thead>
+            <tr>
+              <th>公司</th>
+              <th>THS 26E EPS</th>
+              <th>东财 26E EPS</th>
+              <th>NTM EPS</th>
+              <th>自下而上 26E</th>
+              <th>PE 26E THS</th>
+              <th>PE 26E 东财</th>
+              <th>PE(NTM)</th>
+              <th>双源</th>
+              <th>产业链</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>赛腾股份</strong></td><td>1.82</td><td>—</td><td>2.31</td><td>—</td><td>44.49</td><td>—</td><td class="font-bold text-emerald-800">35.13</td><td>THS/东财分化</td><td>无模型</td></tr>
+            <tr><td><strong>深南电路</strong></td><td>7.84</td><td>7.91</td><td>9.48</td><td>—</td><td>58.41</td><td>57.93</td><td class="font-bold text-emerald-800">48.32</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>华天科技</strong></td><td>0.32</td><td>0.32</td><td>0.36</td><td>—</td><td>69.72</td><td>69.72</td><td class="font-bold text-emerald-800">61.73</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>通富微电</strong></td><td>1.02</td><td>1.03</td><td>1.23</td><td>—</td><td>74.38</td><td>73.48</td><td class="font-bold text-emerald-800">61.86</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>飞凯材料</strong></td><td>0.91</td><td>0.91</td><td>1.00</td><td>—</td><td>67.86</td><td>68.04</td><td class="font-bold text-emerald-800">61.86</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>安集科技</strong></td><td>4.63</td><td>6.02</td><td>5.25</td><td>3.91</td><td>73.32</td><td>56.41</td><td class="font-bold text-emerald-800">64.66</td><td class="text-amber-800">THS/东财分化</td><td>自下而上印证</td></tr>
+            <tr><td><strong>雅克科技</strong></td><td>2.84</td><td>2.84</td><td>3.44</td><td>—</td><td>79.05</td><td>79.12</td><td class="font-bold text-emerald-800">65.28</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>北方华创</strong></td><td>10.51</td><td>10.41</td><td>13.25</td><td>12.86</td><td>84.16</td><td>85.01</td><td class="font-bold text-emerald-800">66.78</td><td>THS/东财一致</td><td>自下而上印证</td></tr>
+            <tr><td><strong>长电科技</strong></td><td>1.13</td><td>1.13</td><td>1.50</td><td>—</td><td>91.64</td><td>91.75</td><td class="font-bold text-emerald-800">68.80</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>盛美上海</strong></td><td>3.87</td><td>3.79</td><td>5.76</td><td>—</td><td>111.63</td><td>114.06</td><td>75.00</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>鼎龙股份</strong></td><td>1.12</td><td>1.12</td><td>1.33</td><td>—</td><td>94.62</td><td>94.40</td><td>79.68</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>华海清科</strong></td><td>2.99</td><td>3.92</td><td>3.56</td><td>—</td><td>107.75</td><td>82.25</td><td>90.50</td><td class="text-amber-800">THS/东财分化</td><td>无模型</td></tr>
+            <tr><td><strong>华特气体</strong></td><td>1.98</td><td>2.00</td><td>2.66</td><td>—</td><td>135.10</td><td>133.86</td><td>100.56</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>江丰电子</strong></td><td>3.10</td><td>3.11</td><td>3.62</td><td>3.04</td><td>118.90</td><td>118.70</td><td>101.96</td><td>THS/东财一致</td><td>自下而上印证</td></tr>
+            <tr><td><strong>澜起科技</strong></td><td>2.70</td><td>2.71</td><td>3.02</td><td>—</td><td>114.78</td><td>114.57</td><td>102.45</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>兆易创新</strong></td><td>7.01</td><td>7.23</td><td>7.50</td><td>—</td><td>116.26</td><td>112.75</td><td>108.67</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>联瑞新材</strong></td><td>1.64</td><td>1.64</td><td>2.11</td><td>—</td><td>149.02</td><td>149.02</td><td>115.83</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>拓荆科技</strong></td><td>5.90</td><td>6.02</td><td>6.89</td><td>3.52</td><td>141.02</td><td>138.21</td><td>120.84</td><td>THS/东财一致</td><td class="text-amber-800">自下而上偏保守</td></tr>
+            <tr><td><strong>中微公司</strong></td><td>3.42</td><td>4.91</td><td>3.85</td><td>—</td><td>136.99</td><td>95.46</td><td>121.72</td><td class="text-amber-800">THS/东财分化</td><td>无模型</td></tr>
+            <tr><td><strong>太极实业</strong></td><td>0.22</td><td>—</td><td>0.22</td><td>—</td><td>132.64</td><td>—</td><td>132.64</td><td>THS/东财分化</td><td>无模型</td></tr>
+            <tr><td><strong>兴森科技</strong></td><td>0.25</td><td>0.25</td><td>0.35</td><td>—</td><td>203.80</td><td>201.46</td><td>145.57</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>华海诚科</strong></td><td>0.74</td><td>1.09</td><td>0.99</td><td>—</td><td>252.70</td><td>170.78</td><td>188.89</td><td class="text-amber-800">THS/东财分化</td><td>无模型</td></tr>
+            <tr><td><strong>芯源微</strong></td><td>1.09</td><td>1.11</td><td>2.12</td><td>—</td><td>402.80</td><td>396.83</td><td class="font-bold text-red-800">206.61</td><td>THS/东财一致</td><td>无模型</td></tr>
+            <tr><td><strong>中船特气</strong></td><td>1.01</td><td>1.01</td><td>1.31</td><td>0.14*</td><td>346.52</td><td>347.38</td><td class="font-bold text-red-800">268.19</td><td>THS/东财一致</td><td class="text-amber-800">自下而上偏保守*</td></tr>
+            <tr><td><strong>沪硅产业</strong></td><td>-0.15</td><td>-0.15</td><td>—</td><td>0.09</td><td>—</td><td>—</td><td>—</td><td>THS/东财一致</td><td>自下而上假设扭亏</td></tr>
+            <tr><td><strong>万润科技</strong></td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>数据不足</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-xs text-slate-500">数据截止 2026-06-30。THS = akshare stock_profit_forecast_ths；东财 = datacenter RPT_WEB_RESPREDICT；NTM 公式见方法论。*中船自下而上仅建模 WF6 单品类（~4.9 亿营收），全司含 NF3 等，故远低于一致预期 1.01 元。</p>
+
+      <h3 class="mt-8 text-lg font-bold text-violet-950">产业链自下而上：6 家核心标的模型</h3>
+      <div class="mt-4 overflow-x-auto">
+        <table class="data w-full text-sm">
+          <thead><tr><th>公司</th><th>模型</th><th>关键假设</th><th>隐含 26E EPS</th><th>THS 26E</th><th>东财 26E</th><th>交叉结论</th></tr></thead>
+          <tbody>
+            <tr><td><strong>江丰电子</strong></td><td>靶材销量×HBM溢价</td><td>营收 44.8 亿（+40%）·净利率 18%</td><td>3.04</td><td>3.10</td><td>3.11</td><td class="val-ok">三源印证，PE(NTM)≈102× 可接受</td></tr>
+            <tr><td><strong>北方华创</strong></td><td>平台设备订单转化</td><td>营收 380 亿·净利率 18%</td><td>12.86</td><td>10.51</td><td>10.41</td><td class="val-ok">自下而上略高于卖方，长鑫扩产支撑</td></tr>
+            <tr><td><strong>安集科技</strong></td><td>CMP 液量×存储线</td><td>营收 18 亿·净利率 28%</td><td>3.91</td><td>4.63</td><td>6.02</td><td class="val-hot">东财高于 THS/自下而上，取 NTM PE 65× 更稳</td></tr>
+            <tr><td><strong>拓荆科技</strong></td><td>设备交付×存储占比</td><td>营收 45 亿·净利率 22%</td><td>3.52</td><td>5.90</td><td>6.02</td><td class="val-hot">自下而上显著低于卖方；卖方已计 HBM 订单上修</td></tr>
+            <tr><td><strong>中船特气</strong></td><td>WF6 产能×利用率×单价</td><td>2000t×70%×35 万/t（仅 WF6 单品）</td><td>0.14*</td><td>1.01</td><td>1.01</td><td class="val-ext">THS/东财一致但 NTM PE 仍 268×；模型未含 NF3/全司</td></tr>
+            <tr><td><strong>沪硅产业</strong></td><td>硅片出货量×ASP</td><td>90 万片/月·ASP 800·净利率 3% 转正</td><td>0.09</td><td>-0.15</td><td>-0.15</td><td>卖方仍预期亏损；自下而上假设扭亏，看利用率拐点</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm leading-7">
+        <p class="font-semibold text-indigo-950">四源交叉的三条结论</p>
+        <ul class="mt-2 list-disc pl-5 text-indigo-900 space-y-1">
+          <li><strong>THS ≈ 东财（20/24 家偏差 &lt;8%）</strong>：江丰、雅克、拓荆、中船等双源高度一致，26E PE 可信度高。</li>
+          <li><strong>分化标的须降权 THS 或取 NTM</strong>：安集（东财 6.02 vs THS 4.63）、中微（4.91 vs 3.42）、华海清科（3.92 vs 2.99）、华海诚科（1.09 vs 0.74）— 报告优先采用 <strong>PE(NTM)</strong> 或双源均值。</li>
+          <li><strong>自下而上 vs 卖方</strong>：拓荆/中船模型低于一致预期 → 卖方已计入 HBM 超级周期订单；若订单不及预期，估值向自下而上收敛（拓荆隐含 PE 236× vs NTM 121×）。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">关键论断核查</h2>
+      <p class="mt-2 text-sm text-slate-500">以下为调研中高频出现、需审慎对待的表述。</p>
+      <div class="mt-4 overflow-x-auto">
+        <table class="data w-full text-sm">
+          <thead><tr><th>市场表述</th><th>核查结论</th><th>标签</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>某存储模组厂「12 层 HBM3E 量产、获 30 万颗订单、适配英伟达 H200」</td>
+              <td>万润科技等年报仅披露 SSD/eMMC/DDR 模组；HBM 规模与订单<strong>无公告</strong>。出口管制下与英伟达旗舰 GPU 供应链路径割裂。</td>
+              <td><span class="evidence evidence-reject">传闻 / 驳回</span></td>
+            </tr>
+            <tr>
+              <td>澜起科技「HBM 专用 MRCD/MDB 垄断」</td>
+              <td>MRCD/MDB 用于 <strong>DDR5 MRDIMM</strong> 服务器模组，非 HBM 堆叠栈内芯片。<a href="https://www.montage-tech.com/cn/Press_Releases/20250124" target="_blank" rel="noopener">澜起官网</a></td>
+              <td><span class="evidence evidence-reject">概念混淆</span></td>
+            </tr>
+            <tr>
+              <td>太极实业海太「承接 SK 海力士 70%+ HBM 封装」</td>
+              <td>第四期后工序合同（2025-07～2030-06）确认 DRAM 封装测试服务；具体 HBM 占比<strong>未披露</strong>。</td>
+              <td><span class="evidence evidence-indirect">绑定确认</span></td>
+            </tr>
+            <tr>
+              <td>长电「HBM3E 良率 98.5%」</td>
+              <td>无审计级披露；SK 海力士 12 层 HBM3E 公开口径约 85% 量级，口径不可直接对比。</td>
+              <td><span class="evidence evidence-private">待验证</span></td>
+            </tr>
+            <tr>
+              <td>长鑫 HBM 具体月产能（如 5000→55000 片/月）</td>
+              <td>HBM3 样品交付有多家媒体交叉报道；精确产能数字多为分析师假设。</td>
+              <td><span class="evidence evidence-indirect">方向可信 · 数字待证</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-6">
+      <h2 class="text-2xl font-bold text-emerald-950">HBM 晶圆制造：材料与设备成本拆解</h2>
+      <p class="mt-3 leading-7 text-sm text-emerald-900">HBM 本质是<strong>堆叠版 DRAM</strong>。单颗 HBM 栈的 BOM 可粗分为：① DRAM 晶圆制造成本（约 50–65%）② TSV/微凸点/减薄/键合等中道（约 25–35%）③ 逻辑基板与后道（约 10–15%）。HBM 层数从 8→12→16 层迭代时，<strong>同面积晶圆消耗量约为普通 DRAM 的 3 倍量级</strong>（TrendForce 口径），且 TSV、CMP、ALD/WF6 沉积等步骤显著多于平面 DRAM。</p>
+      <div class="mt-4 overflow-x-auto">
+        <table class="data w-full text-sm bg-white">
+          <thead>
+            <tr><th>工艺环节</th><th>关键耗材/设备</th><th>国际龙头</th><th>A 股核心映射</th><th>HBM 关联强度</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>硅片基底</td><td>12 英寸抛光片 / 外延片</td><td>信越、SUMCO</td><td><span class="ashare-key">沪硅产业</span> 688126</td><td><span class="evidence evidence-confirmed">长鑫/长江客户</span> 高</td></tr>
+            <tr><td>薄膜沉积</td><td>六氟化钨 WF6、前驱体</td><td>关东电化、空气化工</td><td><span class="ashare-key">中船特气</span> 688146、雅克科技</td><td><span class="evidence evidence-confirmed">年报/调研</span> 高</td></tr>
+            <tr><td>溅射镀膜</td><td>超高纯 W/Ta/Cu 靶材</td><td>霍尼韦尔、日矿金属</td><td><span class="ashare-key">江丰电子</span> 300666</td><td><span class="evidence evidence-confirmed">年报</span> 高</td></tr>
+            <tr><td>ALD/CVD 前驱体</td><td>Hf/Ti/Ta/Si 系前驱体</td><td>UP Chemical、东京应化</td><td><span class="ashare-key">雅克科技</span> 002409</td><td><span class="evidence evidence-indirect">SK/长鑫供应链</span> 高</td></tr>
+            <tr><td>CMP 平坦化</td><td>抛光液 / 垫</td><td>陶氏、Cabot</td><td><span class="ashare-key">安集科技</span> 688019、鼎龙股份</td><td><span class="evidence evidence-indirect">长鑫 17nm</span> 中高</td></tr>
+            <tr><td>TSV 刻蚀</td><td>高深宽比 DRIE / ICP</td><td>泛林、TEL</td><td><span class="ashare-key">中微公司</span> 688012、北方华创 002371</td><td><span class="evidence evidence-indirect">Primo TSV</span> 高</td></tr>
+            <tr><td>薄膜 / 外延</td><td>PECVD、ALD、外延</td><td>AMAT、ASM</td><td>北方华创、拓荆科技 688072</td><td><span class="evidence evidence-indirect">存储产线</span> 中高</td></tr>
+            <tr><td>TSV 填充 / 电镀</td><td>ECD 铜填充</td><td>AMAT Nokota</td><td>盛美上海 688082（电镀清洗）</td><td><span class="evidence evidence-indirect">间接</span> 中</td></tr>
+            <tr><td>晶圆减薄 / CMP</td><td>研磨、CMP</td><td>DISCO、AMAT</td><td>华海清科 688120</td><td><span class="evidence evidence-indirect">存储 CMP</span> 中高</td></tr>
+            <tr><td>混合键合 / 堆叠</td><td>键合、解键合、临时键合</td><td>EVG、BESI</td><td>芯源微 688037、赛腾股份 603283</td><td><span class="evidence evidence-private">验证中</span> 中</td></tr>
+            <tr><td>检测量测</td><td>缺陷 / CD / 膜厚</td><td>KLA、Onto</td><td>精测电子、赛腾股份</td><td><span class="evidence evidence-private">间接</span> 中</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-3 text-xs text-emerald-800">注：HBM 关联强度指与 DRAM/HBM 晶圆制造链的相关度，非公司收入占比；多数材料/设备商不单独披露 HBM 分项收入。</p>
+    </section>
+
+    <section class="tree mb-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="mb-4 text-2xl font-bold">HBM 产业链与 A 股映射</h2>
+      <ul class="list-disc space-y-3 pl-5">
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">1. 颗粒原厂 <span class="cost">价值最高 · 海外垄断</span></summary>
+            <ul class="list-disc">
+              <li><span class="font-semibold">SK 海力士</span> <span class="evidence evidence-confirmed">法说会</span>：HBM 收入份额约 50–62%，HBM4 领先，Rubin 核心供应商。</li>
+              <li><span class="font-semibold">美光 / 三星</span>：HBM3E/HBM4 同步推进；三星 HBM 份额曾落后，2026 加速追赶。</li>
+              <li><span class="font-semibold">长鑫存储（未上市）</span> <span class="evidence evidence-indirect">媒体</span>：HBM3 样品交付国内 AI 客户，2026 量产验证，2027 年 HBM3E 规划。</li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary class="text-xl font-bold">2. HBM 堆叠与中道封装 <span class="cost">TSV · 减薄 · 键合</span></summary>
+            <ul class="list-disc">
+              <li><strong>TSV 堆叠</strong> vs <strong>2.5D 系统集成（CoWoS/XDFOI）</strong>须分层：前者偏存储原厂/OSAT，后者台积电仍占主导。</li>
+              <li><span class="ashare-key">太极实业</span>：海太 SK 海力士后工序合同绑定 <span class="evidence evidence-confirmed">公告</span>。</li>
+              <li><span class="ashare">长电科技 / 通富微电 / 华天科技</span>：先进封装平台，HBM 收入占比待分部披露。</li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">3. 前道晶圆材料 <span class="cost">国产化率约 10–30% · 认证壁垒最高</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="ashare-key">沪硅产业（688126）</span> <span class="evidence evidence-confirmed">年报/客户</span>
+                <span class="cost">12 寸硅片 · 晶圆制造最底层</span>
+                <ul class="list-disc">
+                  <li><strong>卡位</strong>：国内 12 英寸大硅片龙头（上海新昇 + 太原晋科）；2025 年 300mm 产能约 85 万片/月，客户含<strong>长鑫存储、长江存储</strong>、中芯、华虹、晶合等。</li>
+                  <li><strong>HBM 逻辑</strong>：每片 HBM 栈底层均为 DRAM 晶圆；HBM 产能扩张 → 12 寸硅片需求量线性放大。SUMCO 等海外厂 HBM 专用抛光片供需亦偏紧，国产替代窗口打开。</li>
+                  <li><strong>财报</strong>：2025 年 300mm 收入 24.4 亿（+16%），但毛利率仍为负（扩产折旧期）；ROE -8.9%。<span class="why">产业地位核心，盈利拐点待产能利用率与高端外延片占比提升。</span></li>
+                  <li><strong>行情</strong>：¥39.89 · PE -73.98 · 1Y +119.5% · ROE -8.91%（2025 年报）</li>
+                </ul>
+              </li>
+              <li>
+                <span class="ashare-key">江丰电子（300666）</span> <span class="evidence evidence-confirmed">年报</span>
+                <span class="cost">超高纯溅射靶材 · 存储「金属骨架」</span>
+                <ul class="list-disc">
+                  <li><strong>卡位</strong>：超高纯 W/Ta/Cu/Al 靶材国内龙头；年报明确 AI/HBM 重塑存储市场，<strong>超高纯钨靶</strong>需求激增，已批量供应国际知名存储制造商先端节点。</li>
+                  <li><strong>HBM 逻辑</strong>：TSV 阻挡层、金属互连、3D NAND/HBM 薄膜种子层均需高纯靶材；层数越高，沉积步骤越多。2025 年长鑫成为其<strong>第一大客户</strong>（研报交叉），同时为 SK 海力士核心供应商 <span class="evidence evidence-indirect">媒体</span>。</li>
+                  <li><strong>财报</strong>：2025 ROE 10.0% · EPS 1.89 · 研发费用 2.62 亿（+21%）。</li>
+                  <li><strong>行情</strong>：¥368.60 · 26E PE 119 · 27E PE 88 · TTM 184 · 1Y +395.7% · ROE 10.05%</li>
+                </ul>
+              </li>
+              <li>
+                <span class="ashare-key">中船特气（688146）</span> <span class="evidence evidence-confirmed">年报/公告</span>
+                <span class="cost">电子特气 · WF6 全球龙头</span>
+                <ul class="list-disc">
+                  <li><strong>卡位</strong>：六氟化钨（WF6）年产能 2000 吨（全球约 8000–9000 吨/年），三氟化氮 NF3 18500 吨/年；WF6 用于 CVD 沉积钨导体膜/接触孔填充，<strong>堆叠层数与用量正相关</strong>。</li>
+                  <li><strong>HBM 逻辑</strong>：存储芯片为 WF6 最大下游；长期客户含美光、SK 海力士、英特尔、<strong>长江存储、长鑫存储</strong>、台积电等。2025 集成电路行业收入占比约 70%。</li>
+                  <li><strong>风险</strong>：公司多次公告<strong>尚未签署新的具有法律约束力的大额订单</strong>；2026 年 4–6 月股价 +600% 以上含涨价与国产替代预期，需与业绩兑现区分。</li>
+                  <li><strong>财报</strong>：2025 ROE 6.0% · 净利率 15.3% · WF6 产能利用率约 65%（1307 吨/2000 吨），扩产 1000 吨在建（2027）。</li>
+                  <li><strong>行情</strong>：¥349.99 · 26E PE 347 · 27E PE 259 · TTM 515 · 1Y +1138.9% · ROE 6.00%</li>
+                </ul>
+              </li>
+              <li>
+                <span class="ashare-key">雅克科技（002409）</span> — ALD 前驱体（UP Chemical），SK HBM4 与长鑫双供应链。HBM 耗材价值量约为普通 DDR 的 2–3 倍。<strong>行情</strong>：¥224.50 · PE 106.13 · 1Y +336.1% · ROE 12.71%
+              </li>
+              <li>
+                <span class="ashare">安集科技（688019）</span> — CMP 抛光液龙头，长鑫 17nm 国产独家 <span class="evidence evidence-indirect">研报</span>；已进入 SK 海力士供应链。<strong>行情</strong>：¥339.46 · PE 93.89 · 1Y +223.3% · ROE 22.19%
+              </li>
+              <li>
+                <span class="ashare">鼎龙股份（300054）</span> — CMP 抛光垫国产替代（¥105.97 · PE 121.63 · 1Y +296.6% · ROE 13.84%）；<span class="ashare">华特气体（688268）</span> — 刻蚀/沉积特气（¥267.50 · PE 273.60 · 1Y +476.1% · ROE 6.72%）。
+              </li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">4. 半导体设备 <span class="cost">TSV / 沉积 / CMP · 长周期国产替代</span></summary>
+            <ul class="list-disc">
+              <li>
+                <span class="ashare-key">北方华创（002371）</span> <span class="evidence evidence-indirect">长鑫头号设备商</span>
+                <ul class="list-disc">
+                  <li>国内半导体设备平台龙头：刻蚀（ICP）、PVD、CVD、炉管、清洗全品类；研报称长鑫<strong>头号设备供应商</strong>，12 英寸 TSV 刻蚀国内市占 50%+ 叙事 <span class="evidence evidence-private">待分部验证</span>。</li>
+                  <li>2025-12 互动：存储领域可提供 TSV 刻蚀、去胶、湿法清洗、ALD、PVD、回火等全流程设备，产品正推进存储/HBM 客户验证。</li>
+                  <li><strong>行情</strong>：¥884.56 · PE 115.12 · 1Y +190.3% · ROE 14.64%</li>
+                </ul>
+              </li>
+              <li>
+                <span class="ashare-key">中微公司（688012）</span> <span class="evidence evidence-indirect">Primo TSV</span>
+                <ul class="list-disc">
+                  <li>Primo TSV 系列深硅刻蚀设备：12 英寸 3D 芯片 TSV 通孔刻蚀，已通过客户验证并批量出货；CCP 刻蚀设备在 SK 海力士等获认可 <span class="evidence evidence-indirect">法说会/媒体</span>。</li>
+                  <li>覆盖 HBM 堆叠 TSV、3D NAND 深孔；同时布局 MOCVD、LPCVD 等薄膜设备。</li>
+                  <li><strong>行情</strong>：¥468.50 · PE 162.66 · 1Y +291.6% · ROE 9.30%</li>
+                </ul>
+              </li>
+              <li>
+                <span class="ashare">拓荆科技（688072）</span> — PECVD/ALD/HDPCVD 薄膜沉积；DRAM 金属栅/硬掩模等工艺设备，HBM 每层堆叠均需大量薄膜沉积 <span class="evidence evidence-indirect">产业</span>。
+                <strong>行情</strong>：¥832.00 · 26E PE 141 · 27E PE 98 · TTM 143 · 1Y +498.1%
+              </li>
+              <li>
+                <span class="ashare">华海清科（688120）</span> — CMP 设备国产龙头，存储客户覆盖长鑫等；HBM TSV 后晶圆减薄与表面平坦化关键设备。
+                <strong>行情</strong>：¥322.18 · PE 145.22 · 1Y +339.4% · ROE 14.53%
+              </li>
+              <li>
+                <span class="ashare">盛美上海（688082）</span> — 单片清洗 + 电镀设备；存储/HBM 湿法工艺与铜填充环节。
+                <strong>行情</strong>：¥432.00 · PE 166.27 · 1Y +310.2% · ROE 10.36%
+              </li>
+              <li>
+                <span class="ashare">芯源微（688037）</span> — 涂胶显影 + 物理清洗；临时键合/解键合设备适配 12 层以上 HBM 堆叠 <span class="evidence evidence-private">产业推断</span>。
+                <strong>行情</strong>：¥439.05 · PE 1254.70 · 1Y +362.3% · ROE 2.57%
+              </li>
+              <li>
+                <span class="ashare">赛腾股份（603283）</span> — HBM 晶圆/封装检测设备，供应三星/SK 海力士 <span class="evidence evidence-indirect">互动/媒体</span>；「国内唯一」表述需谨慎。
+                <strong>行情</strong>：¥80.98 · PE 56.23 · 1Y +254.1% · ROE 13.94%
+              </li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details open>
+            <summary class="text-xl font-bold">5. 封装材料 <span class="cost">GMC / 硅微粉 / 底部填充</span></summary>
+            <ul class="list-disc">
+              <li><span class="ashare-key">华海诚科（688535）</span> — GMC 环氧塑封料，国内唯一量产 HBM 专用塑封料，通过三星/SK/长电认证 <span class="evidence evidence-indirect">产业</span>。<strong>行情</strong>：¥187.00 · PE 868.42 · 1Y +280.4% · ROE 1.12%</li>
+              <li><span class="ashare-key">联瑞新材（688300）</span> — Low-α 球形硅微粉，HBM 层数升级带动用量倍数增长。<strong>行情</strong>：¥244.40 · PE 195.91 · 1Y +489.2% · ROE 17.16%</li>
+              <li><span class="ashare">飞凯材料（300398）</span> — 底部填充胶，HBM 堆叠封装验证中。<strong>行情</strong>：¥61.75 · PE 87.59 · 1Y +239.4% · ROE 7.95%</li>
+            </ul>
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary class="text-xl font-bold">6. 先进封装 · 载板 · 配套芯片</summary>
+            <ul class="list-disc">
+              <li><span class="ashare-key">太极实业（600667）</span> — SK 海力士后道封测合同绑定。<strong>行情</strong>：¥29.18 · PE 132.88 · 1Y +380.7% · ROE 5.19%</li>
+              <li><span class="ashare">长电科技（600584）</span> / <span class="ashare">通富微电（002156）</span> / <span class="ashare">华天科技（002185）</span> — OSAT 先进封装平台。<strong>长电</strong>：¥103.55 · PE 112.15 · 1Y +226.8% · ROE 5.46% · <strong>通富</strong>：¥75.87 · PE 79.61 · 1Y +227.4% · ROE 7.87% · <strong>华天</strong>：¥22.31 · PE 90.88 · 1Y +155.9% · ROE 3.99%</li>
+              <li><span class="ashare">深南电路（002916）</span> / <span class="ashare">兴森科技（002436）</span> — ABF 载板国产验证。<strong>深南</strong>：¥457.90 · PE 85.82 · 1Y +374.3% · ROE 19.10% · <strong>兴森</strong>：¥50.95 · PE 600.05 · 1Y +337.7% · ROE 2.52%</li>
+              <li><span class="ashare-key">澜起科技（688008）</span> — MRDIMM/CXL 接口（AI 服务器内存带宽，非 HBM 栈内）。<strong>行情</strong>：¥309.90 · PE 148.09 · 1Y +290.6% · ROE 17.30%</li>
+            </ul>
+          </details>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">万润科技（002654）专节</h2>
+      <div class="mt-4 grid gap-4 md:grid-cols-3">
+        <div class="rounded-xl border border-slate-200 p-4">
+          <p class="text-sm text-slate-500">行情（2026-06-30）</p>
+          <p class="mt-1 text-xl font-bold">¥22.26 · +9.98%</p>
+          <p class="mt-2 text-sm">PE TTM 658.33 · 近一年 +91.2%</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 p-4">
+          <p class="text-sm text-slate-500">2025 年报</p>
+          <p class="mt-1 text-xl font-bold">ROE 2.05%</p>
+          <p class="mt-2 text-sm">净利率 0.38% · 存储模组为主业</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 p-4">
+          <p class="text-sm text-slate-500">定位</p>
+          <p class="mt-1 text-lg font-bold">长江产业集团存储平台</p>
+          <p class="mt-2 text-sm">与长江存储（NAND）体系协同；HBM 属 DRAM 路径，与长鑫关联更直接，但公司<strong>未公告 HBM 量产</strong>。</p>
+        </div>
+      </div>
+      <ul class="mt-4 list-disc pl-6 leading-7 text-sm">
+        <li><strong>确认</strong>：控股子公司长江万润半导体主营 SSD/eMMC/DDR；长江产业投资集团体系内存储配套商。</li>
+        <li><strong>未确认</strong>：HBM3E 量产规模、具体订单、头部云厂商认证。</li>
+        <li><strong>判断</strong>：主题弹性大于业绩确定性；即便国产 HBM 落地，亦面临长电/通富及原厂自建封测竞争。</li>
+      </ul>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">景气度研判</h2>
+      <table class="data mt-4 w-full text-sm">
+        <thead><tr><th>尺度</th><th>方向</th><th>置信度</th><th>核心驱动</th><th>关键风险</th></tr></thead>
+        <tbody>
+          <tr><td>短期 0–12M</td><td class="prosperity-up">上行</td><td>高</td><td>HBM 产能售罄、合约价上涨、AI Capex 高增</td><td>部分标的 TTM PE 偏高，但 26E Forward PE 分化；须验证 EPS 兑现</td></tr>
+          <tr><td>中期 1–3Y</td><td class="prosperity-up">上行</td><td>中</td><td>长鑫 HBM 量产、国产 AI 配套、材料认证放量</td><td>2027+ 供给释放、DRAM 价格分化</td></tr>
+          <tr><td>长期 3–5Y+</td><td class="prosperity-flat">震荡分化</td><td>中</td><td>国内「可用 HBM」生态；MRDIMM/CXL 并存</td><td>新架构削弱独立 HBM 增量（学术阶段）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-8 overflow-x-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">核心上市公司对比</h2>
+      <p class="mt-2 text-sm text-slate-500">行情截止 2026-06-30 · 四源交叉（THS / 东财 / NTM / 自下而上）· 主锚 PE(NTM) · ROE 为 2025 年报</p>
+      <table class="data mt-4 w-full text-sm">
+        <thead>
+          <tr>
+            <th>公司</th><th>环节</th><th>现价</th><th>PE(NTM)</th><th>PE 26E THS</th><th>PE 26E 东财</th><th>PE TTM</th><th>THS/东财</th><th>近1年</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="ashare">赛腾股份</span> 603283</td><td>HBM 检测</td><td>80.98</td><td class="font-bold text-emerald-800">35.13</td><td>44.49</td><td>—</td><td>56.23</td><td>分化</td><td>+254.1%</td></tr>
+          <tr><td><span class="ashare">深南电路</span> 002916</td><td>ABF 载板</td><td>457.90</td><td class="font-bold text-emerald-800">48.32</td><td>58.41</td><td>57.93</td><td>85.82</td><td>一致</td><td>+374.3%</td></tr>
+          <tr><td><span class="ashare">华天科技</span> 002185</td><td>先进封装</td><td>22.31</td><td class="font-bold text-emerald-800">61.73</td><td>69.72</td><td>69.72</td><td>90.88</td><td>一致</td><td>+155.9%</td></tr>
+          <tr><td><span class="ashare">通富微电</span> 002156</td><td>AMD 封测</td><td>75.87</td><td class="font-bold text-emerald-800">61.86</td><td>74.38</td><td>73.48</td><td>79.61</td><td>一致</td><td>+227.4%</td></tr>
+          <tr><td><span class="ashare">飞凯材料</span> 300398</td><td>底部填充胶</td><td>61.75</td><td class="font-bold text-emerald-800">61.86</td><td>67.86</td><td>68.04</td><td>87.59</td><td>一致</td><td>+239.4%</td></tr>
+          <tr><td><span class="ashare-key">安集科技</span> 688019</td><td>CMP 抛光液</td><td>339.46</td><td class="font-bold text-emerald-800">64.66</td><td>73.32</td><td>56.41</td><td>93.89</td><td class="text-amber-800">分化</td><td>+223.3%</td></tr>
+          <tr><td><span class="ashare-key">雅克科技</span> 002409</td><td>ALD 前驱体</td><td>224.50</td><td class="font-bold text-emerald-800">65.28</td><td>79.05</td><td>79.12</td><td>106.13</td><td>一致</td><td>+336.1%</td></tr>
+          <tr><td><span class="ashare-key">北方华创</span> 002371</td><td>刻蚀/沉积</td><td>884.56</td><td class="font-bold text-emerald-800">66.78</td><td>84.16</td><td>85.01</td><td>115.12</td><td>一致</td><td>+190.3%</td></tr>
+          <tr><td><span class="ashare">长电科技</span> 600584</td><td>先进封装</td><td>103.55</td><td class="font-bold text-emerald-800">68.80</td><td>91.64</td><td>91.75</td><td>112.15</td><td>一致</td><td>+226.8%</td></tr>
+          <tr><td><span class="ashare">盛美上海</span> 688082</td><td>清洗/电镀</td><td>432.00</td><td>75.00</td><td>111.63</td><td>114.06</td><td>166.27</td><td>一致</td><td>+310.2%</td></tr>
+          <tr><td><span class="ashare">鼎龙股份</span> 300054</td><td>CMP 抛光垫</td><td>105.97</td><td>79.68</td><td>94.62</td><td>94.40</td><td>121.63</td><td>一致</td><td>+296.6%</td></tr>
+          <tr><td><span class="ashare">华海清科</span> 688120</td><td>CMP 设备</td><td>322.18</td><td>90.50</td><td>107.75</td><td>82.25</td><td>145.22</td><td class="text-amber-800">分化</td><td>+339.4%</td></tr>
+          <tr><td><span class="ashare">华特气体</span> 688268</td><td>刻蚀/沉积特气</td><td>267.50</td><td>100.56</td><td>135.10</td><td>133.86</td><td>273.60</td><td>一致</td><td>+476.1%</td></tr>
+          <tr><td><span class="ashare-key">江丰电子</span> 300666</td><td>超高纯靶材</td><td>368.60</td><td>101.96</td><td>118.90</td><td>118.70</td><td>184.27</td><td>一致</td><td>+395.7%</td></tr>
+          <tr><td><span class="ashare-key">澜起科技</span> 688008</td><td>MRDIMM/CXL</td><td>309.90</td><td>102.45</td><td>114.78</td><td>114.57</td><td>148.09</td><td>一致</td><td>+290.6%</td></tr>
+          <tr><td><span class="ashare">兆易创新</span> 603986</td><td>利基 DRAM</td><td>815.00</td><td>108.67</td><td>116.26</td><td>112.75</td><td>198.96</td><td>一致</td><td>+579.6%</td></tr>
+          <tr><td><span class="ashare">联瑞新材</span> 688300</td><td>硅微粉</td><td>244.40</td><td>115.83</td><td>149.02</td><td>149.02</td><td>195.91</td><td>一致</td><td>+489.2%</td></tr>
+          <tr><td><span class="ashare">拓荆科技</span> 688072</td><td>PECVD/ALD</td><td>832.00</td><td>120.84</td><td>141.02</td><td>138.21</td><td>143.04</td><td>一致</td><td>+498.1%</td></tr>
+          <tr><td><span class="ashare-key">中微公司</span> 688012</td><td>TSV 刻蚀</td><td>468.50</td><td>121.72</td><td>136.99</td><td>95.46</td><td>162.66</td><td class="text-amber-800">分化</td><td>+291.6%</td></tr>
+          <tr><td><span class="ashare-key">太极实业</span> 600667</td><td>SK 后道封测</td><td>29.18</td><td>132.64</td><td>132.64</td><td>—</td><td>132.88</td><td>分化</td><td>+380.7%</td></tr>
+          <tr><td><span class="ashare">兴森科技</span> 002436</td><td>ABF 载板</td><td>50.95</td><td>145.57</td><td>203.80</td><td>201.46</td><td>600.05</td><td>一致</td><td>+337.7%</td></tr>
+          <tr><td><span class="ashare">华海诚科</span> 688535</td><td>GMC 塑封料</td><td>187.00</td><td>188.89</td><td>252.70</td><td>170.78</td><td>868.42</td><td class="text-amber-800">分化</td><td>+280.4%</td></tr>
+          <tr><td><span class="ashare">芯源微</span> 688037</td><td>涂胶/键合</td><td>439.05</td><td class="font-bold text-red-800">206.61</td><td>402.80</td><td>396.83</td><td>1254.70</td><td>一致</td><td>+362.3%</td></tr>
+          <tr><td><span class="ashare-key">中船特气</span> 688146</td><td>WF6/NF3</td><td>349.99</td><td class="font-bold text-red-800">268.19</td><td>346.52</td><td>347.38</td><td>514.50</td><td>一致</td><td>+1138.9%</td></tr>
+          <tr><td><span class="ashare-key">沪硅产业</span> 688126</td><td>12 寸硅片</td><td>39.89</td><td>—</td><td>—</td><td>—</td><td>-73.98</td><td>一致(亏)</td><td>+119.5%</td></tr>
+          <tr><td><span class="ashare">万润科技</span> 002654</td><td>存储模组</td><td>22.26</td><td>—</td><td>—</td><td>—</td><td>658.33</td><td>无覆盖</td><td>+91.2%</td></tr>
+        </tbody>
+      </table>
+      <p class="mt-3 text-xs text-slate-500">按 PE(NTM) 升序。PE(NTM) = 现价 ÷ NTM EPS；NTM = H2(2026E−H1est)+H1(2027E/2)。分化标的取 NTM 或东财/THS 均值，不单信一家。</p>
+    </section>
+
+    <!-- 投资梯度一：忽略股价 -->
+    <section class="mb-8 rounded-2xl border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold text-blue-950">投资梯度一：产业逻辑（忽略股价）</h2>
+      <p class="mt-2 leading-7 text-slate-700">仅按<strong>环节卡位、证据强度、业绩兑现窗口</strong>排序，不考虑当前 PE 与涨幅。适用于理解「若产业逻辑成立，谁先受益」。</p>
+
+      <div class="mt-6 space-y-5">
+        <div class="rounded-xl border border-blue-200 bg-white p-5">
+          <p class="text-lg font-bold"><span class="tier-1 rounded px-2 py-1">第一梯队</span> 高确定性 · 1–2 年可跟踪兑现</p>
+          <p class="mt-2 text-sm font-semibold text-blue-900">A. 前道材料（HBM/DRAM 晶圆刚需）</p>
+          <ul class="mt-2 list-disc pl-6 leading-7 text-sm space-y-2">
+            <li><strong>江丰电子（300666）</strong> — 超高纯钨/钽靶材；年报确认 AI/HBM 驱动存储靶材需求激增，长鑫第一大客户 + SK 海力士供应链。材料认证壁垒极高，属于<strong>核心产业链</strong>。</li>
+            <li><strong>雅克科技（002409）</strong> — ALD 前驱体全球布局，HBM 耗材价值量为普通 DDR 2–3 倍，SK HBM4 与长鑫双供应链。</li>
+            <li><strong>中船特气（688146）</strong> — WF6 全球产能龙头，存储为最大下游，层数↑→用量↑；客户覆盖 SK/美光/长鑫/长江。产业逻辑属第一梯队；<strong>26E Forward PE 仍 347×</strong>，估值与产业地位背离（见梯度二）。</li>
+            <li><strong>安集科技（688019）</strong> — CMP 抛光液，长鑫 17nm 国产独家 + SK 海力士导入；ROE 22%+，盈利质量优于多数材料股。</li>
+            <li><strong>沪硅产业（688126）</strong> — 12 寸硅片国产龙头，长鑫/长江核心供应商；HBM 扩产直接拉动硅片需求。战略地位第一梯队，<strong>盈利仍为负</strong>，属「产业必选、财报待拐点」。</li>
+          </ul>
+          <p class="mt-4 text-sm font-semibold text-blue-900">B. 半导体设备（TSV / 沉积 / 清洗）</p>
+          <ul class="mt-2 list-disc pl-6 leading-7 text-sm space-y-2">
+            <li><strong>北方华创（002371）</strong> — 平台型设备龙头，长鑫头号设备商叙事，存储/HBM 全流程设备验证推进中。</li>
+            <li><strong>中微公司（688012）</strong> — Primo TSV 深硅刻蚀已量产出货，HBM 堆叠核心工艺设备。</li>
+          </ul>
+          <p class="mt-4 text-sm font-semibold text-blue-900">C. 封测与接口</p>
+          <ul class="mt-2 list-disc pl-6 leading-7 text-sm space-y-2">
+            <li><strong>太极实业（600667）</strong> — SK 海力士后工序合同至 2030，DRAM/HBM 扩产传导封测量。</li>
+            <li><strong>澜起科技（688008）</strong> — AI 服务器 MRDIMM/CXL 内存接口（非 HBM 栈内），ROE 领先。</li>
+            <li><strong>长电科技（600584）</strong> — 先进封装平台龙头，HBM 收入待披露。</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border border-emerald-200 bg-white p-5">
+          <p class="text-lg font-bold"><span class="tier-2 rounded px-2 py-1">第二梯队</span> 高弹性 · 2–3 年替代窗口</p>
+          <ul class="mt-3 list-disc pl-6 leading-7 text-sm space-y-2">
+            <li><strong>拓荆科技（688072）</strong> — PECVD/ALD 薄膜沉积，DRAM/HBM 每层堆叠均需。</li>
+            <li><strong>华海清科（688120）</strong> — CMP 设备，TSV 后平坦化关键。</li>
+            <li><strong>盛美上海（688082）</strong> — 存储湿法/电镀设备。</li>
+            <li><strong>华海诚科（688535）</strong> — HBM 专用 GMC 塑封料，0→1 国产替代。</li>
+            <li><strong>联瑞新材（688300）</strong> — Low-α 硅微粉，层数驱动用量。</li>
+            <li><strong>深南电路 / 通富微电</strong> — ABF 载板 / AMD 封测平台。</li>
+            <li><strong>鼎龙股份 / 华特气体</strong> — CMP 垫 / 刻蚀用特气，受益存储扩产。</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border border-amber-200 bg-white p-5">
+          <p class="text-lg font-bold"><span class="tier-3 rounded px-2 py-1">第三梯队</span> 长周期 · 3–5 年战略赛道</p>
+          <ul class="mt-3 list-disc pl-6 leading-7 text-sm space-y-2">
+            <li><strong>芯源微（688037）</strong> — 键合/涂胶显影，12 层以上 HBM 堆叠设备验证。</li>
+            <li><strong>赛腾股份（603283）</strong> — HBM 检测设备，三星/SK 客户 <span class="evidence evidence-indirect">间接</span>。</li>
+            <li><strong>兆易创新（603986）</strong> — 长鑫 ecosystem 间接，利基 DRAM 设计。</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border border-red-200 bg-red-50 p-5">
+          <p class="text-lg font-bold"><span class="tier-w rounded px-2 py-1">观察 / 回避</span> 证据不足或环节边缘</p>
+          <ul class="mt-3 list-disc pl-6 leading-7 text-sm space-y-2">
+            <li><strong>万润科技（002654）</strong> — 存储模组+封测协同有产业位置，但 HBM 量产/订单<strong>无公告</strong>；颗粒不自主，长期议价权弱于第一、二梯队龙头。</li>
+            <li>凡以「英伟达 H200/HBM4 国产适配」为核心卖点的标的 — 缺乏可验证认证路径，归入主题博弈。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 投资梯度二：结合股价 + Forward PE -->
+    <section class="mb-8 rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold text-amber-950">投资梯度二：四源估值 + 股价（2026-06-30）</h2>
+      <p class="mt-2 leading-7 text-slate-700">
+        与<strong>梯度一产业梯队一一对应</strong>，覆盖全部 <strong>26 家</strong>标的；同梯队内按 <strong>PE(NTM)</strong> 升序排列。估值判断优先 PE(NTM)，其次 PE 2026E（THS/东财双源），并结合近 1 年涨幅判断预期是否已买入。
+      </p>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="data w-full text-sm">
+          <thead>
+            <tr>
+              <th>产业梯队</th>
+              <th>公司</th>
+              <th>环节</th>
+              <th>PE(NTM)</th>
+              <th>PE 26E THS</th>
+              <th>PE 26E 东财</th>
+              <th>PE TTM</th>
+              <th>近1年</th>
+              <th>估值判断</th>
+              <th>四源交叉</th>
+              <th>结合股价建议</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-slate-100"><td colspan="11" class="font-bold text-slate-800">第一梯队 · 高确定性（1–2 年兑现）（10 家）</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>安集科技</strong> 688019</td><td>材料·CMP液</td><td class="font-bold text-emerald-800">64.66</td><td>73.32</td><td>56.41</td><td>93.89</td><td>+223.3%</td><td class="val-ok">匹配</td><td>THS/东财分化</td><td>PE(NTM) 65× 与第一梯队逻辑匹配；THS/东财分化</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>雅克科技</strong> 002409</td><td>材料·前驱体</td><td class="font-bold text-emerald-800">65.28</td><td>79.05</td><td>79.12</td><td>106.13</td><td>+336.1%</td><td class="val-ok">匹配</td><td>THS/东财一致</td><td>PE(NTM) 65× 与第一梯队逻辑匹配；THS/东财一致</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>北方华创</strong> 002371</td><td>设备·平台</td><td class="font-bold text-emerald-800">66.78</td><td>84.16</td><td>85.01</td><td>115.12</td><td>+190.3%</td><td class="val-ok">匹配</td><td>THS/东财一致</td><td>PE(NTM) 67× 与第一梯队逻辑匹配；THS/东财一致</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>长电科技</strong> 600584</td><td>封测·平台</td><td class="font-bold text-emerald-800">68.80</td><td>91.64</td><td>91.75</td><td>112.15</td><td>+226.8%</td><td class="val-ok">匹配</td><td>THS/东财一致</td><td>PE(NTM) 69× 与第一梯队逻辑匹配；THS/东财一致</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>江丰电子</strong> 300666</td><td>材料·靶材</td><td>101.96</td><td>118.90</td><td>118.70</td><td>184.27</td><td>+395.7%</td><td class="val-hot">偏热</td><td>THS/东财一致</td><td>产业地位硬但预期已部分买入；NTM 102×；自下而上印证</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>澜起科技</strong> 688008</td><td>接口·MRDIMM</td><td>102.45</td><td>114.78</td><td>114.57</td><td>148.09</td><td>+290.6%</td><td class="val-hot">偏热</td><td>THS/东财一致</td><td>产业地位硬但预期已部分买入；NTM 102×</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>中微公司</strong> 688012</td><td>设备·TSV刻蚀</td><td>121.72</td><td>136.99</td><td>95.46</td><td>162.66</td><td>+291.6%</td><td class="val-hot">偏热</td><td>THS/东财分化</td><td>产业地位硬但预期已部分买入；NTM 122×</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>太极实业</strong> 600667</td><td>封测·SK绑定</td><td>132.64</td><td>132.64</td><td>—</td><td>132.88</td><td>+380.7%</td><td class="val-ext">透支/贵</td><td>THS/东财分化</td><td>双源分化 + NTM 133× 仍高；取 NTM 或均值，不宜追高</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>中船特气</strong> 688146</td><td>材料·特气</td><td class="font-bold text-red-800">268.19</td><td>346.52</td><td>347.38</td><td>514.50</td><td>+1138.9%</td><td class="val-ext">透支/贵</td><td>THS/东财一致</td><td>NTM 268× 仍贵；产业第一≠估值合理</td></tr>
+            <tr><td><span class="tier-1 rounded px-1.5 py-0.5 text-xs">第一</span></td><td><strong>沪硅产业</strong> 688126</td><td>材料·硅片</td><td>—</td><td>—</td><td>—</td><td>-73.98</td><td>+119.5%</td><td class="">PE不可用</td><td>THS/东财一致</td><td>26E 仍预期亏损；看 300mm 利用率拐点，BU 假设扭亏</td></tr>
+            <tr class="bg-slate-100"><td colspan="11" class="font-bold text-slate-800">第二梯队 · 高弹性（2–3 年窗口）（11 家）</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>深南电路</strong> 002916</td><td>载板·ABF</td><td class="font-bold text-emerald-800">48.32</td><td>58.41</td><td>57.93</td><td>—</td><td>—</td><td class="val-ok">匹配</td><td>THS/东财一致</td><td>PE(NTM) 48× 与第二梯队逻辑匹配；THS/东财一致</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>华天科技</strong> 002185</td><td>封测·平台</td><td class="font-bold text-emerald-800">61.73</td><td>69.72</td><td>69.72</td><td>—</td><td>—</td><td class="val-ok">匹配</td><td>THS/东财一致</td><td>PE(NTM) 62× 与第二梯队逻辑匹配；THS/东财一致</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>通富微电</strong> 002156</td><td>封测·AMD</td><td class="font-bold text-emerald-800">61.86</td><td>74.38</td><td>73.48</td><td>79.61</td><td>+227.4%</td><td class="val-ok">匹配</td><td>THS/东财一致</td><td>PE(NTM) 62× 与第二梯队逻辑匹配；THS/东财一致</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>盛美上海</strong> 688082</td><td>设备·湿法</td><td>75.00</td><td>111.63</td><td>114.06</td><td>166.27</td><td>+310.2%</td><td class="val-hot">偏热</td><td>THS/东财一致</td><td>产业地位硬但预期已部分买入；NTM 75×</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>鼎龙股份</strong> 300054</td><td>材料·CMP垫</td><td>79.68</td><td>94.62</td><td>94.40</td><td>121.63</td><td>+296.6%</td><td class="val-hot">偏热</td><td>THS/东财一致</td><td>产业地位硬但预期已部分买入；NTM 80×</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>华海清科</strong> 688120</td><td>设备·CMP</td><td>90.50</td><td>107.75</td><td>82.25</td><td>145.22</td><td>+339.4%</td><td class="val-hot">偏热</td><td>THS/东财分化</td><td>产业地位硬但预期已部分买入；NTM 90×</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>华特气体</strong> 688268</td><td>材料·特气</td><td>100.56</td><td>135.10</td><td>133.86</td><td>273.60</td><td>+476.1%</td><td class="val-hot">偏热</td><td>THS/东财一致</td><td>产业地位硬但预期已部分买入；NTM 101×</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>联瑞新材</strong> 688300</td><td>材料·硅微粉</td><td>115.83</td><td>149.02</td><td>149.02</td><td>195.91</td><td>+489.2%</td><td class="val-hot">偏热</td><td>THS/东财一致</td><td>产业地位硬但预期已部分买入；NTM 116×</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>拓荆科技</strong> 688072</td><td>设备·薄膜</td><td>120.84</td><td>141.02</td><td>138.21</td><td>143.04</td><td>+498.1%</td><td class="val-hot">偏热</td><td>THS/东财一致</td><td>产业地位硬但预期已部分买入；NTM 121×；自下而上偏保守</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>兴森科技</strong> 002436</td><td>载板·ABF</td><td>145.57</td><td>203.80</td><td>201.46</td><td>—</td><td>—</td><td class="val-ext">透支/贵</td><td>THS/东财一致</td><td>NTM 146× 仍贵；产业第二≠估值合理</td></tr>
+            <tr><td><span class="tier-2 rounded px-1.5 py-0.5 text-xs">第二</span></td><td><strong>华海诚科</strong> 688535</td><td>材料·塑封料</td><td>188.89</td><td>252.70</td><td>170.78</td><td>868.42</td><td>+280.4%</td><td class="val-ext">透支/贵</td><td>THS/东财分化</td><td>双源分化 + NTM 189× 仍高；取 NTM 或均值，不宜追高</td></tr>
+            <tr class="bg-slate-100"><td colspan="11" class="font-bold text-slate-800">第三梯队 · 长周期 / 主题（4 家）</td></tr>
+            <tr><td><span class="tier-3 rounded px-1.5 py-0.5 text-xs">第三</span></td><td><strong>赛腾股份</strong> 603283</td><td>设备·检测</td><td class="font-bold text-emerald-800">35.13</td><td>44.49</td><td>—</td><td>56.23</td><td>+254.1%</td><td class="val-ok">匹配</td><td>THS/东财分化</td><td>PE(NTM) 35× 与第三梯队逻辑匹配；THS/东财分化</td></tr>
+            <tr><td><span class="tier-3 rounded px-1.5 py-0.5 text-xs">第三</span></td><td><strong>飞凯材料</strong> 300398</td><td>材料·底填胶</td><td class="font-bold text-emerald-800">61.86</td><td>67.86</td><td>68.04</td><td>—</td><td>—</td><td class="val-ok">匹配</td><td>THS/东财一致</td><td>PE(NTM) 62× 与第三梯队逻辑匹配；THS/东财一致</td></tr>
+            <tr><td><span class="tier-3 rounded px-1.5 py-0.5 text-xs">第三</span></td><td><strong>兆易创新</strong> 603986</td><td>Nor/利基</td><td>108.67</td><td>116.26</td><td>112.75</td><td>198.96</td><td>+579.6%</td><td class="val-hot">偏热</td><td>THS/东财一致</td><td>产业地位硬但预期已部分买入；NTM 109×</td></tr>
+            <tr><td><span class="tier-3 rounded px-1.5 py-0.5 text-xs">第三</span></td><td><strong>芯源微</strong> 688037</td><td>设备·键合</td><td class="font-bold text-red-800">206.61</td><td>402.80</td><td>396.83</td><td>1254.70</td><td>+362.3%</td><td class="val-ext">透支/贵</td><td>THS/东财一致</td><td>NTM 207× 仍贵；产业第三≠估值合理</td></tr>
+            <tr class="bg-slate-100"><td colspan="11" class="font-bold text-slate-800">观察档 · 证据不足（1 家）</td></tr>
+            <tr><td><span class="tier-w rounded px-1.5 py-0.5 text-xs">观察</span></td><td><strong>万润科技</strong> 002654</td><td>存储模组</td><td>—</td><td>—</td><td>—</td><td>658.33</td><td>+91.2%</td><td class="">PE不可用</td><td>数据不足</td><td>HBM 未证实；无卖方一致预期；主题博弈</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4">
+          <p class="font-bold text-blue-900">第一梯队 · 10 家</p>
+          <p class="mt-2 text-sm leading-6 text-blue-950"><strong>匹配</strong>：安集/雅克/北方/长电（NTM 65–69×）。<strong>偏热</strong>：江丰/澜起/中微（102–122×）。<strong>透支</strong>：太极/中船（133–268×）。<strong>PE不可用</strong>：沪硅（26E 仍亏）。</p>
+        </div>
+        <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+          <p class="font-bold text-emerald-900">第二梯队 · 11 家</p>
+          <p class="mt-2 text-sm leading-6 text-emerald-950"><strong>匹配</strong>：深南/华天/通富（NTM 48–62×）。<strong>偏热</strong>：盛美/鼎龙/华海清科/华特/联瑞/拓荆（75–121×）。<strong>透支</strong>：兴森/华海诚科（146–189×）。</p>
+        </div>
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-4">
+          <p class="font-bold text-amber-900">第三梯队 · 4 家</p>
+          <p class="mt-2 text-sm leading-6 text-amber-950"><strong>匹配</strong>：赛腾/飞凯（NTM 35–62×）。<strong>偏热</strong>：兆易（109×）。<strong>透支</strong>：芯源微（207×）。</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <p class="font-bold text-slate-900">观察档 · 1 家</p>
+          <p class="mt-2 text-sm leading-6 text-slate-950"><strong>万润科技</strong>：HBM 未证实、无卖方一致预期，四源估值均不可用，仅主题博弈。</p>
+        </div>
+      </div>
+
+      <div class="mt-4 rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm leading-7">
+        <p class="font-semibold text-indigo-950">四源交叉结论</p>
+        <ul class="mt-2 list-disc pl-5 text-indigo-900 space-y-1">
+          <li><strong>THS ≈ 东财</strong>（20/24 家）：一致预期可信，可直接算 PE 2026E。</li>
+          <li><strong>分化标的</strong>（安集、中微、华海清科、华海诚科）：优先 <strong>PE(NTM)</strong> 或双源均值，并参考自下而上。</li>
+          <li><strong>自下而上 &lt; 卖方</strong>（拓荆、中船）：卖方已计入 HBM 超级周期；订单 miss 时估值向 BU 模型收敛。</li>
+        </ul>
+      </div>
+
+      <div class="mt-6 rounded-xl border border-slate-200 bg-white p-4 text-sm leading-7">
+        <p class="font-semibold">两套梯度的使用方式</p>
+        <ul class="mt-2 list-disc pl-5">
+          <li><strong>产业梯度</strong>：构建观察清单、理解受益顺序。</li>
+          <li><strong>估值梯度</strong>：四源交叉 → 主锚 PE(NTM) → 结合涨幅判断预期是否已买入。</li>
+          <li><strong>业绩验证</strong>：每季 EPS actual vs THS/东财 一致预期；beat 压缩 PE，miss 杀估值。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-2xl font-bold">主要来源</h2>
+      <ul class="mt-4 list-disc pl-6 text-sm leading-7 text-slate-700">
+        <li>江丰电子 2025 年报 · <a href="http://static.cninfo.com.cn/finalpage/2026-04-16/1225108970.PDF" target="_blank" rel="noopener">巨潮资讯</a></li>
+        <li>沪硅产业研报 · 国信证券 2026-04 · 300mm 产能与客户结构</li>
+        <li>中船特气公告 · 六氟化钨应用说明 · <a href="https://www.nbd.com.cn/articles/2026-06-14/4425952.html" target="_blank" rel="noopener">每日经济新闻 2026-06</a></li>
+        <li>万润科技 2024 年报 · 巨潮资讯</li>
+        <li>北方华创存储/HBM 设备 · 互动易 2025-12 · mx-search 2026-06</li>
+        <li>中微公司 Primo TSV · mx-search / 法说会 2026-05</li>
+        <li>Applied Materials HBM 先进封装设备 · <a href="https://www.globenewswire.com/news-release/2026/06/25/3317583/0/en/Applied-Materials-Introduces-New-Systems-to-Accelerate-DRAM-and-Advanced-Packaging-for-AI-Chips.html" target="_blank" rel="noopener">2026-06</a></li>
+        <li>存储材料链 · <a href="https://news.qq.com/rain/a/20260625A06UWZ00" target="_blank" rel="noopener">腾讯新闻 2026-06</a> · 长城证券 2026-05</li>
+        <li>太极实业第四期后工序服务合同 · <a href="https://news.qq.com/rain/a/20250618A08Q2L00" target="_blank" rel="noopener">腾讯新闻 2026-06</a></li>
+        <li>澜起科技 MRCD/MDB · <a href="https://www.montage-tech.com/cn/Press_Releases/20250124" target="_blank" rel="noopener">官网 2025-01</a></li>
+        <li>长鑫 HBM3 · <a href="https://www.eet-china.com/mp/a446983.html" target="_blank" rel="noopener">电子工程专辑</a> · <a href="https://news.qq.com/rain/a/20260528A047PH00" target="_blank" rel="noopener">腾讯新闻 2026-05</a></li>
+        <li>SK 海力士 HBM 展望 · <a href="https://news.skhynix.com/2026-market-outlook-focus-on-the-hbm-led-memory-supercycle/" target="_blank" rel="noopener">官方</a> · <a href="https://dramwatch.com/" target="_blank" rel="noopener">DRAMWatch</a></li>
+        <li>A 股行情 · fetch_stock.py（2026-06-30）</li>
+        <li>同花顺一致预期 EPS · akshare stock_profit_forecast_ths</li>
+        <li>东财一致预期 EPS · datacenter-web RPT_WEB_RESPREDICT</li>
+        <li>NTM EPS · 报告自建公式（H2+H1 滚动）；自下而上模型见估值专节</li>
+        <li>站内：<a href="ai-storage-industry-chain.html">AI 存储产业链</a> · <a href="h200-industry-chain.html">H200 成本拆解</a></li>
+      </ul>
+    </section>
+
+    <footer class="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-sm leading-7 text-slate-600">
+      <p class="font-semibold text-slate-900">免责声明</p>
+      <ul class="mt-2 list-disc pl-6">
+        <li>本页为产业链独立研究，不构成投资建议或收益承诺。</li>
+        <li>「第一/二/三梯队」为产业跟踪优先级；估值梯度为 2026-06-30 时点判断，随行情变化失效。</li>
+        <li>未公告订单、产能与市占率不得等同于确认事实；自媒体传闻已标注。</li>
+        <li>估值以 <strong>四源交叉 + PE(NTM)</strong> 为主；THS/东财 20/24 家一致，分化标的取 NTM 或均值。一致预期非真值，须每季验证。</li>
+      </ul>
+    </footer>
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tree li").forEach((li) => {
+        if ([...li.children].some((child) => child.tagName === "DETAILS")) return;
+        const childList = [...li.children].find((child) => child.tagName === "UL");
+        if (!childList) return;
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        details.open = true;
+        while (li.firstChild && li.firstChild !== childList) {
+          summary.appendChild(li.firstChild);
+        }
+        details.appendChild(summary);
+        details.appendChild(childList);
+        while (li.firstChild) {
+          details.appendChild(li.firstChild);
+        }
+        li.appendChild(details);
+      });
+    });
+  </script>
+</body>
+</html>
