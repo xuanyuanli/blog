@@ -46,8 +46,8 @@ node dist/cli.js backtest --start 2024-07-08 --end 2026-07-01
 
 ## 运行时配置
 
-- 通知密钥从环境变量 `SERVERCHAN_SENDKEY` 读取（Server酱 SendKey，支持 Turbo 与 Server酱3）。服务器上由 `bops rotation` 部署时写入 `.env`（`chmod 600`），systemd 通过 `EnvironmentFile` 注入；本地调试可直接设置环境变量。未设置则跳过通知。
-- `state.json`：当前持仓与轮动历史，由程序维护，位于数据目录（`--data-dir`，或环境变量 `WEEKLY_ROTATION_DIR`，默认当前目录）。
+- 通知密钥从环境变量 `SERVERCHAN_SENDKEY` 读取（Server酱 SendKey，支持 Turbo 与 Server酱3），未设置则跳过通知。部署时 `bops rotation` 按优先级注入容器：服务器环境变量 `SERVERCHAN_SENDKEY` > bops 本地 conf（写远程 `.env`）。本地调试直接设置环境变量即可。
+- `state.json`：当前持仓与轮动历史，由程序维护，位于数据目录（`--data-dir`，或环境变量 `WEEKLY_ROTATION_DIR`，默认当前目录）。容器内为 `/data`，挂载自宿主机 `/data/apps/weekly-rotation/data/`。
 
 ```bash
 # 本地带通知运行示例（PowerShell: $env:SERVERCHAN_SENDKEY="SCTxxxx"）
@@ -56,13 +56,21 @@ SERVERCHAN_SENDKEY=SCTxxxx node dist/cli.js once
 
 ## 部署
 
-由仓库的 `blog-ops` 部署：
+由仓库的 `blog-ops` 以 Docker 方式部署（远程无需 Node 环境，需已安装 Docker）：
 
 ```bash
 node blog-ops/bin/bops.js rotation
 ```
 
-流程：本地构建 → 上传 `dist/` + `package.json` 等到服务器 `/data/apps/weekly-rotation/` → 远程 `npm install --omit=dev` → 安装/更新 systemd 服务 `weekly-rotation` 并重启。日志见服务器 `/data/apps/weekly-rotation/weekly-rotation.log`。
+流程：本地构建 → 上传 `dist/` + `package.json` + `Dockerfile` 到服务器 `/data/apps/weekly-rotation/` → 远程 `docker build` → 重建容器 `weekly-rotation`（`--restart unless-stopped`，`.env` 注入环境变量，`data/` 挂载为 `/data` 持久化 `state.json`）。
+
+服务器上常用命令：
+
+```bash
+docker logs -f weekly-rotation      # 查看日志
+docker restart weekly-rotation      # 重启
+cat /data/apps/weekly-rotation/data/state.json   # 查看持仓状态
+```
 
 ## 测试
 

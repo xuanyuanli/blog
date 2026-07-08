@@ -15,8 +15,8 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
 
 const PROJECT_NAME = 'weekly-rotation';
 const REMOTE_DIR = '/data/apps/weekly-rotation';
-const SERVICE_NAME = 'weekly-rotation';
-const SERVICE_REMOTE_PATH = `/etc/systemd/system/${SERVICE_NAME}.service`;
+const IMAGE_NAME = 'weekly-rotation';
+const CONTAINER_NAME = 'weekly-rotation';
 
 function runLocal(cmd: string, args: string[], cwd: string): Promise<number> {
   return new Promise((resolve, reject) => {
@@ -31,7 +31,7 @@ function runLocal(cmd: string, args: string[], cwd: string): Promise<number> {
 }
 
 /**
- * 打包部署产物：dist/ + package.json + package-lock.json + systemd 单元
+ * 打包部署产物：dist/ + package.json + package-lock.json + Dockerfile
  */
 async function compressArtifacts(projectDir: string, outputPath: string): Promise<void> {
   return new Promise((resolve, reject) => {
@@ -43,7 +43,7 @@ async function compressArtifacts(projectDir: string, outputPath: string): Promis
     archive.pipe(output);
 
     archive.directory(path.join(projectDir, 'dist'), 'dist');
-    for (const file of ['package.json', 'package-lock.json', `${SERVICE_NAME}.service`]) {
+    for (const file of ['package.json', 'package-lock.json', 'Dockerfile']) {
       const full = path.join(projectDir, file);
       if (fs.existsSync(full)) {
         archive.file(full, { name: file });
@@ -54,8 +54,8 @@ async function compressArtifacts(projectDir: string, outputPath: string): Promis
 }
 
 /**
- * 部署周线轮动服务：
- * 本地构建 → 上传 → 远程 npm install → 写 .env（环境变量）→ 安装 systemd 服务并重启
+ * 部署周线轮动服务（Docker 方式，远程无需 Node 环境）：
+ * 本地构建 → 上传产物 + Dockerfile → 远程 docker build → 写 .env → 重建容器
  */
 export async function rotationDeploy(
   config: DeployConfig,
@@ -68,7 +68,7 @@ export async function rotationDeploy(
 
   console.log(chalk.yellow('\n即将执行：'));
   console.log(`  目标服务器: ${chalk.white(`${config.server.username}@${config.server.host}`)}`);
-  console.log(`  ${chalk.white(PROJECT_NAME)}  →  ${chalk.gray(REMOTE_DIR)}（systemd 服务 ${SERVICE_NAME}）`);
+  console.log(`  ${chalk.white(PROJECT_NAME)}  →  ${chalk.gray(REMOTE_DIR)}（Docker 容器 ${CONTAINER_NAME}）`);
 
   // 本地构建
   if (!options.skipBuild) {
@@ -100,16 +100,16 @@ export async function rotationDeploy(
   try {
     // 依赖检测
     try {
+      await client.executeCommand('command -v docker');
+    } catch {
+      throw new Error('远程服务器未安装 docker，请先安装 Docker');
+    }
+    try {
       await client.executeCommand('command -v unzip');
     } catch {
       const installSpinner = ora('unzip 未安装，正在安装...').start();
       await client.executeCommand('yum install -y unzip || apt-get install -y unzip');
       installSpinner.succeed('unzip 安装完成');
-    }
-    try {
-      await client.executeCommand('command -v node && command -v npm');
-    } catch {
-      throw new Error('远程服务器未安装 node/npm，请先安装 Node.js >= 18');
     }
 
     // 上传
@@ -125,71 +125,101 @@ export async function rotationDeploy(
     });
     uploadSpinner.succeed(`[${PROJECT_NAME}] 上传完成`);
 
-    // 解压（只更新 dist 和包描述文件，保留 .env / state.json / node_modules / 日志）
+    // 解压（只更新构建上下文，保留 .env / data/ 持久化目录）
     const deploySpinner = ora(`[${PROJECT_NAME}] 部署到 ${REMOTE_DIR}...`).start();
     await client.ensureRemoteDir(REMOTE_DIR);
+    await client.ensureRemoteDir(`${REMOTE_DIR}/data`);
     await client.executeCommand(`rm -rf ${REMOTE_DIR}/dist`);
     await client.executeCommand(`unzip -o ${remoteZipPath} -d ${REMOTE_DIR}`);
     await client.executeCommand(`rm -f ${remoteZipPath}`);
     deploySpinner.succeed(`[${PROJECT_NAME}] 文件已部署`);
 
-    // 安装生产依赖
-    console.log(chalk.cyan(`[${PROJECT_NAME}] 远程安装依赖...`));
-    await client.executeCommandStream(
-      `cd ${REMOTE_DIR} && npm install --omit=dev --no-audit --no-fund`
-    );
+    // 通知密钥注入，优先级：
+    // 1. 服务器已配置的环境变量 SERVERCHAN_SENDKEY → docker run 包在 bash -lc 里，
+    //    由远程 login shell 展开 -e SERVERCHAN_SENDKEY="$SERVERCHAN_SENDKEY"（值不经过本工具）
+    // 2. bops 本地 conf 的 SendKey → 写远程 .env → docker run --env-file
+    // 3. 远程已有 .env（历史部署留下）→ docker run --env-file
+    const hasRemoteKey = await client
+      .executeCommand(`bash -lc 'test -n "$SERVERCHAN_SENDKEY"' 2>/dev/null && echo yes`)
+      .then((out) => out.trim() === 'yes')
+      .catch(() => false);
 
-    // 写环境变量文件（含 Server酱 SendKey），由 systemd EnvironmentFile 注入进程
-    if (config.serverChanSendKey) {
+    let envArg = '';
+    let runInLoginShell = false;
+    if (hasRemoteKey) {
+      envArg = `-e SERVERCHAN_SENDKEY="$SERVERCHAN_SENDKEY" `;
+      runInLoginShell = true;
+      console.log(
+        chalk.green(`[${PROJECT_NAME}] 使用服务器环境变量 SERVERCHAN_SENDKEY 注入容器`)
+      );
+    } else if (config.serverChanSendKey) {
       await client.executeCommand(
         `cat > ${REMOTE_DIR}/.env <<'BOPS_EOF'\nSERVERCHAN_SENDKEY=${config.serverChanSendKey}\nBOPS_EOF`
       );
       await client.executeCommand(`chmod 600 ${REMOTE_DIR}/.env`);
+      envArg = `--env-file ${REMOTE_DIR}/.env `;
       console.log(chalk.green(`[${PROJECT_NAME}] .env 已写入（含 SERVERCHAN_SENDKEY，权限 600）`));
     } else {
       const hasRemoteEnv = await client
         .executeCommand(`test -f ${REMOTE_DIR}/.env && echo yes`)
         .then((out) => out.trim() === 'yes')
         .catch(() => false);
-      if (!hasRemoteEnv) {
+      if (hasRemoteEnv) {
+        envArg = `--env-file ${REMOTE_DIR}/.env `;
+      } else {
         console.log(
           chalk.yellow(
-            `[${PROJECT_NAME}] 警告: 未配置 Server酱 SendKey 且远程无 .env，将不会推送通知（可运行 bops 配置向导补充）`
+            `[${PROJECT_NAME}] 警告: 服务器无 SERVERCHAN_SENDKEY 环境变量、bops 未配置 SendKey 且远程无 .env，将不会推送通知`
           )
         );
       }
     }
 
-    // 安装/更新 systemd 服务并重启
-    const serviceSpinner = ora(`[${PROJECT_NAME}] 更新 systemd 服务...`).start();
-    await client.executeCommand(
-      `cp ${REMOTE_DIR}/${SERVICE_NAME}.service ${SERVICE_REMOTE_PATH}`
+    // 构建镜像
+    console.log(chalk.cyan(`[${PROJECT_NAME}] 远程构建 Docker 镜像...`));
+    await client.executeCommandStream(
+      `cd ${REMOTE_DIR} && docker build -t ${IMAGE_NAME}:latest .`
     );
-    await client.executeCommand('systemctl daemon-reload');
-    await client.executeCommand(`systemctl enable ${SERVICE_NAME}`);
-    await client.executeCommand(`systemctl restart ${SERVICE_NAME}`);
-    serviceSpinner.succeed(`[${PROJECT_NAME}] 服务已重启`);
+
+    // 清理历史 systemd 部署残留（早期方案，容错处理）
+    await client
+      .executeCommand(
+        `systemctl disable --now ${CONTAINER_NAME} 2>/dev/null; rm -f /etc/systemd/system/${CONTAINER_NAME}.service; systemctl daemon-reload`
+      )
+      .catch(() => undefined);
+
+    // 重建容器
+    const runSpinner = ora(`[${PROJECT_NAME}] 重建容器...`).start();
+    await client.executeCommand(`docker rm -f ${CONTAINER_NAME} 2>/dev/null || true`);
+    const runCmd =
+      `docker run -d --name ${CONTAINER_NAME} --restart unless-stopped ` +
+      envArg +
+      `-v ${REMOTE_DIR}/data:/data ${IMAGE_NAME}:latest`;
+    // login shell 才能加载 /etc/profile 等处配置的 SERVERCHAN_SENDKEY
+    await client.executeCommand(runInLoginShell ? `bash -lc '${runCmd}'` : runCmd);
+    runSpinner.succeed(`[${PROJECT_NAME}] 容器已启动`);
 
     // 确认存活
-    await new Promise((r) => setTimeout(r, 2000));
-    const active = await client
-      .executeCommand(`systemctl is-active ${SERVICE_NAME}`)
-      .then((out) => out.trim())
-      .catch(() => 'failed');
-    if (active === 'active') {
-      console.log(chalk.green(`[${PROJECT_NAME}] 服务运行中`));
-      const status = await client
-        .executeCommand(`systemctl status ${SERVICE_NAME} --no-pager -n 5 || true`)
+    await new Promise((r) => setTimeout(r, 3000));
+    const running = await client
+      .executeCommand(`docker inspect -f '{{.State.Running}}' ${CONTAINER_NAME}`)
+      .then((out) => out.trim() === 'true')
+      .catch(() => false);
+    if (running) {
+      console.log(chalk.green(`[${PROJECT_NAME}] 容器运行中`));
+      const logs = await client
+        .executeCommand(`docker logs --tail 5 ${CONTAINER_NAME} 2>&1 || true`)
         .catch(() => '');
-      if (status) console.log(chalk.gray(status));
+      if (logs) console.log(chalk.gray(logs));
     } else {
-      const log = await client
-        .executeCommand(`tail -n 30 ${REMOTE_DIR}/${SERVICE_NAME}.log 2>/dev/null || true`)
+      const logs = await client
+        .executeCommand(`docker logs --tail 30 ${CONTAINER_NAME} 2>&1 || true`)
         .catch(() => '');
-      throw new Error(
-        `服务未能正常启动（状态: ${active}）\n最近日志:\n${log}`
-      );
+      throw new Error(`容器未能正常运行\n最近日志:\n${logs}`);
     }
+
+    // 清理悬空旧镜像
+    await client.executeCommand('docker image prune -f').catch(() => undefined);
 
     // 记录版本
     const tag = (() => {

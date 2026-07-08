@@ -72,7 +72,7 @@ node bin/bops.js versions
 4. 确认远程路径：
    - Nginx 配置路径：`/usr/local/nginx/conf/nginx.conf`
    - 博客静态文件根目录：`/var/www/blog`
-5. 可选填写 Server酱 SendKey（周线轮动通知用，部署时写入远程 `.env`，由 systemd 以环境变量注入）
+5. 可选填写 Server酱 SendKey（周线轮动通知用；若服务器已配置 `SERVERCHAN_SENDKEY` 环境变量则优先用服务器的，此项可留空）
 6. 测试连接并保存
 
 配置持久化在本地（通过 [conf](https://github.com/sindresorhus/conf)），无需每次输入。
@@ -95,18 +95,20 @@ node bin/bops.js versions
 | astro | `astro/` | `/var/www/blog/` | `astro/dist/` |
 | vuepress | `vuepress/` | `/var/www/blog-archive/` | `vuepress/docs/.vuepress/dist/` |
 | stock | `stock/` | `/var/www/stock/`（stock.xuanyuanli.cn） | `stock/.vitepress/dist/` |
-| weekly-rotation | `weekly-rotation/` | `/data/apps/weekly-rotation/`（systemd 服务） | `weekly-rotation/dist/` |
+| weekly-rotation | `weekly-rotation/` | `/data/apps/weekly-rotation/`（Docker 容器） | `weekly-rotation/dist/` |
 
 ### 周线轮动服务部署（bops rotation）
 
-与静态站不同，`rotation` 部署的是 Node 常驻服务：
+与静态站不同，`rotation` 部署的是常驻服务，以 Docker 容器运行（远程无需 Node 环境，需已安装 Docker）：
 
 1. 本地 `npm run build`
-2. 打包 `dist/` + `package.json` + `package-lock.json` + `weekly-rotation.service` 上传
-3. 远程解压到 `/data/apps/weekly-rotation/`（保留 `.env` / `state.json` / 日志）
-4. 远程 `npm install --omit=dev`
-5. 若本地配置了 Server酱 SendKey，写入远程 `.env`（`SERVERCHAN_SENDKEY=...`，`chmod 600`）
-6. 安装/更新 systemd 服务 `weekly-rotation`，`systemctl enable` + `restart`，并确认存活
+2. 打包 `dist/` + `package.json` + `package-lock.json` + `Dockerfile` 上传
+3. 远程解压到 `/data/apps/weekly-rotation/`（保留 `.env` 与 `data/` 持久化目录）
+4. 解析通知密钥并注入容器，优先级：服务器环境变量 `SERVERCHAN_SENDKEY`（login shell 读取，`docker run -e` 注入）> bops 本地 conf 的 SendKey（写远程 `.env`，`chmod 600`，`--env-file` 注入）> 远程已有 `.env`
+5. 远程 `docker build -t weekly-rotation:latest .`
+6. 重建容器：`docker run -d --name weekly-rotation --restart unless-stopped [密钥注入参数] -v /data/apps/weekly-rotation/data:/data weekly-rotation:latest`，并确认存活
+
+日志用 `docker logs -f weekly-rotation` 查看；`state.json` 持久化在宿主机 `/data/apps/weekly-rotation/data/`。
 
 ## Nginx 同步
 
