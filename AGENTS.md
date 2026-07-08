@@ -12,6 +12,7 @@
 ├── vuepress/        # 旧博客，VuePress + vdoing 主题，历史技术文章归档
 ├── stock/           # 股票研究 VitePress 站点，部署到 stock.xuanyuanli.cn
 ├── stock-cli/       # A 股尾随止损 CLI（波动分级、止损线）
+├── weekly-rotation/ # ETF 周线轮动策略常驻服务（含回测），部署为 systemd 服务
 ├── nginx/           # Nginx 配置
 ├── blog-ops/        # 博客运维 CLI
 ├── agents/          # Cursor CLI 调研编排（如 ai-bubble-playbook）
@@ -163,6 +164,28 @@ npm test
 
 与 stock-analysis 集成：生成 A 股报告前运行 `node stock-cli/dist/cli.js {代码} --json`，将 JSON 中的止损线、波动分级等写入报告。
 
+## weekly-rotation 周线轮动服务
+
+目录：`weekly-rotation/`
+
+用途：ETF 周线轮动策略常驻服务 — 每周最后一个交易日 14:30（上海时间）对比标的池（沪深300ETF/创业板50ETF/科创芯片ETF/通信ETF）近 4 个交易周累计涨幅，取最高者，为正则持有、为负则空仓；决策经 Server酱 推送，持仓状态写 `state.json`。内置回测，可枚举 2/3/4 标的全部组合找最优。
+
+技术栈：TypeScript（CJS + strict）、`stock-api`（行情与前复权周K）、`chinese-days`（节假日）。
+
+常用命令：
+
+```bash
+cd weekly-rotation
+npm install
+npm run build
+node dist/cli.js once --dry-run       # 立即计算一次，不发通知不写状态
+node dist/cli.js backtest             # 全组合回测
+node dist/cli.js backtest --start 2024-07-08
+npm test
+```
+
+部署：`node blog-ops/bin/bops.js rotation` — 上传到远程 `/data/apps/weekly-rotation/`，`npm install --omit=dev`，写 `config.json`（Server酱 SendKey，来自 bops 本地 conf），安装并重启 systemd 服务 `weekly-rotation`。远程日志：`/data/apps/weekly-rotation/weekly-rotation.log`。
+
 ## blog-ops 运维工具
 
 目录：`blog-ops/`
@@ -187,6 +210,8 @@ node bin/bops.js old
 node bin/bops.js stock
 node bin/bops.js stock --skip-build
 node bin/bops.js new --skip-build
+node bin/bops.js rotation
+node bin/bops.js rotation --skip-build
 node bin/bops.js nginx
 node bin/bops.js versions
 ```
@@ -194,6 +219,7 @@ node bin/bops.js versions
 部署工具会把旧版本归档到远程服务器，并记录版本历史。修改部署逻辑时重点检查：
 
 - `src/blog-deploy.ts`
+- `src/rotation-deploy.ts`
 - `src/nginx-sync.ts`
 - `src/ssh.ts`
 - `src/version-manager.ts`
@@ -220,6 +246,7 @@ bash build.sh --with-archive
 - 修改 `vuepress/` 后，至少运行 `npm run build`。
 - 修改 `stock/` 后，至少运行 `npm run build`。
 - 修改 `stock-cli/` 后，运行 `npm run build` 与 `npm test`。
+- 修改 `weekly-rotation/` 后，运行 `npm run build` 与 `npm test`，必要时用 `node dist/cli.js once --dry-run` 验证。
 - 修改 `blog-ops/` 后，运行 `npm run build`。
 - 修改 Nginx 配置后，部署前应执行 `nginx -t`，`blog-ops` 的同步流程会在远程验证后再 reload。
 
@@ -244,4 +271,5 @@ python scripts/docx/docx.py unpack path/to/file.docx path/to/unpacked/
 - 新增/更新股票分析报告：使用 `.cursor/skills/stock-analysis/`，输出到 `stock/data/`。
 - AI 算力主线 + 成交额 Top200 + 右侧技术筛选：使用 `.cursor/skills/ai-right-side-screen/`；结果持久化在 `data/ai-pool.json`、`data/exclude-codes.txt`。
 - 调整 AI 泡沫预警实操报告：`.cursor/skills/ai-bubble-playbook/`，Git Bash 运行 `agents/ai-bubble-playbook/scripts/orchestrate.sh`，HTML 输出 `stock/public/ai-bubble-playbook.html`。
+- 调整 ETF 周线轮动策略或回测：查看 `weekly-rotation/src/`（策略参数在 `config.ts`，回测在 `backtest.ts`），部署用 `bops rotation`。
 - 调整部署流程：查看 `build.sh`、`blog-ops/` 和 `nginx/nginx.conf`。

@@ -6,6 +6,7 @@ import { Command } from 'commander';
 import { configManager } from './config.js';
 import { nginxSync } from './nginx-sync.js';
 import { blogDeploy } from './blog-deploy.js';
+import { rotationDeploy } from './rotation-deploy.js';
 import { createSSHClient } from './ssh.js';
 import { VersionManager } from './version-manager.js';
 import { BlogProjectName } from './types.js';
@@ -20,6 +21,7 @@ const MENU_ITEMS: MenuItem[] = [
   { name: '发布新博客（bops new）', value: 'new' },
   { name: '发布旧博客（bops old）', value: 'old' },
   { name: '发布股票站点（bops stock）', value: 'stock' },
+  { name: '发布周线轮动服务（bops rotation）', value: 'rotation' },
   { name: '发布新旧博客（Astro + VuePress）', value: 'all' },
   { name: '同步 Nginx 配置（bops nginx）', value: 'nginx' },
   { name: '查看版本历史（bops versions）', value: 'versions' },
@@ -87,6 +89,25 @@ async function runProjectDeploy(
       skipConfirm: true,
     });
     console.log(chalk.green('\n发布完成！'));
+  } catch (err) {
+    console.error(chalk.red(`\n发布失败: ${err instanceof Error ? err.message : String(err)}`));
+    process.exit(1);
+  }
+}
+
+/**
+ * 命令行发布周线轮动服务：bops rotation
+ */
+async function runRotationDeploy(skipBuild: boolean): Promise<void> {
+  const config = configManager.getConfig();
+  if (!config) {
+    console.error(chalk.red('尚未配置服务器信息，请先运行: bops，完成配置'));
+    process.exit(1);
+  }
+
+  printBanner();
+  try {
+    await rotationDeploy(config, { skipBuild });
   } catch (err) {
     console.error(chalk.red(`\n发布失败: ${err instanceof Error ? err.message : String(err)}`));
     process.exit(1);
@@ -164,6 +185,14 @@ async function main(): Promise<void> {
     .option('-s, --skip-build', '跳过构建，直接部署已有产物')
     .action(async (opts) => {
       await runProjectDeploy(['stock'], opts.skipBuild ?? false);
+    });
+
+  program
+    .command('rotation')
+    .description('构建并发布周线轮动服务（weekly-rotation，systemd 常驻）')
+    .option('-s, --skip-build', '跳过构建，直接部署已有产物')
+    .action(async (opts) => {
+      await runRotationDeploy(opts.skipBuild ?? false);
     });
 
   program
@@ -271,6 +300,9 @@ async function main(): Promise<void> {
             skipBuild: false,
             skipConfirm: false,
           });
+          break;
+        case 'rotation':
+          await rotationDeploy(currentConfig, { skipBuild: false });
           break;
         case 'all':
           await blogDeploy(currentConfig, {

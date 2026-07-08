@@ -207,6 +207,12 @@ class ConfigManager {
         default: current?.blogRemoteRoot || DEFAULTS.blogRemoteRoot,
         validate: (v: string) => v.trim() !== '' || '不能为空',
       },
+      {
+        type: 'input',
+        name: 'serverChanSendKey',
+        message: 'Server酱 SendKey（周线轮动通知，可留空）:',
+        default: current?.serverChanSendKey || '',
+      },
     ]);
 
     const server: ServerConfig = {
@@ -221,6 +227,9 @@ class ConfigManager {
       server,
       nginxConfRemotePath: pathAnswers.nginxConfRemotePath.trim(),
       blogRemoteRoot: pathAnswers.blogRemoteRoot.trim(),
+      ...(pathAnswers.serverChanSendKey.trim()
+        ? { serverChanSendKey: pathAnswers.serverChanSendKey.trim() }
+        : {}),
     };
 
     // 确认保存或取消
@@ -316,6 +325,7 @@ class ConfigManager {
     console.log(`  认证方式:           ${chalk.white(server.authType === 'privateKey' ? `私钥 (${server.privateKeyPath})` : '密码')}`);
     console.log(`  Nginx 配置路径:     ${chalk.white(config.nginxConfRemotePath)}`);
     console.log(`  博客远程根目录:     ${chalk.white(config.blogRemoteRoot)}`);
+    console.log(`  Server酱 SendKey:   ${chalk.white(config.serverChanSendKey ? '已配置' : '未配置')}`);
     console.log('');
   }
 }

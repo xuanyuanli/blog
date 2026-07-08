@@ -30,6 +30,7 @@ node bin/bops.js
   发布新博客（bops new）
   发布旧博客（bops old）
   发布股票站点（bops stock）
+  发布周线轮动服务（bops rotation）
   发布新旧博客（Astro + VuePress）
   同步 Nginx 配置（bops nginx）
   查看版本历史（bops versions）
@@ -48,7 +49,10 @@ node bin/bops.js old
 # 发布股票站点（VitePress）到 stock.xuanyuanli.cn
 node bin/bops.js stock
 
-# 跳过构建，直接部署已有产物（new / old / stock 可用）
+# 发布周线轮动服务（Node 常驻服务，systemd 保活）
+node bin/bops.js rotation
+
+# 跳过构建，直接部署已有产物（new / old / stock / rotation 可用）
 node bin/bops.js new -s
 node bin/bops.js old --skip-build
 node bin/bops.js stock -s
@@ -68,7 +72,8 @@ node bin/bops.js versions
 4. 确认远程路径：
    - Nginx 配置路径：`/usr/local/nginx/conf/nginx.conf`
    - 博客静态文件根目录：`/var/www/blog`
-5. 测试连接并保存
+5. 可选填写 Server酱 SendKey（周线轮动通知用，部署时写入远程 `config.json`）
+6. 测试连接并保存
 
 配置持久化在本地（通过 [conf](https://github.com/sindresorhus/conf)），无需每次输入。
 
@@ -90,6 +95,18 @@ node bin/bops.js versions
 | astro | `astro/` | `/var/www/blog/` | `astro/dist/` |
 | vuepress | `vuepress/` | `/var/www/blog-archive/` | `vuepress/docs/.vuepress/dist/` |
 | stock | `stock/` | `/var/www/stock/`（stock.xuanyuanli.cn） | `stock/.vitepress/dist/` |
+| weekly-rotation | `weekly-rotation/` | `/data/apps/weekly-rotation/`（systemd 服务） | `weekly-rotation/dist/` |
+
+### 周线轮动服务部署（bops rotation）
+
+与静态站不同，`rotation` 部署的是 Node 常驻服务：
+
+1. 本地 `npm run build`
+2. 打包 `dist/` + `package.json` + `package-lock.json` + `weekly-rotation.service` 上传
+3. 远程解压到 `/data/apps/weekly-rotation/`（保留 `config.json` / `state.json` / 日志）
+4. 远程 `npm install --omit=dev`
+5. 若本地配置了 Server酱 SendKey，写入远程 `config.json`
+6. 安装/更新 systemd 服务 `weekly-rotation`，`systemctl enable` + `restart`，并确认存活
 
 ## Nginx 同步
 
@@ -121,6 +138,7 @@ blog-ops/
 │   ├── config.ts            # 交互式配置管理
 │   ├── nginx-sync.ts        # Nginx 配置同步
 │   ├── blog-deploy.ts       # 博客构建与部署
+│   ├── rotation-deploy.ts   # 周线轮动服务部署（systemd）
 │   ├── version-manager.ts   # 远程版本管理
 │   └── index.ts             # CLI 入口与交互菜单
 ├── package.json

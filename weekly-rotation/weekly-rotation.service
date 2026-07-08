@@ -1,0 +1,17 @@
+[Unit]
+Description=ETF weekly rotation strategy daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/data/apps/weekly-rotation
+Environment=WEEKLY_ROTATION_DIR=/data/apps/weekly-rotation
+ExecStart=/usr/bin/env node /data/apps/weekly-rotation/dist/cli.js daemon
+Restart=always
+RestartSec=30
+StandardOutput=append:/data/apps/weekly-rotation/weekly-rotation.log
+StandardError=append:/data/apps/weekly-rotation/weekly-rotation.log
+
+[Install]
+WantedBy=multi-user.target

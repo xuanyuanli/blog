@@ -26,6 +26,8 @@ export interface DeployConfig {
   nginxConfRemotePath: string;
   /** 远程博客静态文件根目录（默认 /var/www/blog） */
   blogRemoteRoot: string;
+  /** Server酱 SendKey（周线轮动通知用，部署时写入远程 config.json） */
+  serverChanSendKey?: string;
 }
 
 /**

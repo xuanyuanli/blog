@@ -1,0 +1,38 @@
+{
+  "name": "weekly-rotation",
+  "version": "0.1.0",
+  "description": "ETF 周线轮动策略 — 每周最后一个交易日 14:30 按近 4 周累计涨幅轮动，Server酱推送，内置回测",
+  "bin": {
+    "weekly-rotation": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "node -e \"try{require('fs').chmodSync('dist/cli.js',0o755)}catch(e){}\"",
+    "test": "node --import tsx --test test/**/*.test.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "etf",
+    "rotation",
+    "momentum",
+    "backtest"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "chinese-days": "^1.5.0",
+    "stock-api": "^2.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
