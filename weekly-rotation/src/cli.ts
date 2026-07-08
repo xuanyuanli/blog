@@ -20,14 +20,14 @@ function printHelp(): void {
 用法:
   weekly-rotation [daemon]              常驻调度，每周最后一个交易日 14:30 执行
   weekly-rotation once [--dry-run]      立即执行一次轮动决策
-  weekly-rotation backtest [选项]        历史回测，枚举 2/3/4 标的组合找最优
+  weekly-rotation backtest [选项]        回测对比 5 标的池与 4 标的池（不含科创芯片）
 
 选项:
   --data-dir <path>   state.json / config.json 所在目录
                       （默认环境变量 WEEKLY_ROTATION_DIR，其次当前目录）
   --dry-run           once 专用：只计算打印，不发通知、不写状态
   --start <date>      backtest 专用：起始日期 YYYY-MM-DD
-                      （默认取组合内最晚成立 ETF 的上市周）
+                      （默认取池内最晚成立 ETF 的上市周）
   --end <date>        backtest 专用：结束日期 YYYY-MM-DD
   -h, --help          显示帮助
 

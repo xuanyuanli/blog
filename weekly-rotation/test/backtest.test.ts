@@ -1,11 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import {
-  alignWeeks,
-  allCombos,
-  backtestCombo,
-  combinations,
-} from "../src/backtest";
+import { alignWeeks, backtest } from "../src/backtest";
 import type { Target } from "../src/config";
 import type { WeeklyBar } from "../src/data";
 import { addDays } from "../src/week";
@@ -24,13 +19,6 @@ function bars(closes: (number | null)[]): WeeklyBar[] {
   return out;
 }
 
-test("combinations / allCombos 组合数", () => {
-  assert.equal(combinations([1, 2, 3, 4], 2).length, 6);
-  assert.equal(combinations([1, 2, 3, 4], 3).length, 4);
-  const four = [A, B, { code: "C", name: "丙" }, { code: "D", name: "丁" }];
-  assert.equal(allCombos(four).length, 11);
-});
-
 test("alignWeeks 取交集，起点为最晚上市标的的首周", () => {
   const byCode = new Map([
     ["A", bars([1, 2, 3, 4])],
@@ -43,13 +31,13 @@ test("alignWeeks 取交集，起点为最晚上市标的的首周", () => {
   assert.deepEqual(aligned.closes.get("B"), [30, 40]);
 });
 
-test("backtestCombo 基本模拟：持有、换仓、收益", () => {
+test("backtest 基本模拟：持有、换仓、收益", () => {
   const byCode = new Map([
     ["A", bars([100, 100, 110, 121, 121, 121])],
     ["B", bars([100, 100, 100, 100, 130, 130])],
   ]);
   const aligned = alignWeeks(byCode, ["A", "B"]);
-  const r = backtestCombo(aligned, [A, B], { lookback: 2 })!;
+  const r = backtest(aligned, [A, B], { lookback: 2 })!;
 
   // i=2: A 动量 10% > 0 → 开仓 A，第 3 周收益 10%
   // i=3: A 动量 21% 领先 → 持有，第 4 周收益 0
@@ -69,20 +57,20 @@ test("backtestCombo 基本模拟：持有、换仓、收益", () => {
   assert.ok(Math.abs(r.buyHold["B"] - 0.3) < 1e-12);
 });
 
-test("backtestCombo 全程下跌时保持空仓", () => {
+test("backtest 全程下跌时保持空仓", () => {
   const byCode = new Map([
     ["A", bars([100, 95, 90, 85, 80])],
     ["B", bars([100, 96, 92, 88, 84])],
   ]);
   const aligned = alignWeeks(byCode, ["A", "B"]);
-  const r = backtestCombo(aligned, [A, B], { lookback: 2 })!;
+  const r = backtest(aligned, [A, B], { lookback: 2 })!;
   assert.equal(r.cumulativeReturn, 0);
   assert.equal(r.emptyWeeks, r.weeks);
   assert.equal(r.switches, 0);
   assert.equal(r.maxDrawdown, 0);
 });
 
-test("backtestCombo 尊重 start，动量可用 start 之前的数据", () => {
+test("backtest 尊重 start，动量可用 start 之前的数据", () => {
   const closes = [100, 100, 110, 121, 133, 146];
   const byCode = new Map([
     ["A", bars(closes)],
@@ -90,18 +78,18 @@ test("backtestCombo 尊重 start，动量可用 start 之前的数据", () => {
   ]);
   const aligned = alignWeeks(byCode, ["A", "B"]);
   const startDate = aligned.dates[3];
-  const r = backtestCombo(aligned, [A, B], { lookback: 2, start: startDate })!;
+  const r = backtest(aligned, [A, B], { lookback: 2, start: startDate })!;
   assert.equal(r.startDate, startDate);
   assert.equal(r.weeks, 2);
   // 第 3 周决策持有 A：第 4、5 周收益 (133/121)*(146/133)-1 = 146/121-1
   assert.ok(Math.abs(r.cumulativeReturn - (146 / 121 - 1)) < 1e-12);
 });
 
-test("backtestCombo 区间不足返回 null", () => {
+test("backtest 区间不足返回 null", () => {
   const byCode = new Map([
     ["A", bars([100, 101, 102])],
     ["B", bars([100, 101, 102])],
   ]);
   const aligned = alignWeeks(byCode, ["A", "B"]);
-  assert.equal(backtestCombo(aligned, [A, B], { lookback: 4 }), null);
+  assert.equal(backtest(aligned, [A, B], { lookback: 4 }), null);
 });

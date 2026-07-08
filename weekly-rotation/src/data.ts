@@ -1,5 +1,9 @@
+import { setDefaultResultOrder } from "node:dns";
 import { stocks } from "stock-api";
 import { mondayOf } from "./week";
+
+// 部分网络环境下 IPv6 直连东财等数据源会断连（UND_ERR_SOCKET），强制 IPv4 优先
+setDefaultResultOrder("ipv4first");
 
 /** stock-api 归一化行情（未从包根导出，本地声明所需字段） */
 export type Quote = {
@@ -25,6 +29,33 @@ export type WeeklyBar = {
 
 export async function fetchQuotes(codes: string[]): Promise<Quote[]> {
   return stocks.auto.getStocks(codes);
+}
+
+/**
+ * 数据源偶发限流/断连会返回不完整数据或报错（如 159949 的前复权周K
+ * 仅东财可用，东财失败时 auto 会整体返回空）：结果不满足 isValid 时
+ * 稍等重试，重试耗尽后返回最后一次结果交由调用方校验。
+ */
+export async function fetchWithRetry<T>(
+  fn: () => Promise<T>,
+  isValid: (v: T) => boolean,
+  attempts = 3,
+  delayMs = 2000
+): Promise<T> {
+  let last: T | undefined;
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    if (i > 0) await new Promise((r) => setTimeout(r, delayMs));
+    try {
+      last = await fn();
+      lastErr = undefined;
+      if (isValid(last)) return last;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  if (lastErr !== undefined) throw lastErr;
+  return last as T;
 }
 
 /**

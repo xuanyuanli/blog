@@ -13,7 +13,7 @@ export type AlignedWeeks = {
   closes: Map<string, number[]>;
 };
 
-/** 取各标的周键交集对齐（交集起点即组合内最晚成立的 ETF 上市周） */
+/** 取各标的周键交集对齐（交集起点即池内最晚成立的 ETF 上市周） */
 export function alignWeeks(
   barsByCode: Map<string, WeeklyBar[]>,
   codes: string[]
@@ -55,13 +55,13 @@ export type Trade = {
 
 export type BacktestOptions = {
   lookback: number;
-  /** 起始日期（含），默认组合数据交集起点（最晚成立 ETF） */
+  /** 起始日期（含），默认数据交集起点（最晚成立 ETF） */
   start?: string;
   /** 结束日期（含），默认最新一周 */
   end?: string;
 };
 
-export type ComboResult = {
+export type BacktestResult = {
   codes: string[];
   startDate: string;
   endDate: string;
@@ -79,15 +79,15 @@ export type ComboResult = {
 };
 
 /**
- * 单组合回测：第 i 周收盘计算近 lookback 周累计涨幅
+ * 周线轮动回测：第 i 周收盘计算近 lookback 周累计涨幅
  * （close[i]/close[i-lookback]-1），top1 为正则第 i+1 周持有它，否则空仓。
  * 以周收盘价近似周五 14:30 执行价，不计费率。
  */
-export function backtestCombo(
+export function backtest(
   aligned: AlignedWeeks,
   targets: Target[],
   opts: BacktestOptions
-): ComboResult | null {
+): BacktestResult | null {
   const { dates, closes } = aligned;
   const n0 = dates.length;
 
@@ -166,24 +166,4 @@ export function backtestCombo(
     equityCurve,
     buyHold,
   };
-}
-
-/** 全部 size 元组合（保持原顺序） */
-export function combinations<T>(items: T[], size: number): T[][] {
-  if (size === 0) return [[]];
-  if (items.length < size) return [];
-  const [head, ...rest] = items;
-  return [
-    ...combinations(rest, size - 1).map((c) => [head, ...c]),
-    ...combinations(rest, size),
-  ];
-}
-
-/** 2 个至全部标的的所有组合 */
-export function allCombos(targets: Target[]): Target[][] {
-  const combos: Target[][] = [];
-  for (let size = targets.length; size >= 2; size--) {
-    combos.push(...combinations(targets, size));
-  }
-  return combos;
 }

@@ -1,4 +1,4 @@
-import type { ComboResult } from "./backtest";
+import type { BacktestResult } from "./backtest";
 import type { Target } from "./config";
 import { ACTION_LABELS } from "./decide";
 
@@ -35,74 +35,69 @@ function renderTable(headers: string[], rows: string[][]): string {
 }
 
 export type NamedResult = {
+  label: string;
   targets: Target[];
-  result: ComboResult;
+  result: BacktestResult;
 };
 
-function comboLabel(targets: Target[]): string {
-  return targets.map((t) => t.name).join(" + ");
-}
-
-export function renderReport(results: NamedResult[]): string {
-  const sorted = [...results].sort(
-    (a, b) => b.result.cumulativeReturn - a.result.cumulativeReturn
-  );
-
+export function renderReport(strategies: NamedResult[]): string {
   const out: string[] = [];
-  out.push("=== 周线轮动回测：组合排名（按累计收益） ===");
+  out.push("=== 周线轮动回测：标的池对比 ===");
   out.push("");
   out.push(
     renderTable(
-      ["#", "组合", "区间", "周数", "累计收益", "年化", "最大回撤", "换仓", "空仓周"],
-      sorted.map((r, i) => [
-        String(i + 1),
-        comboLabel(r.targets),
-        `${r.result.startDate} ~ ${r.result.endDate}`,
-        String(r.result.weeks),
-        fmtPct(r.result.cumulativeReturn),
-        fmtPct(r.result.annualizedReturn),
-        fmtPct(r.result.maxDrawdown),
-        String(r.result.switches),
-        String(r.result.emptyWeeks),
+      ["策略", "区间", "周数", "累计收益", "年化", "最大回撤", "换仓", "空仓周"],
+      strategies.map((s) => [
+        s.label,
+        `${s.result.startDate} ~ ${s.result.endDate}`,
+        String(s.result.weeks),
+        fmtPct(s.result.cumulativeReturn),
+        fmtPct(s.result.annualizedReturn),
+        fmtPct(s.result.maxDrawdown),
+        String(s.result.switches),
+        String(s.result.emptyWeeks),
       ])
     )
   );
 
-  const best = sorted[0];
+  for (const s of strategies) {
+    out.push("");
+    out.push(`【${s.label}】同期买入持有基准：`);
+    out.push(
+      renderTable(
+        ["标的", "代码", "买入持有收益"],
+        s.targets.map((t) => [
+          t.name,
+          t.code,
+          fmtPct(s.result.buyHold[t.code] ?? 0),
+        ])
+      )
+    );
+  }
+
+  for (const s of strategies) {
+    const nameOf = (code: string | null): string => {
+      if (code === null) return "空仓";
+      return s.targets.find((t) => t.code === code)?.name ?? code;
+    };
+    out.push("");
+    out.push(`【${s.label}】换仓明细（共 ${s.result.trades.length} 次）：`);
+    out.push(
+      renderTable(
+        ["日期", "动作", "从", "到"],
+        s.result.trades.map((tr) => [
+          tr.date,
+          ACTION_LABELS[tr.action],
+          nameOf(tr.from),
+          nameOf(tr.to),
+        ])
+      )
+    );
+  }
+
   out.push("");
-  out.push(`=== 最优组合：${comboLabel(best.targets)} ===`);
-  out.push("");
-  out.push("同期买入持有基准：");
   out.push(
-    renderTable(
-      ["标的", "代码", "买入持有收益"],
-      best.targets.map((t) => [
-        t.name,
-        t.code,
-        fmtPct(best.result.buyHold[t.code] ?? 0),
-      ])
-    )
-  );
-  out.push("");
-  out.push(`换仓明细（共 ${best.result.trades.length} 次）：`);
-  const nameOf = (code: string | null): string => {
-    if (code === null) return "空仓";
-    return best.targets.find((t) => t.code === code)?.name ?? code;
-  };
-  out.push(
-    renderTable(
-      ["日期", "动作", "从", "到"],
-      best.result.trades.map((tr) => [
-        tr.date,
-        ACTION_LABELS[tr.action],
-        nameOf(tr.from),
-        nameOf(tr.to),
-      ])
-    )
-  );
-  out.push("");
-  out.push(
-    "> 口径：周收盘价近似周五 14:30 执行价，逐周复利，不计费率与滑点。"
+    "> 口径：周收盘价近似周五 14:30 执行价，逐周复利，不计费率与滑点。年化受区间长短影响，跨区间对比以累计收益与回撤为主。"
   );
   return out.join("\n");
 }

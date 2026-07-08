@@ -11,6 +11,7 @@ export type Target = {
 export const TARGETS: Target[] = [
   { code: "SH510300", name: "沪深300ETF" },
   { code: "SZ159949", name: "创业板50ETF" },
+  { code: "SH588000", name: "科创50ETF" },
   { code: "SH588170", name: "科创芯片ETF" },
   { code: "SH515880", name: "通信ETF" },
 ];

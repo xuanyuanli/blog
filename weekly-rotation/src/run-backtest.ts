@@ -1,13 +1,22 @@
-import { allCombos, alignWeeks, backtestCombo } from "./backtest";
+import { alignWeeks, backtest } from "./backtest";
 import { renderReport } from "./backtest-report";
 import type { NamedResult } from "./backtest-report";
 import { LOOKBACK_WEEKS, TARGETS } from "./config";
-import { completedBars, fetchWeeklyBars } from "./data";
+import type { Target } from "./config";
+import { completedBars, fetchWeeklyBars, fetchWithRetry } from "./data";
 import type { WeeklyBar } from "./data";
 import { shanghaiDateStr } from "./scheduler";
 
-/** 一次拉全所有标的的周K，供全部组合复用 */
-const KLINE_COUNT = 800;
+const WEEKLY_COUNT = 800;
+
+/** 回测对比的两个标的池：全部 5 只 vs 去掉成立较晚的科创芯片ETF 的 4 只 */
+const POOLS: { label: string; targets: Target[] }[] = [
+  { label: `5标的池（全部）`, targets: TARGETS },
+  {
+    label: `4标的池（不含科创芯片）`,
+    targets: TARGETS.filter((t) => t.code !== "SH588170"),
+  },
+];
 
 export type BacktestCliOptions = {
   start?: string;
@@ -17,12 +26,14 @@ export type BacktestCliOptions = {
 export async function runBacktest(opts: BacktestCliOptions): Promise<string> {
   const todayStr = shanghaiDateStr(Date.now());
   const barsByCode = new Map<string, WeeklyBar[]>();
-  await Promise.all(
-    TARGETS.map(async (t) => {
-      const bars = await fetchWeeklyBars(t.code, KLINE_COUNT);
-      barsByCode.set(t.code, completedBars(bars, todayStr));
-    })
-  );
+  // 按标的串行拉取并重试，避免并发过多触发数据源限流
+  for (const t of TARGETS) {
+    const weekly = await fetchWithRetry(
+      () => fetchWeeklyBars(t.code, WEEKLY_COUNT),
+      (bars) => bars.length >= LOOKBACK_WEEKS + 2
+    );
+    barsByCode.set(t.code, completedBars(weekly, todayStr));
+  }
 
   for (const t of TARGETS) {
     const bars = barsByCode.get(t.code)!;
@@ -35,28 +46,26 @@ export async function runBacktest(opts: BacktestCliOptions): Promise<string> {
   }
   console.log("");
 
-  const results: NamedResult[] = [];
-  for (const combo of allCombos(TARGETS)) {
+  const strategies: NamedResult[] = [];
+  for (const pool of POOLS) {
     const aligned = alignWeeks(
       barsByCode,
-      combo.map((t) => t.code)
+      pool.targets.map((t) => t.code)
     );
-    const result = backtestCombo(aligned, combo, {
+    const result = backtest(aligned, pool.targets, {
       lookback: LOOKBACK_WEEKS,
       start: opts.start,
       end: opts.end,
     });
     if (result) {
-      results.push({ targets: combo, result });
+      strategies.push({ label: pool.label, targets: pool.targets, result });
     } else {
-      console.log(
-        `跳过组合 ${combo.map((t) => t.name).join(" + ")}：区间内数据不足`
-      );
+      console.log(`跳过【${pool.label}】：区间内数据不足`);
     }
   }
 
-  if (results.length === 0) {
-    throw new Error("所有组合在指定区间内数据都不足");
+  if (strategies.length === 0) {
+    throw new Error("指定区间内数据不足，无法回测");
   }
-  return renderReport(results);
+  return renderReport(strategies);
 }

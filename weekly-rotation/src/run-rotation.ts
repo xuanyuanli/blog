@@ -1,5 +1,10 @@
 import { LOOKBACK_WEEKS, TARGETS, loadRuntimeConfig } from "./config";
-import { completedBars, fetchQuotes, fetchWeeklyBars } from "./data";
+import {
+  completedBars,
+  fetchQuotes,
+  fetchWeeklyBars,
+  fetchWithRetry,
+} from "./data";
 import { ACTION_LABELS, decide, resolveAction } from "./decide";
 import type { Candidate, RotationAction } from "./decide";
 import { basisClose, cumulativeReturn } from "./momentum";
@@ -19,10 +24,20 @@ const fmtPct = (v: number): string => `${(v * 100).toFixed(2)}%`;
 /** 拉实时价 + 周K，计算各标的近 N 周累计涨幅 */
 async function computeCandidates(todayStr: string): Promise<Candidate[]> {
   const codes = TARGETS.map((t) => t.code);
-  const [quotes, barsList] = await Promise.all([
-    fetchQuotes(codes),
-    Promise.all(codes.map((c) => fetchWeeklyBars(c, LOOKBACK_WEEKS + 8))),
-  ]);
+  const quotes = await fetchWithRetry(
+    () => fetchQuotes(codes),
+    (qs) => qs.length === codes.length
+  );
+  // 周K按标的串行拉取并重试，避免并发触发数据源限流
+  const barsList: Awaited<ReturnType<typeof fetchWeeklyBars>>[] = [];
+  for (const code of codes) {
+    barsList.push(
+      await fetchWithRetry(
+        () => fetchWeeklyBars(code, LOOKBACK_WEEKS + 8),
+        (bars) => completedBars(bars, todayStr).length >= LOOKBACK_WEEKS
+      )
+    );
+  }
 
   return TARGETS.map((t, i) => {
     const quote = quotes.find((q) => q.code === t.code) ?? quotes[i];
