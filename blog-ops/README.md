@@ -72,7 +72,7 @@ node bin/bops.js versions
 4. 确认远程路径：
    - Nginx 配置路径：`/usr/local/nginx/conf/nginx.conf`
    - 博客静态文件根目录：`/var/www/blog`
-5. 可选填写 Server酱 SendKey（周线轮动通知用，部署时写入远程 `config.json`）
+5. 可选填写 Server酱 SendKey（周线轮动通知用，部署时写入远程 `.env`，由 systemd 以环境变量注入）
 6. 测试连接并保存
 
 配置持久化在本地（通过 [conf](https://github.com/sindresorhus/conf)），无需每次输入。
@@ -103,9 +103,9 @@ node bin/bops.js versions
 
 1. 本地 `npm run build`
 2. 打包 `dist/` + `package.json` + `package-lock.json` + `weekly-rotation.service` 上传
-3. 远程解压到 `/data/apps/weekly-rotation/`（保留 `config.json` / `state.json` / 日志）
+3. 远程解压到 `/data/apps/weekly-rotation/`（保留 `.env` / `state.json` / 日志）
 4. 远程 `npm install --omit=dev`
-5. 若本地配置了 Server酱 SendKey，写入远程 `config.json`
+5. 若本地配置了 Server酱 SendKey，写入远程 `.env`（`SERVERCHAN_SENDKEY=...`，`chmod 600`）
 6. 安装/更新 systemd 服务 `weekly-rotation`，`systemctl enable` + `restart`，并确认存活
 
 ## Nginx 同步

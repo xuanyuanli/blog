@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import * as path from "path";
 
 /** 轮动标的池 */
@@ -23,13 +22,8 @@ export const LOOKBACK_WEEKS = 4;
 export const ROTATION_HOUR = 14;
 export const ROTATION_MINUTE = 30;
 
-/** 运行时配置（config.json，不入库；由 bops 部署时写到服务器） */
-export type RuntimeConfig = {
-  serverChanSendKey?: string;
-};
-
 /**
- * 数据目录：state.json / config.json 所在目录。
+ * 数据目录：state.json 所在目录。
  * 优先 --data-dir 参数，其次环境变量 WEEKLY_ROTATION_DIR，最后当前工作目录。
  */
 export function resolveDataDir(cliDataDir?: string): string {
@@ -38,13 +32,11 @@ export function resolveDataDir(cliDataDir?: string): string {
   );
 }
 
-export function loadRuntimeConfig(dataDir: string): RuntimeConfig {
-  const file = path.join(dataDir, "config.json");
-  if (!fs.existsSync(file)) return {};
-  try {
-    return JSON.parse(fs.readFileSync(file, "utf8")) as RuntimeConfig;
-  } catch {
-    console.error(`警告: 无法解析 ${file}，忽略运行时配置`);
-    return {};
-  }
+/**
+ * Server酱 SendKey，从环境变量读取（不落盘、不入库）。
+ * 服务器上由 systemd 的 EnvironmentFile（bops 部署时写入的 .env）注入。
+ */
+export function getServerChanSendKey(): string | undefined {
+  const key = process.env.SERVERCHAN_SENDKEY?.trim();
+  return key ? key : undefined;
 }

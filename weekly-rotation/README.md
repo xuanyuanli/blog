@@ -46,15 +46,12 @@ node dist/cli.js backtest --start 2024-07-08 --end 2026-07-01
 
 ## 运行时配置
 
-数据目录（`--data-dir`，或环境变量 `WEEKLY_ROTATION_DIR`，默认当前目录）下：
+- 通知密钥从环境变量 `SERVERCHAN_SENDKEY` 读取（Server酱 SendKey，支持 Turbo 与 Server酱3）。服务器上由 `bops rotation` 部署时写入 `.env`（`chmod 600`），systemd 通过 `EnvironmentFile` 注入；本地调试可直接设置环境变量。未设置则跳过通知。
+- `state.json`：当前持仓与轮动历史，由程序维护，位于数据目录（`--data-dir`，或环境变量 `WEEKLY_ROTATION_DIR`，默认当前目录）。
 
-- `config.json`：运行时配置，含 `serverChanSendKey`（Server酱 SendKey，支持 Turbo 与 Server酱3），由 `bops rotation` 部署时写入服务器，不入库。
-- `state.json`：当前持仓与轮动历史，由程序维护。
-
-```json
-{
-  "serverChanSendKey": "SCTxxxxxxxx"
-}
+```bash
+# 本地带通知运行示例（PowerShell: $env:SERVERCHAN_SENDKEY="SCTxxxx"）
+SERVERCHAN_SENDKEY=SCTxxxx node dist/cli.js once
 ```
 
 ## 部署

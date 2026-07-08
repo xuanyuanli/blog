@@ -23,7 +23,7 @@ function printHelp(): void {
   weekly-rotation backtest [选项]        回测对比 5 标的池与 4 标的池（不含科创芯片）
 
 选项:
-  --data-dir <path>   state.json / config.json 所在目录
+  --data-dir <path>   state.json 所在目录
                       （默认环境变量 WEEKLY_ROTATION_DIR，其次当前目录）
   --dry-run           once 专用：只计算打印，不发通知、不写状态
   --start <date>      backtest 专用：起始日期 YYYY-MM-DD
@@ -112,7 +112,7 @@ async function main(): Promise<void> {
         try {
           await runRotation({ dataDir, dryRun: false, todayStr });
         } catch (err) {
-          await notifyError(dataDir, err);
+          await notifyError(err);
           throw err;
         }
       });

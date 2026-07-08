@@ -1,4 +1,4 @@
-import { LOOKBACK_WEEKS, TARGETS, loadRuntimeConfig } from "./config";
+import { LOOKBACK_WEEKS, TARGETS, getServerChanSendKey } from "./config";
 import {
   completedBars,
   fetchQuotes,
@@ -159,20 +159,20 @@ export async function runRotation(opts: RunOptions): Promise<RotationResult> {
     ],
   });
 
-  const { serverChanSendKey } = loadRuntimeConfig(opts.dataDir);
+  const serverChanSendKey = getServerChanSendKey();
   if (serverChanSendKey) {
     await sendServerChan(serverChanSendKey, title, desp);
     console.log("Server酱通知已发送");
   } else {
-    console.log("警告: 未配置 serverChanSendKey，跳过通知");
+    console.log("警告: 未配置环境变量 SERVERCHAN_SENDKEY，跳过通知");
   }
 
   return result;
 }
 
 /** 执行失败时的告警通知（daemon 用） */
-export async function notifyError(dataDir: string, err: unknown): Promise<void> {
-  const { serverChanSendKey } = loadRuntimeConfig(dataDir);
+export async function notifyError(err: unknown): Promise<void> {
+  const serverChanSendKey = getServerChanSendKey();
   if (!serverChanSendKey) return;
   const message = err instanceof Error ? (err.stack ?? err.message) : String(err);
   try {

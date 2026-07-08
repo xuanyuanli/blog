@@ -184,7 +184,7 @@ node dist/cli.js backtest --start 2024-07-08
 npm test
 ```
 
-部署：`node blog-ops/bin/bops.js rotation` — 上传到远程 `/data/apps/weekly-rotation/`，`npm install --omit=dev`，写 `config.json`（Server酱 SendKey，来自 bops 本地 conf），安装并重启 systemd 服务 `weekly-rotation`。远程日志：`/data/apps/weekly-rotation/weekly-rotation.log`。
+部署：`node blog-ops/bin/bops.js rotation` — 上传到远程 `/data/apps/weekly-rotation/`，`npm install --omit=dev`，写 `.env`（`SERVERCHAN_SENDKEY`，来自 bops 本地 conf，由 systemd `EnvironmentFile` 注入），安装并重启 systemd 服务 `weekly-rotation`。远程日志：`/data/apps/weekly-rotation/weekly-rotation.log`。
 
 ## blog-ops 运维工具
 

@@ -1,5 +1,5 @@
 export { TARGETS, LOOKBACK_WEEKS } from "./config";
-export type { Target, RuntimeConfig } from "./config";
+export type { Target } from "./config";
 export { isTradingDay, lastTradingDayOfWeek } from "./trading-day";
 export { basisClose, cumulativeReturn } from "./momentum";
 export { decide, resolveAction, ACTION_LABELS } from "./decide";

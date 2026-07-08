@@ -55,7 +55,7 @@ async function compressArtifacts(projectDir: string, outputPath: string): Promis
 
 /**
  * 部署周线轮动服务：
- * 本地构建 → 上传 → 远程 npm install → 写 config.json → 安装 systemd 服务并重启
+ * 本地构建 → 上传 → 远程 npm install → 写 .env（环境变量）→ 安装 systemd 服务并重启
  */
 export async function rotationDeploy(
   config: DeployConfig,
@@ -125,7 +125,7 @@ export async function rotationDeploy(
     });
     uploadSpinner.succeed(`[${PROJECT_NAME}] 上传完成`);
 
-    // 解压（只更新 dist 和包描述文件，保留 config.json / state.json / node_modules / 日志）
+    // 解压（只更新 dist 和包描述文件，保留 .env / state.json / node_modules / 日志）
     const deploySpinner = ora(`[${PROJECT_NAME}] 部署到 ${REMOTE_DIR}...`).start();
     await client.ensureRemoteDir(REMOTE_DIR);
     await client.executeCommand(`rm -rf ${REMOTE_DIR}/dist`);
@@ -139,26 +139,22 @@ export async function rotationDeploy(
       `cd ${REMOTE_DIR} && npm install --omit=dev --no-audit --no-fund`
     );
 
-    // 写运行时配置（含 Server酱 SendKey）
+    // 写环境变量文件（含 Server酱 SendKey），由 systemd EnvironmentFile 注入进程
     if (config.serverChanSendKey) {
-      const configJson = JSON.stringify(
-        { serverChanSendKey: config.serverChanSendKey },
-        null,
-        2
-      );
       await client.executeCommand(
-        `cat > ${REMOTE_DIR}/config.json <<'BOPS_EOF'\n${configJson}\nBOPS_EOF`
+        `cat > ${REMOTE_DIR}/.env <<'BOPS_EOF'\nSERVERCHAN_SENDKEY=${config.serverChanSendKey}\nBOPS_EOF`
       );
-      console.log(chalk.green(`[${PROJECT_NAME}] config.json 已写入（含 Server酱 SendKey）`));
+      await client.executeCommand(`chmod 600 ${REMOTE_DIR}/.env`);
+      console.log(chalk.green(`[${PROJECT_NAME}] .env 已写入（含 SERVERCHAN_SENDKEY，权限 600）`));
     } else {
-      const hasRemoteConfig = await client
-        .executeCommand(`test -f ${REMOTE_DIR}/config.json && echo yes`)
+      const hasRemoteEnv = await client
+        .executeCommand(`test -f ${REMOTE_DIR}/.env && echo yes`)
         .then((out) => out.trim() === 'yes')
         .catch(() => false);
-      if (!hasRemoteConfig) {
+      if (!hasRemoteEnv) {
         console.log(
           chalk.yellow(
-            `[${PROJECT_NAME}] 警告: 未配置 Server酱 SendKey 且远程无 config.json，将不会推送通知（可运行 bops 配置向导补充）`
+            `[${PROJECT_NAME}] 警告: 未配置 Server酱 SendKey 且远程无 .env，将不会推送通知（可运行 bops 配置向导补充）`
           )
         );
       }
