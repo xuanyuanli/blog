@@ -2,15 +2,17 @@
 
 import { resolveDataDir } from "./config";
 import { runBacktest } from "./run-backtest";
+import { runCombos } from "./run-combos";
 import { notifyError, runRotation } from "./run-rotation";
 import { runDaemon, shanghaiDateStr } from "./scheduler";
 
 type CliOptions = {
-  command: "daemon" | "once" | "backtest";
+  command: "daemon" | "once" | "backtest" | "combos";
   dataDir?: string;
   dryRun: boolean;
   start?: string;
   end?: string;
+  top?: number;
   help: boolean;
 };
 
@@ -20,21 +22,24 @@ function printHelp(): void {
 用法:
   weekly-rotation [daemon]              常驻调度，每周最后一个交易日 14:30 执行
   weekly-rotation once [--dry-run]      立即执行一次轮动决策
-  weekly-rotation backtest [选项]        回测对比 5 标的池与 4 标的池（不含科创芯片）
+  weekly-rotation backtest [选项]        按成立时间分档对比多个标的池
+  weekly-rotation combos [选项]          枚举全部标的组合回测，找最优
 
 选项:
   --data-dir <path>   state.json 所在目录
                       （默认环境变量 WEEKLY_ROTATION_DIR，其次当前目录）
   --dry-run           once 专用：只计算打印，不发通知、不写状态
-  --start <date>      backtest 专用：起始日期 YYYY-MM-DD
+  --start <date>      backtest/combos 专用：起始日期 YYYY-MM-DD
                       （默认取池内最晚成立 ETF 的上市周）
-  --end <date>        backtest 专用：结束日期 YYYY-MM-DD
+  --end <date>        backtest/combos 专用：结束日期 YYYY-MM-DD
+  --top <n>           combos 专用：每个榜单展示前 n 名（默认 20）
   -h, --help          显示帮助
 
 示例:
   weekly-rotation once --dry-run
   weekly-rotation backtest
-  weekly-rotation backtest --start 2024-07-08
+  weekly-rotation combos
+  weekly-rotation combos --end 2024-07-14   # 去掉最近两年数据
 `);
 }
 
@@ -68,14 +73,29 @@ function parseArgs(argv: string[]): CliOptions {
       else opts.end = v;
       continue;
     }
+    if (arg === "--top") {
+      const v = Number(argv[++i]);
+      if (!Number.isInteger(v) || v <= 0) {
+        throw new Error("--top 需要正整数");
+      }
+      opts.top = v;
+      continue;
+    }
     if (arg.startsWith("-")) throw new Error(`未知选项: ${arg}`);
     positional.push(arg);
   }
 
   if (positional.length > 0) {
     const cmd = positional[0];
-    if (cmd !== "daemon" && cmd !== "once" && cmd !== "backtest") {
-      throw new Error(`未知命令: ${cmd}（可用: daemon / once / backtest）`);
+    if (
+      cmd !== "daemon" &&
+      cmd !== "once" &&
+      cmd !== "backtest" &&
+      cmd !== "combos"
+    ) {
+      throw new Error(
+        `未知命令: ${cmd}（可用: daemon / once / backtest / combos）`
+      );
     }
     opts.command = cmd;
   }
@@ -104,6 +124,12 @@ async function main(): Promise<void> {
     }
     case "backtest": {
       console.log(await runBacktest({ start: opts.start, end: opts.end }));
+      return;
+    }
+    case "combos": {
+      console.log(
+        await runCombos({ start: opts.start, end: opts.end, top: opts.top })
+      );
       return;
     }
     case "daemon": {

@@ -168,7 +168,7 @@ npm test
 
 目录：`weekly-rotation/`
 
-用途：ETF 周线轮动策略常驻服务 — 每周最后一个交易日 14:30（上海时间）对比标的池（沪深300ETF/创业板50ETF/科创50ETF/科创芯片ETF/通信ETF，共 5 只）近 4 个交易周累计涨幅，取最高者，为正则持有、为负则空仓；决策经 Server酱 推送，持仓状态写 `state.json`。内置回测，对比 5 标的池与 4 标的池（不含科创芯片）两种策略。
+用途：ETF 周线轮动策略常驻服务 — 每周最后一个交易日 14:30（上海时间）对比标的池（沪深300/创业板50/科创50/科创芯片/通信/恒生科技/云计算/有色/卫星，共 9 只 ETF）近 4 个交易周累计涨幅，取最高者，为正则持有、为负则空仓；决策经 Server酱 推送，持仓状态写 `state.json`。内置回测，按成立时间分档对比多个标的池（全部 / 不含2025年新品 / 长历史）。
 
 技术栈：TypeScript（CJS + strict）、`stock-api`（行情与前复权周K）、`chinese-days`（节假日）。
 
@@ -179,7 +179,9 @@ cd weekly-rotation
 npm install
 npm run build
 node dist/cli.js once --dry-run       # 立即计算一次，不发通知不写状态
-node dist/cli.js backtest             # 回测对比 5 标的池 vs 4 标的池
+node dist/cli.js backtest             # 回测对比多档标的池（全部/不含新品/长历史）
+node dist/cli.js combos               # 全组合枚举回测，按累计收益/卡玛出 Top 榜
+node dist/cli.js combos --end 2024-07-14  # 去掉最近两年做稳健性对照
 node dist/cli.js backtest --start 2024-07-08
 npm test
 ```

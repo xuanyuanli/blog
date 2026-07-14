@@ -13,6 +13,10 @@ export const TARGETS: Target[] = [
   { code: "SH588000", name: "科创50ETF" },
   { code: "SH588170", name: "科创芯片ETF" },
   { code: "SH515880", name: "通信ETF" },
+  { code: "SH513180", name: "恒生科技ETF" },
+  { code: "SZ159890", name: "云计算ETF" },
+  { code: "SZ159652", name: "有色ETF" },
+  { code: "SZ159206", name: "卫星ETF" },
 ];
 
 /** 观察周期：近 N 个交易周的累计涨幅 */
