@@ -33,7 +33,7 @@ async function computeCandidates(todayStr: string): Promise<Candidate[]> {
   for (const code of codes) {
     barsList.push(
       await fetchWithRetry(
-        () => fetchWeeklyBars(code, LOOKBACK_WEEKS + 8),
+        () => fetchWeeklyBars(code, LOOKBACK_WEEKS + 20),
         (bars) => completedBars(bars, todayStr).length >= LOOKBACK_WEEKS
       )
     );
@@ -62,24 +62,35 @@ async function computeCandidates(todayStr: string): Promise<Candidate[]> {
   });
 }
 
+function describeHolding(
+  code: string | null,
+  fallbackName?: string | null
+): { code: string; name: string } | null {
+  if (!code) return null;
+  const known = TARGETS.find((t) => t.code === code);
+  return { code, name: known?.name ?? fallbackName ?? code };
+}
+
 function buildNotification(result: RotationResult): {
   title: string;
   desp: string;
 } {
   const label = ACTION_LABELS[result.action];
+  const fromName = result.from?.name ?? "空仓";
+  const toName = result.to?.name ?? "空仓";
   let headline: string;
   switch (result.action) {
     case "switch":
-      headline = `${label} ${result.from!.name} → ${result.to!.name}`;
+      headline = `${label} ${fromName} → ${toName}`;
       break;
     case "open":
-      headline = `${label} ${result.to!.name}`;
+      headline = `${label} ${toName}`;
       break;
     case "hold":
-      headline = `${label} ${result.to!.name}`;
+      headline = `${label} ${toName}`;
       break;
     case "clear":
-      headline = `${label}（卖出 ${result.from!.name}）`;
+      headline = `${label}（卖出 ${fromName}）`;
       break;
     case "stay_empty":
       headline = label;
@@ -123,11 +134,10 @@ export async function runRotation(opts: RunOptions): Promise<RotationResult> {
   const nextCode = target?.code ?? null;
   const action = resolveAction(prevCode, nextCode);
 
-  const prevTarget = TARGETS.find((t) => t.code === prevCode) ?? null;
   const result: RotationResult = {
     date: opts.todayStr,
     action,
-    from: prevTarget ? { code: prevTarget.code, name: prevTarget.name } : null,
+    from: describeHolding(prevCode, state.holdingName),
     to: target ? { code: target.code, name: target.name } : null,
     ranked,
   };

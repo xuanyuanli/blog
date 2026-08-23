@@ -9,27 +9,8 @@ import { shanghaiDateStr } from "./scheduler";
 
 const WEEKLY_COUNT = 800;
 
-/** 2025 年上市、拉低对齐窗口的新品 */
-const NEW_2025 = ["SH588170", "SZ159206"];
-/** 2023 年上市的品种（连同 2025 新品一起剔除得到长历史池） */
-const NEW_2023 = ["SZ159652"];
-
-/**
- * 回测对比多个标的池，按成立时间分档以兼顾窗口长度：
- * 全部 → 去 2025 新品 → 再去 2023 新品（长历史）。
- */
 const POOLS: { label: string; targets: Target[] }[] = [
-  { label: `${TARGETS.length}标的池（全部）`, targets: TARGETS },
-  {
-    label: `${TARGETS.length - NEW_2025.length}标的池（不含2025年新品）`,
-    targets: TARGETS.filter((t) => !NEW_2025.includes(t.code)),
-  },
-  {
-    label: `${TARGETS.length - NEW_2025.length - NEW_2023.length}标的池（长历史）`,
-    targets: TARGETS.filter(
-      (t) => !NEW_2025.includes(t.code) && !NEW_2023.includes(t.code)
-    ),
-  },
+  { label: "沪深300+创业板50", targets: TARGETS },
 ];
 
 export type BacktestCliOptions = {
