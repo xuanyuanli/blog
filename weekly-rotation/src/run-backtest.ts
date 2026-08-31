@@ -10,7 +10,7 @@ import { shanghaiDateStr } from "./scheduler";
 const WEEKLY_COUNT = 800;
 
 const POOLS: { label: string; targets: Target[] }[] = [
-  { label: "沪深300+创业板50", targets: TARGETS },
+  { label: "沪深300+创业板50+纳指100", targets: TARGETS },
 ];
 
 export type BacktestCliOptions = {

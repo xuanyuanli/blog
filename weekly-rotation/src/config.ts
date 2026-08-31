@@ -10,6 +10,7 @@ export type Target = {
 export const TARGETS: Target[] = [
   { code: "SH510300", name: "沪深300ETF" },
   { code: "SZ159949", name: "创业板50ETF" },
+  { code: "SH513100", name: "纳指100ETF" },
 ];
 
 /** 观察周期：近 N 个交易周的累计涨幅 */

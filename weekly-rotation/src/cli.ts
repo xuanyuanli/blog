@@ -22,8 +22,8 @@ function printHelp(): void {
 用法:
   weekly-rotation [daemon]              常驻调度，每周最后一个交易日 14:30 执行
   weekly-rotation once [--dry-run]      立即执行一次轮动决策
-  weekly-rotation backtest [选项]        回测沪深300+创业板50
-  weekly-rotation combos [选项]          枚举标的组合回测（当前池仅 2 只）
+  weekly-rotation backtest [选项]        回测沪深300+创业板50+纳指100
+  weekly-rotation combos [选项]          枚举标的组合回测（当前池 3 只）
 
 选项:
   --data-dir <path>   state.json 所在目录
