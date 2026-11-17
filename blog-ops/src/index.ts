@@ -21,7 +21,6 @@ const MENU_ITEMS: MenuItem[] = [
   { name: '配置服务器连接信息', value: 'config' },
   { name: '发布新博客（bops new）', value: 'new' },
   { name: '发布旧博客（bops old）', value: 'old' },
-  { name: '发布股票站点（bops stock）', value: 'stock' },
   { name: '发布周线轮动服务（bops rotation）', value: 'rotation' },
   { name: '发布 Vaultwarden（bops vault）', value: 'vault' },
   { name: '发布新旧博客（Astro + VuePress）', value: 'all' },
@@ -68,7 +67,7 @@ async function requireConfig(): Promise<ReturnType<typeof configManager.getConfi
 }
 
 /**
- * 命令行发布：bops new | bops old | bops stock
+ * 命令行发布：bops new | bops old
  */
 async function runProjectDeploy(
   projects: BlogProjectName[],
@@ -201,14 +200,6 @@ async function main(): Promise<void> {
     });
 
   program
-    .command('stock')
-    .description('构建并发布股票站点（VitePress）到 stock.xuanyuanli.cn')
-    .option('-s, --skip-build', '跳过构建，直接部署已有产物')
-    .action(async (opts) => {
-      await runProjectDeploy(['stock'], opts.skipBuild ?? false);
-    });
-
-  program
     .command('rotation')
     .description('构建并发布周线轮动服务（weekly-rotation，systemd 常驻）')
     .option('-s, --skip-build', '跳过构建，直接部署已有产物')
@@ -318,13 +309,6 @@ async function main(): Promise<void> {
         case 'old':
           await blogDeploy(currentConfig, {
             projects: ['vuepress'],
-            skipBuild: false,
-            skipConfirm: false,
-          });
-          break;
-        case 'stock':
-          await blogDeploy(currentConfig, {
-            projects: ['stock'],
             skipBuild: false,
             skipConfirm: false,
           });

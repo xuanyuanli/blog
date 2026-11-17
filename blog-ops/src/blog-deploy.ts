@@ -20,7 +20,6 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
  * 博客项目列表
  * astro: 新博客（必选）
  * vuepress: 旧博客（可选，部署到 /archive/ 子路径）
- * stock: 股票 VitePress 站点（可选，部署到 stock.xuanyuanli.cn）
  */
 const BLOG_PROJECTS: BlogProject[] = [
   {
@@ -32,12 +31,6 @@ const BLOG_PROJECTS: BlogProject[] = [
   {
     name: 'vuepress',
     dir: 'vuepress',
-    optional: true,
-    build: true,
-  },
-  {
-    name: 'stock',
-    dir: 'stock',
     optional: true,
     build: true,
   },
@@ -103,8 +96,6 @@ function getDistDir(project: BlogProject, projectDir: string): string {
       return path.join(projectDir, 'dist');
     case 'vuepress':
       return path.join(projectDir, 'docs', '.vuepress', 'dist');
-    case 'stock':
-      return path.join(projectDir, '.vitepress', 'dist');
   }
 }
 
@@ -114,8 +105,6 @@ function getRemoteTargetDir(project: BlogProject, config: DeployConfig): string 
       return config.blogRemoteRoot;
     case 'vuepress':
       return '/var/www/blog-archive';
-    case 'stock':
-      return '/var/www/stock';
   }
 }
 

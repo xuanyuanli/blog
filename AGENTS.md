@@ -10,7 +10,6 @@
 .
 ├── astro/           # 新站，Astro + React + Tailwind CSS
 ├── vuepress/        # 旧博客，VuePress + vdoing 主题，历史技术文章归档
-├── stock/           # 股票研究 VitePress 站点，部署到 stock.xuanyuanli.cn
 ├── stock-cli/       # A 股尾随止损 CLI（波动分级、止损线）
 ├── weekly-rotation/ # ETF 周线轮动策略常驻服务（含回测），部署为 systemd 服务
 ├── vaultwarden/     # 自建 Vaultwarden（Bitwarden 兼容），Docker Compose
@@ -112,41 +111,6 @@ npm run deploy
 - Markdown frontmatter 会影响分类、归档、导航和 SEO，批量修改前优先查看相邻文章格式。
 - 优化文章时，保持作者原有中文表达风格，不要把文章改成生硬的模板化说明。
 
-## Stock 股票研究站点
-
-目录：`stock/`
-
-技术栈：
-
-- VitePress 1.x
-- Node.js >= 18
-
-常用命令：
-
-```bash
-cd stock
-npm install
-npm run dev
-npm run build
-npm run preview
-```
-
-关键目录：
-
-- `data/{代码}-{简称}/`：个股报告目录，含 `index.md` 概览页与 `{YYYY-MM-DD}.md` 各期报告。
-- `data/index.md`：全站报告总览表。
-- `public/`：框架 HTML（stock-pricing-patterns、h200-industry-chain 等）。
-- `.vitepress/config.ts`：站点配置，`base: '/'`（独立子域名 stock.xuanyuanli.cn）。
-
-内容约定：
-
-- 报告由 `.cursor/skills/stock-analysis/` skill 生成，输出到 `data/{代码}-{简称}/{YYYY-MM-DD}.md`。
-- 同股同日重复分析覆盖当日文件；禁止覆盖历史日期文件。
-- 每次写报告后同步更新该股的 `index.md`。
-- A 股报告生成时会调用根目录 `stock-cli/`（`node stock-cli/dist/cli.js {代码} --json`），将尾随止损判断写入报告 10.5 节。
-
-部署：`node bin/bops.js stock`（远程 `/var/www/stock/`，线上 https://stock.xuanyuanli.cn）。
-
 ## stock-cli 尾随止损工具
 
 目录：`stock-cli/`
@@ -233,8 +197,6 @@ CLI 用法：
 node bin/bops.js
 node bin/bops.js new
 node bin/bops.js old
-node bin/bops.js stock
-node bin/bops.js stock --skip-build
 node bin/bops.js new --skip-build
 node bin/bops.js rotation
 node bin/bops.js rotation --skip-build
@@ -272,7 +234,6 @@ bash build.sh --with-archive
 
 - 修改 `astro/` 后，至少运行 `npm run build`。
 - 修改 `vuepress/` 后，至少运行 `npm run build`。
-- 修改 `stock/` 后，至少运行 `npm run build`。
 - 修改 `stock-cli/` 后，运行 `npm run build` 与 `npm test`。
 - 修改 `weekly-rotation/` 后，运行 `npm run build` 与 `npm test`，必要时用 `node dist/cli.js once --dry-run` 验证。
 - 修改 `vaultwarden/` 后，运行 `node blog-ops/bin/bops.js vault`（必要时先 `bops nginx`）。
@@ -297,9 +258,7 @@ python scripts/docx/docx.py unpack path/to/file.docx path/to/unpacked/
 - 新增思考文章：放在 `astro/src/content/thoughts/`，并补齐 frontmatter。
 - 修改历史技术文章：在 `vuepress/docs/` 下按分类查找，保持相邻文件格式。
 - 调整旧博客主题或插件：查看 `vuepress/docs/.vuepress/`。
-- 新增/更新股票分析报告：使用 `.cursor/skills/stock-analysis/`，输出到 `stock/data/`。
 - AI 算力主线 + 成交额 Top200 + 右侧技术筛选：使用 `.cursor/skills/ai-right-side-screen/`；结果持久化在 `data/ai-pool.json`、`data/exclude-codes.txt`。
-- 调整 AI 泡沫预警实操报告：`.cursor/skills/ai-bubble-playbook/`，Git Bash 运行 `agents/ai-bubble-playbook/scripts/orchestrate.sh`，HTML 输出 `stock/public/ai-bubble-playbook.html`。
 - 调整 ETF 周线轮动策略或回测：查看 `weekly-rotation/src/`（策略参数在 `config.ts`，回测在 `backtest.ts`），部署用 `bops rotation`。
 - 部署/调整 Vaultwarden：查看 `vaultwarden/`，部署用 `bops nginx` + `bops vault`。
 - 调整部署流程：查看 `build.sh`、`blog-ops/` 和 `nginx/nginx.conf`。

@@ -33,13 +33,13 @@ export interface DeployConfig {
 /**
  * 可部署项目名称
  */
-export type BlogProjectName = 'astro' | 'vuepress' | 'stock';
+export type BlogProjectName = 'astro' | 'vuepress';
 
 /**
  * 版本记录
  */
 export interface VersionRecord {
-  /** 项目名称（astro / vuepress / stock） */
+  /** 项目名称（astro / vuepress 等） */
   project: string;
   /** 版本 tag（格式：yyyyMMdd-HHmm） */
   tag: string;

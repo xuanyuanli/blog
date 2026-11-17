@@ -29,7 +29,6 @@ node bin/bops.js
 ❯ 配置服务器连接信息
   发布新博客（bops new）
   发布旧博客（bops old）
-  发布股票站点（bops stock）
   发布周线轮动服务（bops rotation）
   发布 Vaultwarden（bops vault）
   发布新旧博客（Astro + VuePress）
@@ -47,19 +46,15 @@ node bin/bops.js new
 # 发布旧博客（VuePress）到 /archive/
 node bin/bops.js old
 
-# 发布股票站点（VitePress）到 stock.xuanyuanli.cn
-node bin/bops.js stock
-
 # 发布周线轮动服务（Node 常驻服务，systemd 保活）
 node bin/bops.js rotation
 
 # 部署 Vaultwarden（vault.xuanyuanli.cn）
 node bin/bops.js vault
 
-# 跳过构建，直接部署已有产物（new / old / stock / rotation 可用）
+# 跳过构建，直接部署已有产物（new / old / rotation 可用）
 node bin/bops.js new -s
 node bin/bops.js old --skip-build
-node bin/bops.js stock -s
 
 # 同步 Nginx 配置
 node bin/bops.js nginx
@@ -85,7 +80,7 @@ node bin/bops.js versions
 
 以 `bops new` 为例，完整流程：
 
-1. **本地构建** — 在 `astro/`、`vuepress/` 或 `stock/` 目录执行 `npm run build`
+1. **本地构建** — 在 `astro/` 或 `vuepress/` 目录执行 `npm run build`
 2. **压缩产物** — 将构建输出目录打包为 zip
 3. **SSH 上传** — 通过 SFTP 上传 zip 到服务器 `/tmp/`
 4. **归档旧版本** — 将服务器当前版本备份到 `/data/deploy/blog-archives/<项目>/<tag>/`
@@ -98,7 +93,6 @@ node bin/bops.js versions
 |------|----------|----------|----------|
 | astro | `astro/` | `/var/www/blog/` | `astro/dist/` |
 | vuepress | `vuepress/` | `/var/www/blog-archive/` | `vuepress/docs/.vuepress/dist/` |
-| stock | `stock/` | `/var/www/stock/`（stock.xuanyuanli.cn） | `stock/.vitepress/dist/` |
 | weekly-rotation | `weekly-rotation/` | `/data/apps/weekly-rotation/`（Docker 容器） | `weekly-rotation/dist/` |
 | vaultwarden | `vaultwarden/` | `/data/apps/vaultwarden/`（Docker Compose） | `docker-compose.yml` + `.env` |
 
