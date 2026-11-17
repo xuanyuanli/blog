@@ -13,6 +13,7 @@
 ├── stock/           # 股票研究 VitePress 站点，部署到 stock.xuanyuanli.cn
 ├── stock-cli/       # A 股尾随止损 CLI（波动分级、止损线）
 ├── weekly-rotation/ # ETF 周线轮动策略常驻服务（含回测），部署为 systemd 服务
+├── vaultwarden/     # 自建 Vaultwarden（Bitwarden 兼容），Docker Compose
 ├── nginx/           # Nginx 配置
 ├── blog-ops/        # 博客运维 CLI
 ├── agents/          # Cursor CLI 调研编排（如 ai-bubble-playbook）
@@ -188,6 +189,29 @@ npm test
 
 部署：`node blog-ops/bin/bops.js rotation` — 上传产物 + `Dockerfile` 到远程 `/data/apps/weekly-rotation/`，远程 `docker build` 后以容器 `weekly-rotation` 运行（`--restart unless-stopped`，`data/` 挂载为 `/data` 持久化 `state.json`）。通知密钥 `SERVERCHAN_SENDKEY` 优先取服务器环境变量（`-e` 注入），其次 bops 本地 conf（写远程 `.env` 后 `--env-file` 注入）。远程日志：`docker logs -f weekly-rotation`。
 
+## vaultwarden 密码库
+
+目录：`vaultwarden/`
+
+用途：自建 Vaultwarden（Bitwarden 兼容），官方镜像 + Docker Compose，反代到 https://vault.xuanyuanli.cn。
+
+本地准备：
+
+```bash
+cd vaultwarden
+cp .env.example .env
+# 填写 ADMIN_TOKEN（openssl rand -base64 48）；首次 SIGNUPS_ALLOWED=true
+```
+
+部署：
+
+```bash
+node blog-ops/bin/bops.js nginx
+node blog-ops/bin/bops.js vault
+```
+
+远程：`/data/apps/vaultwarden/`，容器 `vaultwarden` 监听 `127.0.0.1:8222`，数据在 `data/`。`.env` 与 `ADMIN_TOKEN` 不进 git。注册完首账号后将 `SIGNUPS_ALLOWED=false` 再部署一次。日志：`docker logs -f vaultwarden`。
+
 ## blog-ops 运维工具
 
 目录：`blog-ops/`
@@ -214,6 +238,7 @@ node bin/bops.js stock --skip-build
 node bin/bops.js new --skip-build
 node bin/bops.js rotation
 node bin/bops.js rotation --skip-build
+node bin/bops.js vault
 node bin/bops.js nginx
 node bin/bops.js versions
 ```
@@ -222,6 +247,7 @@ node bin/bops.js versions
 
 - `src/blog-deploy.ts`
 - `src/rotation-deploy.ts`
+- `src/vaultwarden-deploy.ts`
 - `src/nginx-sync.ts`
 - `src/ssh.ts`
 - `src/version-manager.ts`
@@ -249,6 +275,7 @@ bash build.sh --with-archive
 - 修改 `stock/` 后，至少运行 `npm run build`。
 - 修改 `stock-cli/` 后，运行 `npm run build` 与 `npm test`。
 - 修改 `weekly-rotation/` 后，运行 `npm run build` 与 `npm test`，必要时用 `node dist/cli.js once --dry-run` 验证。
+- 修改 `vaultwarden/` 后，运行 `node blog-ops/bin/bops.js vault`（必要时先 `bops nginx`）。
 - 修改 `blog-ops/` 后，运行 `npm run build`。
 - 修改 Nginx 配置后，部署前应执行 `nginx -t`，`blog-ops` 的同步流程会在远程验证后再 reload。
 
@@ -274,4 +301,5 @@ python scripts/docx/docx.py unpack path/to/file.docx path/to/unpacked/
 - AI 算力主线 + 成交额 Top200 + 右侧技术筛选：使用 `.cursor/skills/ai-right-side-screen/`；结果持久化在 `data/ai-pool.json`、`data/exclude-codes.txt`。
 - 调整 AI 泡沫预警实操报告：`.cursor/skills/ai-bubble-playbook/`，Git Bash 运行 `agents/ai-bubble-playbook/scripts/orchestrate.sh`，HTML 输出 `stock/public/ai-bubble-playbook.html`。
 - 调整 ETF 周线轮动策略或回测：查看 `weekly-rotation/src/`（策略参数在 `config.ts`，回测在 `backtest.ts`），部署用 `bops rotation`。
+- 部署/调整 Vaultwarden：查看 `vaultwarden/`，部署用 `bops nginx` + `bops vault`。
 - 调整部署流程：查看 `build.sh`、`blog-ops/` 和 `nginx/nginx.conf`。

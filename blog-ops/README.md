@@ -31,6 +31,7 @@ node bin/bops.js
   发布旧博客（bops old）
   发布股票站点（bops stock）
   发布周线轮动服务（bops rotation）
+  发布 Vaultwarden（bops vault）
   发布新旧博客（Astro + VuePress）
   同步 Nginx 配置（bops nginx）
   查看版本历史（bops versions）
@@ -51,6 +52,9 @@ node bin/bops.js stock
 
 # 发布周线轮动服务（Node 常驻服务，systemd 保活）
 node bin/bops.js rotation
+
+# 部署 Vaultwarden（vault.xuanyuanli.cn）
+node bin/bops.js vault
 
 # 跳过构建，直接部署已有产物（new / old / stock / rotation 可用）
 node bin/bops.js new -s
@@ -96,6 +100,7 @@ node bin/bops.js versions
 | vuepress | `vuepress/` | `/var/www/blog-archive/` | `vuepress/docs/.vuepress/dist/` |
 | stock | `stock/` | `/var/www/stock/`（stock.xuanyuanli.cn） | `stock/.vitepress/dist/` |
 | weekly-rotation | `weekly-rotation/` | `/data/apps/weekly-rotation/`（Docker 容器） | `weekly-rotation/dist/` |
+| vaultwarden | `vaultwarden/` | `/data/apps/vaultwarden/`（Docker Compose） | `docker-compose.yml` + `.env` |
 
 ### 周线轮动服务部署（bops rotation）
 
@@ -109,6 +114,17 @@ node bin/bops.js versions
 6. 重建容器：`docker run -d --name weekly-rotation --restart unless-stopped [密钥注入参数] -v /data/apps/weekly-rotation/data:/data weekly-rotation:latest`，并确认存活
 
 日志用 `docker logs -f weekly-rotation` 查看；`state.json` 持久化在宿主机 `/data/apps/weekly-rotation/data/`。
+
+### Vaultwarden 部署（bops vault）
+
+密码库服务使用官方镜像，无需本地构建：
+
+1. 本地准备 `vaultwarden/.env`（从 `.env.example` 复制并填写 `ADMIN_TOKEN`）
+2. 上传 `docker-compose.yml`；若本地有 `.env` 则上传覆盖，否则沿用远程已有 `.env`；保留 `data/`
+3. 远程 `docker compose pull && docker compose up -d`（容器 `vaultwarden`，监听 `127.0.0.1:8222`）
+4. Nginx 需先同步：`bops nginx`（`vault.xuanyuanli.cn` → 本机 8222）
+
+日志：`docker logs -f vaultwarden`；数据在 `/data/apps/vaultwarden/data/`。
 
 ## Nginx 同步
 
